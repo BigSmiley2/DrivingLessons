@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".fragments.InputTeacherFragment">
+
+    <TextView
+        android:id="@+id/textViewFragmentInputTeacherTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/teacher"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewFragmentInputTeacherManual"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Are you driving on a manual car?"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewFragmentInputTeacherTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTeacherTitle" />
+
+    <Switch
+        android:id="@+id/switchFragmentInputTeacherManual"
+        style="@style/Default.Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:checked="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentInputTeacherManual"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textViewFragmentInputTeacherManual"
+        app:showText="false"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <TextView
+        android:id="@+id/textViewFragmentInputTeacherTester"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Are you a driver tester?"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewFragmentInputTeacherManual"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTeacherManual" />
+
+    <Switch
+        android:id="@+id/switchFragmentInputTeacherTester"
+        style="@style/Default.Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:checked="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentInputTeacherTester"
+        app:layout_constraintEnd_toEndOf="@+id/switchFragmentInputTeacherManual"
+        app:layout_constraintStart_toStartOf="@+id/switchFragmentInputTeacherManual"
+        app:layout_constraintTop_toTopOf="@+id/textViewFragmentInputTeacherTester"
+        app:showText="false"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutFragmentInputTeacherCost"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTeacherTester">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextFragmentInputTeacherCost"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Cost"
+            android:inputType="textPersonName" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

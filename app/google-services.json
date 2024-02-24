@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "157657463740",
+    "firebase_url": "https://driving-lessons-eccc8-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "driving-lessons-eccc8",
+    "storage_bucket": "driving-lessons-eccc8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157657463740:android:34817ba8db04d1849489b9",
+        "android_client_info": {
+          "package_name": "com.example.drivinglessons"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYebUZ8HNmUBu458B5_WK8LtMCXpgeImc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

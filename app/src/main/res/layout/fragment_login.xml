@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".fragments.LoginFragment">
+
+    <TextView
+        android:id="@+id/textViewFragmentLoginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentLoginEmail"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutFragmentLoginEmail"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLoginTitle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextFragmentLoginEmail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutFragmentLoginPassword"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentLoginEmail"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextFragmentLoginPassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textViewFragmentLoginForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="2dp"
+        android:gravity="center"
+        android:text="@string/forgot_password"
+        android:textColor="@color/button_warm"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentLoginPassword"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentLoginPassword" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonFragmentLogin"
+        style="@style/Default.Button"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/login"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutFragmentLoginPassword"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentLoginPassword"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLoginForgotPassword" />
+
+    <TextView
+        android:id="@+id/textViewFragmentLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/signup_message"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textViewFragmentLoginSignup"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/buttonFragmentLogin"
+        app:layout_constraintTop_toBottomOf="@+id/buttonFragmentLogin" />
+
+    <TextView
+        android:id="@+id/textViewFragmentLoginSignup"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:text="@string/signup_now"
+        android:textColor="@color/button_warm"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentLogin"
+        app:layout_constraintEnd_toEndOf="@+id/buttonFragmentLogin"
+        app:layout_constraintStart_toEndOf="@+id/textViewFragmentLogin"
+        app:layout_constraintTop_toTopOf="@+id/textViewFragmentLogin" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

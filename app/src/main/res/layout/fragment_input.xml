@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.InputFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViewFragmentInputTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/register"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentInputFullName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageViewFragmentInput"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTitle"
+            app:srcCompat="@drawable/user_icon" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutFragmentInputFullName"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewFragmentInput"
+            app:layout_constraintStart_toStartOf="@+id/imageViewFragmentInput"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewFragmentInput">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextFragmentInputFullName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Full name"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutFragmentInputEmail"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutFragmentInputFullName"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentInputFullName"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentInputFullName">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextFragmentInputEmail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutFragmentInputPassword"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutFragmentInputEmail"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentInputEmail"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentInputEmail"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextFragmentInputPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutFragmentInputConfirmPassword"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutFragmentInputPassword"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentInputPassword"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentInputPassword"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextFragmentInputConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/confirm_password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutFragmentInputBirthdate"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutFragmentInputConfirmPassword"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentInputConfirmPassword"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentInputConfirmPassword">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextFragmentInputBirthdate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/birthdate"
+                android:focusable="false"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroupFragmentInputRole"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutFragmentInputBirthdate"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentInputBirthdate"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentInputBirthdate">
+
+            <RadioButton
+                android:id="@+id/radioButtonFragmentInputStudent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                style="@style/Default.RadioButton"
+                android:layout_weight="1"
+                android:text="@string/student" />
+
+            <RadioButton
+                android:id="@+id/radioButtonFragmentInputTeacher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Default.RadioButton"
+                android:layout_weight="1"
+                android:text="@string/teacher" />
+
+        </RadioGroup>
+
+        <FrameLayout
+            android:id="@+id/FrameLayoutFragmentInput"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroupFragmentInputRole" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonFragmentInput"
+            style="@style/Default.Button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/register"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/radioGroupFragmentInputRole"
+            app:layout_constraintStart_toStartOf="@+id/radioGroupFragmentInputRole"
+            app:layout_constraintTop_toBottomOf="@+id/FrameLayoutFragmentInput" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
