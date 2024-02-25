@@ -24,11 +24,23 @@ public class InputTeacherFragment extends Fragment implements Parcelable
 {
     private static final String FRAGMENT_TITLE = "teacher", MANUAL = "manual", TESTER = "tester", COST = "cost";
 
+    public static class Data
+    {
+        public boolean manual, tester;
+        public Double cost;
+
+        public Data (boolean manual, boolean tester, Double cost)
+        {
+            this.manual = manual;
+            this.tester = tester;
+            this.cost = cost;
+        }
+    }
+
     private boolean manual, tester;
     private Double cost;
 
     private Switch manualInput, testerInput;
-
     private TextInputLayout costInputLayout;
     private EditText costInput;
 
@@ -91,7 +103,11 @@ public class InputTeacherFragment extends Fragment implements Parcelable
         costInput.addTextChangedListener((TextListener) s ->
         {
             String str = costInput.getText().toString();
-            if (str.isEmpty()) costInputLayout.setError(null);
+            if (str.isEmpty())
+            {
+                costInputLayout.setError(null);
+                cost = null;
+            }
             else if (Pattern.matches("[0-9]*(\\.[0-9]+)*", str))
                 cost = Double.parseDouble(str);
             else
@@ -100,6 +116,11 @@ public class InputTeacherFragment extends Fragment implements Parcelable
                 cost = null;
             }
         });
+    }
+
+    public Data getData()
+    {
+        return new Data(manual, tester, cost);
     }
 
     protected InputTeacherFragment(Parcel in)
@@ -111,7 +132,8 @@ public class InputTeacherFragment extends Fragment implements Parcelable
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags)
+    {
         dest.writeByte((byte) (manual ? 1 : 0));
         dest.writeByte((byte) (tester ? 1 : 0));
         if (cost == null) dest.writeByte((byte) 0);

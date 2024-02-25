@@ -69,6 +69,11 @@ public class InputStudentFragment extends Fragment implements Parcelable
         theoryInput.setOnCheckedChangeListener((buttonView, isChecked) -> theory = isChecked);
     }
 
+    public boolean isTheory()
+    {
+        return theory;
+    }
+
     protected InputStudentFragment(Parcel in)
     {
         theory = in.readByte() == 1;
