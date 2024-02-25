@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,8 @@ public class InputStudentFragment extends Fragment implements Parcelable
     private static final String FRAGMENT_TITLE = "student", THEORY = "theory";
 
     private boolean theory;
+
+    private Switch theoryInput;
 
     public InputStudentFragment() {}
 
@@ -58,6 +61,17 @@ public class InputStudentFragment extends Fragment implements Parcelable
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        theoryInput = view.findViewById(R.id.switchFragmentInputStudentTheory);
+
+        theoryInput.setChecked(theory);
+
+        theoryInput.setOnCheckedChangeListener((buttonView, isChecked) -> theory = isChecked);
+    }
+
+    public boolean isTheory()
+    {
+        return theory;
     }
 
     protected InputStudentFragment(Parcel in)

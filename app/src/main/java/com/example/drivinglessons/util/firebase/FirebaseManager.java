@@ -1,20 +1,31 @@
 package com.example.drivinglessons.util.firebase;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.firebase.entities.Balance;
 import com.example.drivinglessons.firebase.entities.Lesson;
 import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,6 +49,85 @@ public class FirebaseManager
     public static FirebaseManager getInstance(Context context)
     {
         return fm == null ? fm = new FirebaseManager(context) : fm;
+    }
+
+    public void saveStudent(Context c, Student student, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
+    {
+        FirebaseRunnable failure = new FirebaseRunnable()
+        {
+            @Override
+            public void run(Exception e)
+            {
+                FirebaseRunnable.super.run(e);
+                toastS(c, R.string.went_wrong_error);
+                complete.runAll(e);
+            }
+        };
+        registerToAuth(student, new FirebaseRunnable()
+        {
+            @Override
+            public void run()
+            {
+                saveInStorage(student.imagePath, image, new FirebaseRunnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        saveBalanceInDatabase(student.id, balance, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                saveStudentInDatabase(student, new FirebaseRunnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        success.runAll();
+                                        complete.runAll();
+                                    }
+                                }, failure);
+                            }
+                        }, failure);
+                    }
+                }, failure);
+            }
+        }, failure);
+    }
+
+    private void registerToAuth(User user, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        auth.createUserWithEmailAndPassword(user.email, user.password)
+                .addOnSuccessListener(authResult -> success.runAll())
+                .addOnFailureListener(failure::runAll);
+    }
+
+    public void saveBalanceInDatabase(String id, Balance balance, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        db.getReference("balance").child(id).updateChildren(balance.toMap())
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
+    private void saveStudentInDatabase(Student student, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        db.getReference("student").child(student.id).updateChildren(student.toMap())
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
+    private void saveInStorage(String path, byte[] image, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        st.getReference(path).putBytes(image)
+                .addOnSuccessListener(taskSnapshot -> success.runAll())
+                .addOnFailureListener(failure::runAll);
+    }
+
+    private void saveTeacherInDatabase(Teacher teacher, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        db.getReference("teacher").child(teacher.id).updateChildren(teacher.toMap())
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
     }
 
     public void sendPasswordReset(Context c, String email, FirebaseRunnable complete)
@@ -132,7 +222,15 @@ public class FirebaseManager
 
             spm.put(true, hasTeacher, null, isOwner);
 
-            getStudentCanTest(c, user, success);
+            getStudentCanTest(user, success, new FirebaseRunnable()
+            {
+                @Override
+                public void run(Exception e)
+                {
+                    FirebaseRunnable.super.run(e);
+                    toastS(c, R.string.went_wrong_error);
+                }
+            });
         }
         else
         {
@@ -141,9 +239,9 @@ public class FirebaseManager
         }
     }
 
-    public void getStudentCanTest(Context c, User user, FirebaseRunnable success)
+    public void getStudentCanTest(User user, FirebaseRunnable success, FirebaseRunnable failure)
     {
-        getStudentLessons(c, user, new FirebaseRunnable()
+        getStudentLessons(user, new FirebaseRunnable()
         {
             @Override
             public void run(List<Lesson> lessons)
@@ -159,15 +257,15 @@ public class FirebaseManager
 
                 success.runAll(user);
             }
-        });
+        }, failure);
     }
 
-    public void getStudentLessons(Context c, User user, FirebaseRunnable success)
+    public void getStudentLessons(User user, FirebaseRunnable success, FirebaseRunnable failure)
     {
-        getStudentLessons(c, user.id, success);
+        getStudentLessons(user.id, success, failure);
     }
 
-    public void getStudentLessons(Context c, String id, FirebaseRunnable success)
+    public void getStudentLessons(String id, FirebaseRunnable success, FirebaseRunnable failure)
     {
         db.getReference("lesson").orderByChild("studentId").equalTo(id).get()
                 .addOnSuccessListener(dataSnapshot ->
@@ -179,14 +277,7 @@ public class FirebaseManager
 
                     success.runAll(lessons);
                 })
-                .addOnFailureListener(e -> new FirebaseRunnable()
-                {
-                    @Override
-                    public void run(Exception e)
-                    {
-                        toastS(c, R.string.went_wrong_error);
-                    }
-                });
+                .addOnFailureListener(failure::runAll);
     }
 
     public void getTeacherLessons(Context c, User user, FirebaseRunnable success)

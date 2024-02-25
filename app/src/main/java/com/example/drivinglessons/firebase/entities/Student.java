@@ -15,16 +15,27 @@ public class Student extends User
 
     public Student() {}
 
-    public Student(String id, String name, String email, String password, String imagePath, Date birthdate, Boolean hasTheoryTest)
+    public Student(String id, String name, String email, String password, String imagePath, Date birthdate, Boolean hasTheoryTest, String teacherId)
     {
         super(id, name, email, password, imagePath, birthdate);
         this.hasTheoryTest = hasTheoryTest;
+        this.teacherId = teacherId;
+    }
+    public Student(String id, String name, String email, String password, String imagePath, Date birthdate, Boolean hasTheoryTest)
+    {
+        this(id, name, email, password, imagePath, birthdate, hasTheoryTest, null);
     }
 
-    public Student(String id, String name, String email, String password, String imagePath, Date birthdate, Boolean hasTheoryTest, String teacherId)
+
+
+    public Student(User user, Boolean hasTheoryTest, String teacherId)
     {
-        this(id, name, email, password, imagePath, birthdate, hasTheoryTest);
-        this.teacherId = teacherId;
+        this(user.id, user.name, user.email, user.password, user.imagePath, user.birthdate, hasTheoryTest, teacherId);
+    }
+
+    public Student(User user, Boolean hasTheoryTest)
+    {
+        this(user, hasTheoryTest, null);
     }
 
     protected Student(Parcel in)

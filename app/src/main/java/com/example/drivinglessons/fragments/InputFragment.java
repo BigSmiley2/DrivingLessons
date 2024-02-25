@@ -2,6 +2,7 @@ package com.example.drivinglessons.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -19,22 +20,30 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.firebase.entities.Balance;
+import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.util.firebase.FirebaseManager;
+import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.validation.TextListener;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 public class InputFragment extends Fragment
 {
     private static final String FRAGMENT_TITLE_REGISTER = "register", FRAGMENT_TITLE_EDIT = "edit", IS_REGISTER = "is register", USER = "user", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment";
 
+    private FirebaseManager fm;
     private InputStudentFragment studentFragment;
     private InputTeacherFragment teacherFragment;
     private boolean isRegister;
     private boolean isStudent;
+    private Bitmap image;
     private User user;
 
     private TextView title;
@@ -89,6 +98,8 @@ public class InputFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        fm = FirebaseManager.getInstance(getContext());
 
         title = view.findViewById(R.id.textViewFragmentInputTitle);
         fullNameInputLayout = view.findViewById(R.id.textInputLayoutFragmentInputFullName);
@@ -216,9 +227,35 @@ public class InputFragment extends Fragment
                 if (user.birthdate == null)
                     birthdateInputLayout.setError("birthdate mustn't be empty");
 
-                if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null) return;
+                InputTeacherFragment.Data data = teacherFragment.getData();
 
-                //continue
+                if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null || (!isStudent && data.cost == null)) return;
+
+                buttonInput.setOnClickListener(null);
+                View.OnClickListener listener = this;
+
+                Date now = Calendar.getInstance().getTime();
+
+                Balance balance = isRegister ? new Balance(0.0, now) : new Balance();
+
+                if (isStudent)
+                {
+                    Student student = new Student(user, studentFragment.isTheory());
+                    fm.saveStudent(getContext(), student, balance, bitmapToBytes(image), new FirebaseRunnable() {
+                        @Override
+                        public void run()
+                        {
+
+                        }
+                    }, new FirebaseRunnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            buttonInput.setOnClickListener(listener);
+                        }
+                    });
+                }
             }
         });
     }
@@ -265,6 +302,13 @@ public class InputFragment extends Fragment
                 stringBuilder.setCharAt(i + 1, (char) (stringBuilder.charAt(i + 1) - 'a' + 'A'));
 
         return stringBuilder.toString();
+    }
+
+    private byte[] bitmapToBytes(Bitmap image)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
     }
 
     private void clearFocus()
