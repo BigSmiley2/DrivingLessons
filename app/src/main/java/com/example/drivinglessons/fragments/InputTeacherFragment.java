@@ -6,12 +6,19 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.util.validation.TextListener;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class InputTeacherFragment extends Fragment implements Parcelable
 {
@@ -19,6 +26,11 @@ public class InputTeacherFragment extends Fragment implements Parcelable
 
     private boolean manual, tester;
     private Double cost;
+
+    private Switch manualInput, testerInput;
+
+    private TextInputLayout costInputLayout;
+    private EditText costInput;
 
     public InputTeacherFragment() {}
 
@@ -64,6 +76,30 @@ public class InputTeacherFragment extends Fragment implements Parcelable
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        manualInput = view.findViewById(R.id.switchFragmentInputTeacherManual);
+        testerInput = view.findViewById(R.id.switchFragmentInputTeacherTester);
+        costInputLayout = view.findViewById(R.id.textInputLayoutFragmentInputTeacherCost);
+        costInput = view.findViewById(R.id.editTextFragmentInputTeacherCost);
+
+        manualInput.setChecked(manual);
+        testerInput.setChecked(tester);
+        if (cost != null) costInput.setText(String.format(Locale.ROOT,"%f.2", cost));
+
+        manualInput.setOnCheckedChangeListener((buttonView, isChecked) -> manual = isChecked);
+        testerInput.setOnCheckedChangeListener((buttonView, isChecked) -> tester = isChecked);
+        costInput.addTextChangedListener((TextListener) s ->
+        {
+            String str = costInput.getText().toString();
+            if (str.isEmpty()) costInputLayout.setError(null);
+            else if (Pattern.matches("[0-9]*(\\.[0-9]+)*", str))
+                cost = Double.parseDouble(str);
+            else
+            {
+                costInputLayout.setError("the lesson cost must be a real number");
+                cost = null;
+            }
+        });
     }
 
     protected InputTeacherFragment(Parcel in)
