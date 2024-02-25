@@ -1,11 +1,8 @@
 package com.example.drivinglessons.util.firebase;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Balance;
@@ -15,19 +12,14 @@ import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class FirebaseManager
@@ -63,11 +55,12 @@ public class FirebaseManager
                 complete.runAll(e);
             }
         };
-        registerToAuth(student, new FirebaseRunnable()
+        FirebaseRunnable onward = new FirebaseRunnable()
         {
             @Override
             public void run()
             {
+                student.imagePath = getPath(auth.getUid());
                 saveInStorage(student.imagePath, image, new FirebaseRunnable()
                 {
                     @Override
@@ -83,8 +76,15 @@ public class FirebaseManager
                                     @Override
                                     public void run()
                                     {
-                                        success.runAll();
-                                        complete.runAll();
+                                        signInSharedPreferences(student, new FirebaseRunnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                success.runAll();
+                                                complete.runAll();
+                                            }
+                                        }, failure);
                                     }
                                 }, failure);
                             }
@@ -92,7 +92,63 @@ public class FirebaseManager
                     }
                 }, failure);
             }
-        }, failure);
+        };
+        if (isSigned()) deleteInStorage(student.imagePath, onward, failure);
+        else registerToAuth(student, onward, failure);
+    }
+
+    public  void saveTeacher(Context c, Teacher teacher, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
+    {
+        FirebaseRunnable failure = new FirebaseRunnable()
+        {
+            @Override
+            public void run(Exception e)
+            {
+                FirebaseRunnable.super.run(e);
+                toastS(c, R.string.went_wrong_error);
+                complete.runAll(e);
+            }
+        };
+        FirebaseRunnable onward = new FirebaseRunnable()
+        {
+            @Override
+            public void run()
+            {
+                teacher.imagePath = getPath(auth.getUid());
+                saveInStorage(teacher.imagePath, image, new FirebaseRunnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        saveBalanceInDatabase(teacher.id, balance, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                saveTeacherInDatabase(teacher, new FirebaseRunnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        signInSharedPreferences(teacher, new FirebaseRunnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                success.runAll();
+                                                complete.runAll();
+                                            }
+                                        }, failure);
+                                    }
+                                }, failure);
+                            }
+                        }, failure);
+                    }
+                }, failure);
+            }
+        };
+        if (isSigned()) deleteInStorage(teacher.imagePath, onward, failure);
+        else registerToAuth(teacher, onward, failure);
     }
 
     private void registerToAuth(User user, FirebaseRunnable success, FirebaseRunnable failure)
@@ -120,6 +176,13 @@ public class FirebaseManager
     {
         st.getReference(path).putBytes(image)
                 .addOnSuccessListener(taskSnapshot -> success.runAll())
+                .addOnFailureListener(failure::runAll);
+    }
+
+    public void deleteInStorage(String path, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        st.getReference(path).delete()
+                .addOnSuccessListener(success::runAll)
                 .addOnFailureListener(failure::runAll);
     }
 
@@ -178,13 +241,22 @@ public class FirebaseManager
                     @Override
                     public void run(User user)
                     {
-                        signInSharedPreferences(c, user, new FirebaseRunnable()
+                        signInSharedPreferences(user, new FirebaseRunnable()
                         {
                             @Override
                             public void run(User user)
                             {
                                 success.runAll(user);
                                 complete.runAll(user);
+                            }
+                        },  new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run(Exception e)
+                            {
+                                FirebaseRunnable.super.run(e);
+                                toastS(c, R.string.went_wrong_error);
+                                complete.runAll(e);
                             }
                         });
                     }
@@ -193,6 +265,7 @@ public class FirebaseManager
                     @Override
                     public void run(Exception e)
                     {
+                        FirebaseRunnable.super.run(e);
                         toastS(c, R.string.went_wrong_error);
                         complete.runAll(e);
                     }
@@ -210,7 +283,7 @@ public class FirebaseManager
         });
     }
 
-    private void signInSharedPreferences(Context c, User user, FirebaseRunnable success)
+    private void signInSharedPreferences(User user, FirebaseRunnable success, FirebaseRunnable failure)
     {
         boolean isStudent = user instanceof Student, isOwner = user.email.equals(Constants.OWNER_EMAIL);
 
@@ -222,15 +295,7 @@ public class FirebaseManager
 
             spm.put(true, hasTeacher, null, isOwner);
 
-            getStudentCanTest(user, success, new FirebaseRunnable()
-            {
-                @Override
-                public void run(Exception e)
-                {
-                    FirebaseRunnable.super.run(e);
-                    toastS(c, R.string.went_wrong_error);
-                }
-            });
+            getStudentCanTest(user, success, failure);
         }
         else
         {
@@ -348,9 +413,15 @@ public class FirebaseManager
         return auth.getUid();
     }
 
-     public boolean isSigned()
+    public boolean isSigned()
     {
         return getCurrentUid() != null;
+    }
+
+    private String getPath(String id)
+    {
+        Date now = Calendar.getInstance().getTime();
+        return "image/" + id + "/" + Constants.FILE_FORMAT.format(now) + ".png";
     }
 
     private void toastS(Context c, int message)

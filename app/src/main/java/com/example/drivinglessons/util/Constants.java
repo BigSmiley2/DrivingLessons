@@ -9,5 +9,7 @@ public class Constants
     public static final double TEST_TIME = 18.66;
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.ROOT);
+
+    public static final SimpleDateFormat FILE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.ROOT);
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ROOT);
 }

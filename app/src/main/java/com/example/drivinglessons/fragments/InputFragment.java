@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Balance;
 import com.example.drivinglessons.firebase.entities.Student;
+import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
@@ -238,14 +239,36 @@ public class InputFragment extends Fragment
 
                 Balance balance = isRegister ? new Balance(0.0, now) : new Balance();
 
+                byte[] bytes = bitmapToBytes(image);
+
                 if (isStudent)
                 {
                     Student student = new Student(user, studentFragment.isTheory());
-                    fm.saveStudent(getContext(), student, balance, bitmapToBytes(image), new FirebaseRunnable() {
+                    fm.saveStudent(getContext(), student, balance, bytes, new FirebaseRunnable()
+                    {
                         @Override
                         public void run()
                         {
-
+                            getActivity().finish();
+                        }
+                    }, new FirebaseRunnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            buttonInput.setOnClickListener(listener);
+                        }
+                    });
+                }
+                else
+                {
+                    Teacher teacher = new Teacher(user, data.manual, data.tester, data.cost, isRegister ? now : null);
+                    fm.saveTeacher(getContext(), teacher, balance, bytes, new FirebaseRunnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            getActivity().finish();
                         }
                     }, new FirebaseRunnable()
                     {
