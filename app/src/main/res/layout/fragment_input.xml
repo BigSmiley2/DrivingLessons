@@ -63,7 +63,7 @@
                 android:id="@+id/editTextFragmentInputFullName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Full name"
+                android:hint="@string/full_name"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
