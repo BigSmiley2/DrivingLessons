@@ -10,6 +10,7 @@
     <string name="reset_email_failure">couldn\'t send password reset email</string>
     <string name="reset_email_success">password reset email sent successfully</string>
     <string name="enter_email_first">please enter email first</string>
+    <string name="enter_image_first">please enter image first</string>
     <string name="signup_message">Don\'t have an account yet?</string>
     <string name="signup_now">Signup now</string>
     <string name="forgot_password">Forgot password?</string>

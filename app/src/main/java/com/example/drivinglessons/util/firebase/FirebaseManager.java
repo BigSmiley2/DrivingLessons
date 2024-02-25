@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +44,11 @@ public class FirebaseManager
         return fm == null ? fm = new FirebaseManager(context) : fm;
     }
 
+    public StorageReference getStorageReference(String path)
+    {
+        return st.getReference(path);
+    }
+
     public void saveStudent(Context c, Student student, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
     {
         FirebaseRunnable failure = new FirebaseRunnable()
@@ -50,7 +56,7 @@ public class FirebaseManager
             @Override
             public void run(Exception e)
             {
-                FirebaseRunnable.super.run(e);
+                super.run(e);
                 toastS(c, R.string.went_wrong_error);
                 complete.runAll(e);
             }
@@ -60,7 +66,8 @@ public class FirebaseManager
             @Override
             public void run()
             {
-                student.imagePath = getPath(auth.getUid());
+                student.id = auth.getUid();
+                student.imagePath = getPath(student.id);
                 saveInStorage(student.imagePath, image, new FirebaseRunnable()
                 {
                     @Override
@@ -104,7 +111,7 @@ public class FirebaseManager
             @Override
             public void run(Exception e)
             {
-                FirebaseRunnable.super.run(e);
+                super.run(e);
                 toastS(c, R.string.went_wrong_error);
                 complete.runAll(e);
             }
@@ -114,7 +121,8 @@ public class FirebaseManager
             @Override
             public void run()
             {
-                teacher.imagePath = getPath(auth.getUid());
+                teacher.id = auth.getUid();
+                teacher.imagePath = getPath(teacher.id);
                 saveInStorage(teacher.imagePath, image, new FirebaseRunnable()
                 {
                     @Override
@@ -208,7 +216,7 @@ public class FirebaseManager
             @Override
             public void run(Exception e)
             {
-                FirebaseRunnable.super.run(e);
+                super.run(e);
                 toastS(c, R.string.reset_email_failure);
                 complete.runAll();
             }
@@ -227,6 +235,12 @@ public class FirebaseManager
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> success.runAll())
                 .addOnFailureListener(failure::runAll);
+    }
+
+    private void signOutAuth(FirebaseRunnable success)
+    {
+        auth.signOut();
+        success.runAll();
     }
 
     public void signIn(Context c, String email, String password, FirebaseRunnable success, FirebaseRunnable complete)
@@ -254,7 +268,7 @@ public class FirebaseManager
                             @Override
                             public void run(Exception e)
                             {
-                                FirebaseRunnable.super.run(e);
+                                super.run(e);
                                 toastS(c, R.string.went_wrong_error);
                                 complete.runAll(e);
                             }
@@ -265,7 +279,7 @@ public class FirebaseManager
                     @Override
                     public void run(Exception e)
                     {
-                        FirebaseRunnable.super.run(e);
+                        super.run(e);
                         toastS(c, R.string.went_wrong_error);
                         complete.runAll(e);
                     }
@@ -276,11 +290,28 @@ public class FirebaseManager
             @Override
             public void run(Exception e)
             {
-                FirebaseRunnable.super.run(e);
+                super.run(e);
                 toastS(c, R.string.email_or_password_incorrect);
                 complete.runAll(e);
             }
         });
+    }
+
+    public void signOut(FirebaseRunnable success)
+    {
+        signOutAuth(new FirebaseRunnable()
+        {
+            @Override
+            public void run()
+            {
+                signOutSharedPreferences(success);
+            }
+        });
+    }
+
+    public void signOut()
+    {
+        signOut(new FirebaseRunnable() {});
     }
 
     private void signInSharedPreferences(User user, FirebaseRunnable success, FirebaseRunnable failure)
@@ -302,6 +333,12 @@ public class FirebaseManager
             spm.put(false, null, null, isOwner);
             success.runAll(user);
         }
+    }
+
+    private void signOutSharedPreferences(FirebaseRunnable success)
+    {
+        spm.clear();
+        success.runAll();
     }
 
     public void getStudentCanTest(User user, FirebaseRunnable success, FirebaseRunnable failure)
@@ -384,7 +421,9 @@ public class FirebaseManager
         db.getReference("student").orderByKey().equalTo(id).limitToFirst(1).get()
                 .addOnSuccessListener(dataSnapshot ->
                 {
-                    Student student = dataSnapshot.getValue(Student.class);
+                    Student student = null;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren())
+                        student = snapshot.getValue(Student.class);
 
                     if (student != null) success.runAll(student);
                 })
@@ -396,7 +435,9 @@ public class FirebaseManager
         db.getReference("teacher").orderByKey().equalTo(id).limitToFirst(1).get()
                 .addOnSuccessListener(dataSnapshot ->
                 {
-                    Teacher teacher = dataSnapshot.getValue(Teacher.class);
+                    Teacher teacher = null;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren())
+                        teacher = snapshot.getValue(Teacher.class);
 
                     if (teacher != null) success.runAll(teacher);
                 })

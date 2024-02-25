@@ -108,8 +108,16 @@ public class InputTeacherFragment extends Fragment implements Parcelable
                 costInputLayout.setError(null);
                 cost = null;
             }
+            else if (str.length() > 10)
+            {
+                costInputLayout.setError("cost must contain at most 10 characters");
+                cost = null;
+            }
             else if (Pattern.matches("[0-9]*(\\.[0-9]+)*", str))
+            {
                 cost = Double.parseDouble(str);
+                costInputLayout.setError(null);
+            }
             else
             {
                 costInputLayout.setError("the lesson cost must be a real number");
@@ -121,6 +129,11 @@ public class InputTeacherFragment extends Fragment implements Parcelable
     public Data getData()
     {
         return new Data(manual, tester, cost);
+    }
+
+    public void addCostError(String error)
+    {
+        if (costInputLayout.getError() == null) costInputLayout.setError(error);
     }
 
     protected InputTeacherFragment(Parcel in)

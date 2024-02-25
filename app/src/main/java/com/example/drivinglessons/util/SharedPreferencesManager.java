@@ -22,10 +22,10 @@ public class SharedPreferencesManager
 
     public void put(Boolean isStudent, Boolean hasTeacher, Boolean canTest, Boolean isOwner)
     {
-        putIsStudent(isStudent);
-        putHasTeacher(hasTeacher);
-        putCanTest(canTest);
-        putIsOwner(isOwner);
+        if (isStudent != null) putIsStudent(isStudent);
+        if (hasTeacher != null) putHasTeacher(hasTeacher);
+        if (canTest != null) putCanTest(canTest);
+        if (isOwner != null) putIsOwner(isOwner);
     }
 
     public void putIsStudent(Boolean isStudent)

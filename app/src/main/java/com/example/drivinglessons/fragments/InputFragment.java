@@ -1,9 +1,16 @@
 package com.example.drivinglessons.fragments;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +19,24 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Balance;
 import com.example.drivinglessons.firebase.entities.Student;
@@ -27,10 +45,12 @@ import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
+import com.example.drivinglessons.util.validation.Permission;
 import com.example.drivinglessons.util.validation.TextListener;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -40,18 +60,24 @@ public class InputFragment extends Fragment
     private static final String FRAGMENT_TITLE_REGISTER = "register", FRAGMENT_TITLE_EDIT = "edit", IS_REGISTER = "is register", USER = "user", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment";
 
     private FirebaseManager fm;
+    ActivityResultLauncher<Intent> startFile;
     private InputStudentFragment studentFragment;
     private InputTeacherFragment teacherFragment;
     private boolean isRegister;
     private boolean isStudent;
     private Bitmap image;
+    private Uri imageUri;
     private User user;
 
     private TextView title;
+    private ImageView cameraInput, imageView, galleryInput;
     private TextInputLayout fullNameInputLayout, emailInputLayout, passwordInputLayout, confirmPasswordInputLayout, birthdateInputLayout;
     private EditText fullNameInput, emailInput, passwordInput, confirmPasswordInput, birthdateInput;
     private RadioGroup roleInput;
     private Button buttonInput;
+
+    public InputFragment() {
+    }
 
     public static InputFragment newInstance(InputStudentFragment studentFragment, InputTeacherFragment teacherFragment)
     {
@@ -100,9 +126,12 @@ public class InputFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        fm = FirebaseManager.getInstance(getContext());
+        fm = FirebaseManager.getInstance(requireContext());
 
         title = view.findViewById(R.id.textViewFragmentInputTitle);
+        imageView = view.findViewById(R.id.imageViewFragmentInput);
+        galleryInput = view.findViewById(R.id.imageViewFragmentInputGallery);
+        cameraInput = view.findViewById(R.id.imageViewFragmentInputCamera);
         fullNameInputLayout = view.findViewById(R.id.textInputLayoutFragmentInputFullName);
         fullNameInput = view.findViewById(R.id.editTextFragmentInputFullName);
         emailInputLayout = view.findViewById(R.id.textInputLayoutFragmentInputEmail);
@@ -134,6 +163,23 @@ public class InputFragment extends Fragment
             roleInput.setFocusable(false);
             fullNameInput.setOnEditorActionListener((v, actionId, event) ->
                     actionId == EditorInfo.IME_ACTION_DONE && user.birthdate == null && createBirthdateDialog());
+
+            Glide.with(requireContext()).load(fm.getStorageReference(user.imagePath)).thumbnail(Glide.with(requireContext()).load(R.drawable.loading).circleCrop()).circleCrop()
+                    .listener(new RequestListener<Drawable>()
+                    {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource)
+                        {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource)
+                        {
+                            if (resource instanceof BitmapDrawable) image = ((BitmapDrawable) resource).getBitmap();
+                            return false;
+                        }
+                    }).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(imageView);
         }
         else
         {
@@ -144,6 +190,21 @@ public class InputFragment extends Fragment
         }
 
         replaceFragment();
+
+        startFile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r ->
+        {
+            if (r.getResultCode() != Activity.RESULT_OK)
+            {
+                this.imageUri = null;
+                return;
+            }
+            if (this.imageUri == null) this.imageUri = r.getData().getData();
+
+            try { image = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), this.imageUri);}
+            catch (IOException e) { Toast.makeText(requireActivity(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show();}
+
+            Glide.with(requireContext()).load(image).thumbnail(Glide.with(requireContext()).load(R.drawable.loading).circleCrop()).circleCrop().into(this.imageView);
+        });
 
         fullNameInput.addTextChangedListener((TextListener) s ->
         {
@@ -212,11 +273,37 @@ public class InputFragment extends Fragment
             replaceFragment();
         });
 
+        galleryInput.setOnClickListener(v ->
+        {
+            if (!Permission.isAllowed(requireActivity())) return;
+
+            Intent intent = new Intent();
+            imageUri = null;
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startFile.launch(intent);
+        });
+
+        cameraInput.setOnClickListener(v ->
+        {
+            if (!Permission.isAllowed(requireActivity())) return;
+
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "new picture");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "from camera");
+            imageUri = requireActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            startFile.launch(intent);
+        });
+
         buttonInput.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
+                InputTeacherFragment.Data data = teacherFragment.getData();
+
                 if (user.name.isEmpty())
                     fullNameInputLayout.setError("full name mustn't be empty");
                 if (user.email.isEmpty())
@@ -225,12 +312,13 @@ public class InputFragment extends Fragment
                     passwordInputLayout.setError("password mustn't be empty");
                 if (confirmPasswordInput.getText().toString().isEmpty())
                     confirmPasswordInputLayout.setError("confirm password mustn't be empty");
+                if (!isStudent && data.cost == null)
+                    teacherFragment.addCostError("cost mustn't be empty");
                 if (user.birthdate == null)
                     birthdateInputLayout.setError("birthdate mustn't be empty");
+                if (image == null) Toast.makeText(requireContext(), R.string.enter_image_first, Toast.LENGTH_SHORT).show();
 
-                InputTeacherFragment.Data data = teacherFragment.getData();
-
-                if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null || (!isStudent && data.cost == null)) return;
+                if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null || (!isStudent && data.cost == null) || image == null) return;
 
                 buttonInput.setOnClickListener(null);
                 View.OnClickListener listener = this;
@@ -244,12 +332,12 @@ public class InputFragment extends Fragment
                 if (isStudent)
                 {
                     Student student = new Student(user, studentFragment.isTheory());
-                    fm.saveStudent(getContext(), student, balance, bytes, new FirebaseRunnable()
+                    fm.saveStudent(requireContext(), student, balance, bytes, new FirebaseRunnable()
                     {
                         @Override
                         public void run()
                         {
-                            getActivity().finish();
+                            requireActivity().finish();
                         }
                     }, new FirebaseRunnable()
                     {
@@ -263,12 +351,12 @@ public class InputFragment extends Fragment
                 else
                 {
                     Teacher teacher = new Teacher(user, data.manual, data.tester, data.cost, isRegister ? now : null);
-                    fm.saveTeacher(getContext(), teacher, balance, bytes, new FirebaseRunnable()
+                    fm.saveTeacher(requireContext(), teacher, balance, bytes, new FirebaseRunnable()
                     {
                         @Override
                         public void run()
                         {
-                            getActivity().finish();
+                            requireActivity().finish();
                         }
                     }, new FirebaseRunnable()
                     {
@@ -329,6 +417,7 @@ public class InputFragment extends Fragment
 
     private byte[] bitmapToBytes(Bitmap image)
     {
+        //noinspection SpellCheckingInspection
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         return baos.toByteArray();

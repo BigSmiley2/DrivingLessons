@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.InputActivity;
+import com.example.drivinglessons.MainActivity;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
@@ -27,9 +28,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class LoginFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "login", EMAIL = "email", PASSWORD = "password", SUCCESS = "success";
-
-    private FirebaseRunnable success;
+    private static final String FRAGMENT_TITLE = "login", EMAIL = "email", PASSWORD = "password";
     private String email, password;
 
     private TextInputLayout emailInputLayout, passwordInputLayout;
@@ -40,11 +39,11 @@ public class LoginFragment extends Fragment implements Parcelable
     private ActivityResultLauncher<Intent> startActivity;
 
     public LoginFragment() {}
-    public static LoginFragment newInstance(FirebaseRunnable success)
+    public static LoginFragment newInstance()
     {
-        return newInstance("", "", success);
+        return newInstance("", "");
     }
-    public static LoginFragment newInstance(String email, String password, FirebaseRunnable success)
+    public static LoginFragment newInstance(String email, String password)
     {
         LoginFragment fragment = new LoginFragment();
 
@@ -52,7 +51,6 @@ public class LoginFragment extends Fragment implements Parcelable
         Bundle args = new Bundle();
         args.putString(EMAIL, email);
         args.putString(PASSWORD, password);
-        args.putParcelable(SUCCESS, success);
         fragment.setArguments(args);
 
         return fragment;
@@ -67,7 +65,6 @@ public class LoginFragment extends Fragment implements Parcelable
         {
             email = args.getString(EMAIL);
             password = args.getString(PASSWORD);
-            success = args.getParcelable(SUCCESS);
         }
     }
 
@@ -84,7 +81,7 @@ public class LoginFragment extends Fragment implements Parcelable
 
         startActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r ->
         {
-            if (r.getResultCode() == Activity.RESULT_OK) success.runAll();
+            if (r.getResultCode() == Activity.RESULT_OK) ((MainActivity) requireActivity()).createAndLinkFragments();
         });
 
         fm = FirebaseManager.getInstance(getContext());
@@ -140,11 +137,16 @@ public class LoginFragment extends Fragment implements Parcelable
                 login.setOnClickListener(null);
                 View.OnClickListener listener = this;
 
-                fm.signIn(getContext(), email, password, success, new FirebaseRunnable()
+                fm.signIn(getContext(), email, password, new FirebaseRunnable()
                 {
                     @Override
                     public void run()
                     {
+                        ((MainActivity) requireActivity()).createAndLinkFragments();
+                    }
+                }, new FirebaseRunnable() {
+                    @Override
+                    public void run() {
                         login.setOnClickListener(listener);
                     }
                 });

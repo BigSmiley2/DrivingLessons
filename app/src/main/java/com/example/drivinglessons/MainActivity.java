@@ -7,11 +7,9 @@ import androidx.fragment.app.FragmentContainerView;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.fragments.LoginFragment;
 import com.example.drivinglessons.fragments.MainOfflineFragment;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
-import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.fragments.PagerFragment;
 
 import java.util.ArrayList;
@@ -31,6 +29,8 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         fm = FirebaseManager.getInstance(this);
 
+        fm.signOut();
+
         container = findViewById(R.id.fragmentContainerViewActivityMain);
 
         setSupportActionBar(findViewById(R.id.toolbarActivityMain));
@@ -38,7 +38,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         if (savedInstanceState == null) createAndLinkFragments();
     }
 
-    private void createAndLinkFragments()
+    public void createAndLinkFragments()
     {
         createFragments();
         replaceFragments();
@@ -62,14 +62,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     @SuppressWarnings("unchecked")
     private void createOffline(ArrayList<T> fragments)
     {
-        fragments.add((T) MainOfflineFragment.newInstance(LoginFragment.newInstance(new FirebaseRunnable()
-        {
-            @Override
-            public void run(User user)
-            {
-                createAndLinkFragments();
-            }
-        })));
+        fragments.add((T) MainOfflineFragment.newInstance(LoginFragment.newInstance()));
     }
 
     private void createOnline(ArrayList<T> fragments)
