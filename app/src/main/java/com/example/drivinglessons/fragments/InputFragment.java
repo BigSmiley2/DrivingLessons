@@ -11,6 +11,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Patterns;
@@ -57,7 +59,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-public class InputFragment extends Fragment
+public class InputFragment extends Fragment implements Parcelable
 {
     private static final String FRAGMENT_TITLE_REGISTER = "register", FRAGMENT_TITLE_EDIT = "edit", IS_REGISTER = "is register", USER = "user", IMAGE = "image", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment";
 
@@ -78,8 +80,7 @@ public class InputFragment extends Fragment
     private RadioGroup roleInput;
     private Button buttonInput;
 
-    public InputFragment() {
-    }
+    public InputFragment() {}
 
     @NonNull
     public static InputFragment newInstance(InputStudentFragment studentFragment, InputTeacherFragment teacherFragment)
@@ -491,6 +492,47 @@ public class InputFragment extends Fragment
     {
         getChildFragmentManager().beginTransaction().replace(R.id.FrameLayoutFragmentInput, fragment).commit();
     }
+
+    protected InputFragment(@NonNull Parcel in)
+    {
+        studentFragment = in.readParcelable(InputStudentFragment.class.getClassLoader());
+        teacherFragment = in.readParcelable(InputTeacherFragment.class.getClassLoader());
+        isRegister = in.readByte() == 1;
+        isStudent = in.readByte() == 1;
+        image = in.readParcelable(Bitmap.class.getClassLoader());
+        user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags)
+    {
+        dest.writeParcelable(studentFragment, flags);
+        dest.writeParcelable(teacherFragment, flags);
+        dest.writeByte((byte) (isRegister ? 1 : 0));
+        dest.writeByte((byte) (isStudent ? 1 : 0));
+        dest.writeParcelable(image, flags);
+        dest.writeParcelable(user, flags);
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    public static final Creator<InputFragment> CREATOR = new Creator<InputFragment>()
+    {
+        @Override
+        public InputFragment createFromParcel(Parcel in)
+        {
+            return new InputFragment(in);
+        }
+
+        @Override
+        public InputFragment[] newArray(int size) {
+            return new InputFragment[size];
+        }
+    };
 
     @NonNull
     @Override
