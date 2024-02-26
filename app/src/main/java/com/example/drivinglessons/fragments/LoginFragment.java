@@ -39,10 +39,12 @@ public class LoginFragment extends Fragment implements Parcelable
     private ActivityResultLauncher<Intent> startActivity;
 
     public LoginFragment() {}
+    @NonNull
     public static LoginFragment newInstance()
     {
         return newInstance("", "");
     }
+    @NonNull
     public static LoginFragment newInstance(String email, String password)
     {
         LoginFragment fragment = new LoginFragment();
@@ -69,7 +71,7 @@ public class LoginFragment extends Fragment implements Parcelable
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
@@ -182,14 +184,14 @@ public class LoginFragment extends Fragment implements Parcelable
         });
 
     }
-    protected LoginFragment(Parcel in)
+    protected LoginFragment(@NonNull Parcel in)
     {
         email = in.readString();
         password = in.readString();
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
+    public void writeToParcel(@NonNull Parcel dest, int flags)
     {
         dest.writeString(email);
         dest.writeString(password);

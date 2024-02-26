@@ -69,13 +69,13 @@ public class MainOfflineFragment extends Fragment implements Parcelable
         getChildFragmentManager().beginTransaction().replace(R.id.FrameLayoutFragmentMainOffline, fragment).commit();
     }
 
-    protected MainOfflineFragment(Parcel in)
+    protected MainOfflineFragment(@NonNull Parcel in)
     {
         loginFragment = in.readParcelable(LoginFragment.class.getClassLoader());
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
+    public void writeToParcel(@NonNull Parcel dest, int flags)
     {
         dest.writeParcelable(loginFragment, flags);
     }

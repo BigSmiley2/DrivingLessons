@@ -17,10 +17,12 @@ public class LessonViewFragment extends Fragment
 
     private String search;
 
+    @NonNull
     public static LessonViewFragment newInstance()
     {
         return newInstance("");
     }
+    @NonNull
     public static LessonViewFragment newInstance(String search)
     {
         LessonViewFragment fragment = new LessonViewFragment();
@@ -45,7 +47,7 @@ public class LessonViewFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }

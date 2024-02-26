@@ -24,10 +24,12 @@ public class InputStudentFragment extends Fragment implements Parcelable
 
     public InputStudentFragment() {}
 
+    @NonNull
     public static InputStudentFragment newInstance()
     {
         return newInstance(true);
     }
+    @NonNull
     public static InputStudentFragment newInstance(boolean theory)
     {
         InputStudentFragment fragment = new InputStudentFragment();
@@ -52,7 +54,7 @@ public class InputStudentFragment extends Fragment implements Parcelable
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_input_student, container, false);
     }
@@ -74,13 +76,13 @@ public class InputStudentFragment extends Fragment implements Parcelable
         return theory;
     }
 
-    protected InputStudentFragment(Parcel in)
+    protected InputStudentFragment(@NonNull Parcel in)
     {
         theory = in.readByte() == 1;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
+    public void writeToParcel(@NonNull Parcel dest, int flags)
     {
         dest.writeByte((byte) (theory ? 1 : 0));
     }

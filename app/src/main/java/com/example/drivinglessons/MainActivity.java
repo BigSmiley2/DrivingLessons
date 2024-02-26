@@ -29,7 +29,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         fm = FirebaseManager.getInstance(this);
 
-        fm.signOut();
+        //fm.signOut();
 
         container = findViewById(R.id.fragmentContainerViewActivityMain);
 

@@ -6,11 +6,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +37,6 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Balance;
@@ -49,6 +50,7 @@ import com.example.drivinglessons.util.validation.Permission;
 import com.example.drivinglessons.util.validation.TextListener;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
@@ -57,7 +59,7 @@ import java.util.regex.Pattern;
 
 public class InputFragment extends Fragment
 {
-    private static final String FRAGMENT_TITLE_REGISTER = "register", FRAGMENT_TITLE_EDIT = "edit", IS_REGISTER = "is register", USER = "user", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment";
+    private static final String FRAGMENT_TITLE_REGISTER = "register", FRAGMENT_TITLE_EDIT = "edit", IS_REGISTER = "is register", USER = "user", IMAGE = "image", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment";
 
     private FirebaseManager fm;
     ActivityResultLauncher<Intent> startFile;
@@ -79,11 +81,13 @@ public class InputFragment extends Fragment
     public InputFragment() {
     }
 
+    @NonNull
     public static InputFragment newInstance(InputStudentFragment studentFragment, InputTeacherFragment teacherFragment)
     {
         return newInstance(null, true, studentFragment, teacherFragment);
     }
 
+    @NonNull
     public static InputFragment newInstance(User user, boolean isStudent, InputStudentFragment studentFragment, InputTeacherFragment teacherFragment)
     {
         InputFragment fragment = new InputFragment();
@@ -113,10 +117,23 @@ public class InputFragment extends Fragment
             studentFragment = args.getParcelable(STUDENT_FRAGMENT);
             teacherFragment = args.getParcelable(TEACHER_FRAGMENT);
         }
+        if (savedInstanceState != null)
+        {
+            image = savedInstanceState.getParcelable(IMAGE);
+            savedInstanceState.clear();
+        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public void onSaveInstanceState(@NonNull Bundle outState)
+    {
+        outState.clear();
+        outState.putParcelable(IMAGE, image);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_input, container, false);
     }
@@ -162,9 +179,21 @@ public class InputFragment extends Fragment
             confirmPasswordInputLayout.setVisibility(View.GONE);
             roleInput.setFocusable(false);
             fullNameInput.setOnEditorActionListener((v, actionId, event) ->
-                    actionId == EditorInfo.IME_ACTION_DONE && user.birthdate == null && createBirthdateDialog());
+                    (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) && user.birthdate == null && createBirthdateDialog());
+        }
+        else
+        {
+            title.setText(R.string.register);
+            buttonInput.setText(R.string.register);
+            confirmPasswordInput.setOnEditorActionListener((v, actionId, event) ->
+                    (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) && user.birthdate == null && createBirthdateDialog());
+        }
 
-            Glide.with(requireContext()).load(fm.getStorageReference(user.imagePath)).thumbnail(Glide.with(requireContext()).load(R.drawable.loading).circleCrop()).circleCrop()
+        replaceFragment();
+
+        if (image == null && !isRegister)
+            Glide.with(requireContext()).load(fm.getStorageReference(user.imagePath))
+                    .thumbnail(Glide.with(requireContext()).load(R.drawable.loading).circleCrop()).circleCrop()
                     .listener(new RequestListener<Drawable>()
                     {
                         @Override
@@ -180,30 +209,28 @@ public class InputFragment extends Fragment
                             return false;
                         }
                     }).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(imageView);
-        }
-        else
-        {
-            title.setText(R.string.register);
-            buttonInput.setText(R.string.register);
-            confirmPasswordInput.setOnEditorActionListener((v, actionId, event) ->
-                    actionId == EditorInfo.IME_ACTION_DONE && user.birthdate == null && createBirthdateDialog());
-        }
-
-        replaceFragment();
+        else if (image != null) Glide.with(requireContext()).load(image).circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(imageView);
 
         startFile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r ->
         {
             if (r.getResultCode() != Activity.RESULT_OK)
             {
-                this.imageUri = null;
+               imageUri = null;
                 return;
             }
-            if (this.imageUri == null) this.imageUri = r.getData().getData();
+            if (imageUri == null && r.getData() != null) imageUri = r.getData().getData();
 
-            try { image = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), this.imageUri);}
-            catch (IOException e) { Toast.makeText(requireActivity(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show();}
+            try
+            {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize=8;
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
+                image = BitmapFactory.decodeStream(new ByteArrayInputStream(bitmapToBytes(bitmap, 50)), null, options);
+            }
+            catch (IOException e) { Toast.makeText(requireActivity(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show(); }
 
-            Glide.with(requireContext()).load(image).thumbnail(Glide.with(requireContext()).load(R.drawable.loading).circleCrop()).circleCrop().into(this.imageView);
+            Glide.with(requireContext()).load(image).circleCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(imageView);
         });
 
         fullNameInput.addTextChangedListener((TextListener) s ->
@@ -400,7 +427,8 @@ public class InputFragment extends Fragment
         return true;
     }
 
-    private String fixName(String name)
+    @NonNull
+    private String fixName(@NonNull String name)
     {
         if (name.isEmpty()) return "";
 
@@ -415,12 +443,31 @@ public class InputFragment extends Fragment
         return stringBuilder.toString();
     }
 
-    private byte[] bitmapToBytes(Bitmap image)
+    @NonNull
+    private static byte[] bitmapToBytes(Bitmap image)
+    {
+        return bitmapToBytes(image, 100);
+    }
+
+    @NonNull
+    private static byte[] bitmapToBytes(@NonNull Bitmap image, int quality)
     {
         //noinspection SpellCheckingInspection
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        image.compress(Bitmap.CompressFormat.JPEG, quality, baos);
         return baos.toByteArray();
+    }
+
+    private static String encodeBitmap(Bitmap bitmap)
+    {
+        byte[] bytes = bitmapToBytes(bitmap);
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+    private static Bitmap decodeBitmap(String image)
+    {
+        byte[] decodedString = Base64.decode(image, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
     private void clearFocus()

@@ -46,11 +46,13 @@ public class InputTeacherFragment extends Fragment implements Parcelable
 
     public InputTeacherFragment() {}
 
+    @NonNull
     public static InputTeacherFragment newInstance()
     {
         return newInstance(false, false, null);
     }
 
+    @NonNull
     public static InputTeacherFragment newInstance(boolean manual, boolean tester, Double cost)
     {
         InputTeacherFragment fragment = new InputTeacherFragment();
@@ -79,7 +81,7 @@ public class InputTeacherFragment extends Fragment implements Parcelable
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_input_teacher, container, false);
     }
@@ -136,16 +138,15 @@ public class InputTeacherFragment extends Fragment implements Parcelable
         if (costInputLayout.getError() == null) costInputLayout.setError(error);
     }
 
-    protected InputTeacherFragment(Parcel in)
+    protected InputTeacherFragment(@NonNull Parcel in)
     {
         manual = in.readByte() == 1;
         tester = in.readByte() == 1;
         cost = in.readByte() == 0 ? null : in.readDouble();
-
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
+    public void writeToParcel(@NonNull Parcel dest, int flags)
     {
         dest.writeByte((byte) (manual ? 1 : 0));
         dest.writeByte((byte) (tester ? 1 : 0));
