@@ -128,9 +128,8 @@ public class InputFragment extends Fragment implements Parcelable
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState)
     {
-        outState.clear();
-        outState.putParcelable(IMAGE, image);
         super.onSaveInstanceState(outState);
+        outState.putParcelable(IMAGE, image);
     }
 
     @Override
@@ -229,7 +228,7 @@ public class InputFragment extends Fragment implements Parcelable
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
                 image = BitmapFactory.decodeStream(new ByteArrayInputStream(bitmapToBytes(bitmap, 50)), null, options);
             }
-            catch (IOException e) { Toast.makeText(requireActivity(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show(); }
+            catch (Exception e) { Toast.makeText(requireActivity(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show(); }
 
             Glide.with(requireContext()).load(image).circleCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(imageView);
         });
