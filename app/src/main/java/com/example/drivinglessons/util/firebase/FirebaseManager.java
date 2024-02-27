@@ -4,6 +4,8 @@ import android.content.Context;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
+
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Balance;
 import com.example.drivinglessons.firebase.entities.Lesson;
@@ -14,7 +16,9 @@ import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -48,6 +52,57 @@ public class FirebaseManager
     {
         return st.getReference(path);
     }
+
+    public void getStudentChanged(String id, FirebaseRunnable success)
+    {
+        getStudentChanged(id, success, new FirebaseRunnable() {});
+    }
+
+    public void getStudentChanged(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        db.getReference("student").child(id).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                Student student = snapshot.getValue(Student.class);
+
+                success.runAll(student);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                failure.runAll();
+            }
+        });
+    }
+
+    public void getTeacherChanged(String id, FirebaseRunnable success)
+    {
+        getTeacherChanged(id, success, new FirebaseRunnable() {});
+    }
+
+    public void getTeacherChanged(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        db.getReference("teacher").child(id).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                Teacher teacher = snapshot.getValue(Teacher.class);
+
+                success.runAll(teacher);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                failure.runAll();
+            }
+        });
+    }
+
 
     public void saveStudent(Context c, Student student, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
     {
@@ -316,7 +371,7 @@ public class FirebaseManager
 
     private void signInSharedPreferences(User user, FirebaseRunnable success, FirebaseRunnable failure)
     {
-        boolean isStudent = user instanceof Student, isOwner = user.email.equals(Constants.OWNER_EMAIL);
+        boolean isStudent = user instanceof Student, isOwner = Constants.isOwner(user.email);
 
         if (isStudent)
         {

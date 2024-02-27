@@ -54,7 +54,6 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -64,7 +63,8 @@ public class InputFragment extends Fragment implements Parcelable
     private static final String FRAGMENT_TITLE_REGISTER = "register", FRAGMENT_TITLE_EDIT = "edit", IS_REGISTER = "is register", USER = "user", IMAGE = "image", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment";
 
     private FirebaseManager fm;
-    ActivityResultLauncher<Intent> startFile;
+    private ActivityResultLauncher<Intent> startFile;
+
     private InputStudentFragment studentFragment;
     private InputTeacherFragment teacherFragment;
     private boolean isRegister;

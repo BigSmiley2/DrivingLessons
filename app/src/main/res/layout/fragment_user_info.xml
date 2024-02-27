@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.UserInfoFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ConstraintLayoutFragmentUserInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/imageViewFragmentUserInfo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.547"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentUserInfoTitle"
+            app:srcCompat="@drawable/user_icon" />
+
+        <TextView
+            android:id="@+id/textViewFragmentUserInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="48dp"
+            android:text="Info"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewFragmentUserInfo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewFragmentUserInfoFullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/full_name"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewFragmentUserInfo"
+            app:layout_constraintStart_toStartOf="@+id/imageViewFragmentUserInfo"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewFragmentUserInfo" />
+
+        <TextView
+            android:id="@+id/textViewFragmentUserInfoOwner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="owner"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/textViewFragmentUserInfoFullName"
+            app:layout_constraintStart_toStartOf="@+id/textViewFragmentUserInfoFullName"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentUserInfoFullName" />
+
+        <TextView
+            android:id="@+id/textViewFragmentUserInfoEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/email"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/textViewFragmentUserInfoTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentUserInfoOwner" />
+
+        <TextView
+            android:id="@+id/textViewFragmentUserInfoEmailData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentUserInfoEmail"
+            app:layout_constraintStart_toEndOf="@+id/textViewFragmentUserInfoEmail"
+            app:layout_constraintTop_toTopOf="@+id/textViewFragmentUserInfoEmail" />
+
+        <TextView
+            android:id="@+id/textViewFragmentUserInfoBirthdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/birthdate"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/textViewFragmentUserInfoEmail"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentUserInfoEmail" />
+
+        <TextView
+            android:id="@+id/textViewFragmentUserInfoBirthdateData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentUserInfoBirthdate"
+            app:layout_constraintStart_toEndOf="@+id/textViewFragmentUserInfoBirthdate"
+            app:layout_constraintTop_toTopOf="@+id/textViewFragmentUserInfoBirthdate" />
+
+        <FrameLayout
+            android:id="@+id/FrameLayoutFragmentUserInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textViewFragmentUserInfoBirthdate"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentUserInfoBirthdate" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

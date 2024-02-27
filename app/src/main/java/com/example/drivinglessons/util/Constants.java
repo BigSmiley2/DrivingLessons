@@ -12,4 +12,9 @@ public class Constants
 
     public static final SimpleDateFormat FILE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.ROOT);
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ROOT);
+
+    public static boolean isOwner(String email)
+    {
+        return OWNER_EMAIL.equals(email);
+    }
 }

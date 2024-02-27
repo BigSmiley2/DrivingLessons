@@ -187,7 +187,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/radioGroupFragmentInputRole"
             app:layout_constraintStart_toStartOf="@+id/radioGroupFragmentInputRole"
-            app:layout_constraintTop_toBottomOf="@+id/FrameLayoutFragmentInput" />
+            app:layout_constraintTop_toBottomOf="@+id/FrameLayoutFragmentUserInfo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

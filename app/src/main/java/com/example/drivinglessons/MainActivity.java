@@ -9,6 +9,10 @@ import android.os.Parcelable;
 
 import com.example.drivinglessons.fragments.LoginFragment;
 import com.example.drivinglessons.fragments.MainOfflineFragment;
+import com.example.drivinglessons.fragments.StudentInfoFragment;
+import com.example.drivinglessons.fragments.TeacherInfoFragment;
+import com.example.drivinglessons.fragments.UserInfoFragment;
+import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.fragments.PagerFragment;
 
@@ -18,6 +22,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 {
 
     private FirebaseManager fm;
+    private SharedPreferencesManager spm;
     private PagerFragment<T> pagerFragment;
     private FragmentContainerView container;
 
@@ -28,6 +33,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         setContentView(R.layout.activity_main);
 
         fm = FirebaseManager.getInstance(this);
+        spm = SharedPreferencesManager.getInstance(this);
 
         //fm.signOut();
 
@@ -65,8 +71,10 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         fragments.add((T) MainOfflineFragment.newInstance(LoginFragment.newInstance()));
     }
 
+    @SuppressWarnings("unchecked")
     private void createOnline(ArrayList<T> fragments)
     {
-        // add here
+        boolean isStudent = spm.getIsStudent();
+        fragments.add((T) UserInfoFragment.newInstance(fm.getCurrentUid(), isStudent, isStudent ? new StudentInfoFragment() : new TeacherInfoFragment()));
     }
 }
