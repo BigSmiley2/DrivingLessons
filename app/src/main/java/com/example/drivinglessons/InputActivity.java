@@ -32,7 +32,6 @@ public class InputActivity extends AppCompatActivity
 
     private void createAndLinkFragment()
     {
-        InputFragment fragment = InputFragment.newInstance(InputStudentFragment.newInstance(), InputTeacherFragment.newInstance());
-        replaceFragment(fragment);
+        replaceFragment(InputFragment.newInstance());
     }
 }

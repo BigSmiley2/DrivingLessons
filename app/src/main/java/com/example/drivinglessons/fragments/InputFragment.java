@@ -83,6 +83,12 @@ public class InputFragment extends Fragment implements Parcelable
     public InputFragment() {}
 
     @NonNull
+    public static InputFragment newInstance()
+    {
+        return newInstance(InputStudentFragment.newInstance(), InputTeacherFragment.newInstance());
+    }
+
+    @NonNull
     public static InputFragment newInstance(InputStudentFragment studentFragment, InputTeacherFragment teacherFragment)
     {
         return newInstance(null, true, studentFragment, teacherFragment);
