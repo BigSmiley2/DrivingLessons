@@ -86,7 +86,7 @@ public class LoginFragment extends Fragment implements Parcelable
             if (r.getResultCode() == Activity.RESULT_OK) ((MainActivity<?>) requireActivity()).createAndLinkFragments();
         });
 
-        fm = FirebaseManager.getInstance(getContext());
+        fm = FirebaseManager.getInstance(requireContext());
 
         emailInputLayout = view.findViewById(R.id.textInputLayoutFragmentLoginEmail);
         emailInput = view.findViewById(R.id.editTextFragmentLoginEmail);
@@ -139,7 +139,7 @@ public class LoginFragment extends Fragment implements Parcelable
                 login.setOnClickListener(null);
                 View.OnClickListener listener = this;
 
-                fm.signIn(getContext(), email, password, new FirebaseRunnable()
+                fm.signIn(email, password, new FirebaseRunnable()
                 {
                     @Override
                     public void run()
@@ -170,7 +170,7 @@ public class LoginFragment extends Fragment implements Parcelable
                     forgot.setOnClickListener(null);
                     View.OnClickListener listener = this;
 
-                    fm.sendPasswordReset(getContext(), email, new FirebaseRunnable()
+                    fm.sendPasswordReset(email, new FirebaseRunnable()
                     {
                         @Override
                         public void run()

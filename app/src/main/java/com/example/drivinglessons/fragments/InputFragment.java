@@ -366,7 +366,7 @@ public class InputFragment extends Fragment implements Parcelable
                 if (isStudent)
                 {
                     Student student = new Student(user, studentData.theory);
-                    fm.saveStudent(requireContext(), student, balance, bytes, new FirebaseRunnable()
+                    fm.saveStudent(student, balance, bytes, new FirebaseRunnable()
                     {
                         @Override
                         public void run()
@@ -385,7 +385,7 @@ public class InputFragment extends Fragment implements Parcelable
                 else
                 {
                     Teacher teacher = new Teacher(user, teacherData.manual, teacherData.tester, teacherData.cost, isRegister ? now : null);
-                    fm.saveTeacher(requireContext(), teacher, balance, bytes, new FirebaseRunnable()
+                    fm.saveTeacher(teacher, balance, bytes, new FirebaseRunnable()
                     {
                         @Override
                         public void run()

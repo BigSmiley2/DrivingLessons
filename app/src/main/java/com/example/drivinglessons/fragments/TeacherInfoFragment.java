@@ -14,11 +14,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Teacher;
-import com.example.drivinglessons.util.fragments.FragmentUpdate;
 
 import java.util.Locale;
 
-public class TeacherInfoFragment extends Fragment implements FragmentUpdate, Parcelable
+public class TeacherInfoFragment extends Fragment implements Parcelable
 {
     private static final String FRAGMENT_TITLE = "teacher info";
 
@@ -55,7 +54,6 @@ public class TeacherInfoFragment extends Fragment implements FragmentUpdate, Par
         seniority = view.findViewById(R.id.textViewFragmentTeacherInfoSeniority);
     }
 
-    @Override
     public void update(@NonNull Teacher teacher)
     {
         manual.setText(String.format(Locale.ROOT, "%s has %s car", teacher.name, teacher.hasManual ? "a manual" : "an automatic"));

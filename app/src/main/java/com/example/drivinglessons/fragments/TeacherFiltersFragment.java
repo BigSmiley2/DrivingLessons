@@ -15,8 +15,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
 
-import org.jetbrains.annotations.Contract;
-
 public class TeacherFiltersFragment extends Fragment implements Parcelable
 {
     private static final String TITLE = "teacher filters", DATA = "data", IS_OWNER = "is owner";

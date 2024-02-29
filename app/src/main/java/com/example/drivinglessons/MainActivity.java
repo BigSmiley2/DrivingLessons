@@ -79,8 +79,8 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     private void createSignedIn(@NonNull ArrayList<T> fragments)
     {
         boolean isStudent = spm.getIsStudent();
-        fragments.add((T) UserViewFragment.newInstance(!spm.getIsStudent()));
-        fragments.add((T) UserInfoFragment.newInstance(fm.getCurrentUid(), isStudent, isStudent ? new StudentInfoFragment() : new TeacherInfoFragment()));
+        fragments.add((T) UserViewFragment.newInstance(!isStudent));
+        fragments.add((T) UserInfoFragment.newInstance(fm.getCurrentUid(), isStudent));
         if (spm.getHasTeacher()) fragments.add((T) LessonViewFragment.newInstance());
     }
 }

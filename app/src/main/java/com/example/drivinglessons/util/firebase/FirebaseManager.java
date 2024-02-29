@@ -31,13 +31,15 @@ public class FirebaseManager
 {
     private static FirebaseManager fm;
     private final SharedPreferencesManager spm;
+    private final Context c;
     private final FirebaseAuth auth;
     private final FirebaseDatabase db;
     private final FirebaseStorage st;
 
     private FirebaseManager(Context context)
     {
-        spm = SharedPreferencesManager.getInstance(context);
+        c = context;
+        spm = SharedPreferencesManager.getInstance(c);
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
         st = FirebaseStorage.getInstance();
@@ -104,7 +106,7 @@ public class FirebaseManager
     }
 
 
-    public void saveStudent(Context c, Student student, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
+    public void saveStudent(Student student, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
     {
         FirebaseRunnable failure = new FirebaseRunnable()
         {
@@ -112,7 +114,7 @@ public class FirebaseManager
             public void run(Exception e)
             {
                 super.run(e);
-                toastS(c, R.string.went_wrong_error);
+                toastS( R.string.went_wrong_error);
                 complete.runAll(e);
             }
         };
@@ -159,7 +161,7 @@ public class FirebaseManager
         else registerToAuth(student, onward, failure);
     }
 
-    public  void saveTeacher(Context c, Teacher teacher, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
+    public  void saveTeacher(Teacher teacher, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
     {
         FirebaseRunnable failure = new FirebaseRunnable()
         {
@@ -167,7 +169,7 @@ public class FirebaseManager
             public void run(Exception e)
             {
                 super.run(e);
-                toastS(c, R.string.went_wrong_error);
+                toastS( R.string.went_wrong_error);
                 complete.runAll(e);
             }
         };
@@ -256,14 +258,14 @@ public class FirebaseManager
                 .addOnFailureListener(failure::runAll);
     }
 
-    public void sendPasswordReset(Context c, String email, FirebaseRunnable complete)
+    public void sendPasswordReset(String email, FirebaseRunnable complete)
     {
         sendPasswordReset(email, new FirebaseRunnable()
         {
             @Override
             public void run()
             {
-                toastS(c, R.string.reset_email_success);
+                toastS( R.string.reset_email_success);
                 complete.runAll();
             }
         }, new FirebaseRunnable()
@@ -272,7 +274,7 @@ public class FirebaseManager
             public void run(Exception e)
             {
                 super.run(e);
-                toastS(c, R.string.reset_email_failure);
+                toastS( R.string.reset_email_failure);
                 complete.runAll();
             }
         });
@@ -298,7 +300,7 @@ public class FirebaseManager
         success.runAll();
     }
 
-    public void signIn(Context c, String email, String password, FirebaseRunnable success, FirebaseRunnable complete)
+    public void signIn(String email, String password, FirebaseRunnable success, FirebaseRunnable complete)
     {
         fm.signInAuth(email, password, new FirebaseRunnable()
         {
@@ -324,7 +326,7 @@ public class FirebaseManager
                             public void run(Exception e)
                             {
                                 super.run(e);
-                                toastS(c, R.string.went_wrong_error);
+                                toastS( R.string.went_wrong_error);
                                 complete.runAll(e);
                             }
                         });
@@ -335,7 +337,7 @@ public class FirebaseManager
                     public void run(Exception e)
                     {
                         super.run(e);
-                        toastS(c, R.string.went_wrong_error);
+                        toastS( R.string.went_wrong_error);
                         complete.runAll(e);
                     }
                 });
@@ -346,7 +348,7 @@ public class FirebaseManager
             public void run(Exception e)
             {
                 super.run(e);
-                toastS(c, R.string.email_or_password_incorrect);
+                toastS( R.string.email_or_password_incorrect);
                 complete.runAll(e);
             }
         });
@@ -437,12 +439,12 @@ public class FirebaseManager
                 .addOnFailureListener(failure::runAll);
     }
 
-    public void getTeacherLessons(Context c, User user, FirebaseRunnable success)
+    public void getTeacherLessons(User user, FirebaseRunnable success)
     {
-        getTeacherLessons(c, user.id, success);
+        getTeacherLessons(user.id, success);
     }
 
-    public void getTeacherLessons(Context c, String id, FirebaseRunnable success)
+    public void getTeacherLessons(String id, FirebaseRunnable success)
     {
         db.getReference("lesson").orderByChild("teacherId").equalTo(id).get()
                 .addOnSuccessListener(dataSnapshot ->
@@ -459,7 +461,7 @@ public class FirebaseManager
                     @Override
                     public void run(Exception e)
                     {
-                        toastS(c, R.string.went_wrong_error);
+                        toastS( R.string.went_wrong_error);
                     }
                 });
     }
@@ -520,22 +522,22 @@ public class FirebaseManager
         return "image/" + id + "/" + Constants.FILE_FORMAT.format(now) + ".png";
     }
 
-    private void toastS(Context c, int message)
+    private void toastS(int message)
     {
         Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void toastS(Context c, String message)
+    private void toastS(String message)
     {
         Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void toastL(Context c, int message)
+    private void toastL(int message)
     {
         Toast.makeText(c, message, Toast.LENGTH_LONG).show();
     }
 
-    private void toastL(Context c, String message)
+    private void toastL(String message)
     {
         Toast.makeText(c, message, Toast.LENGTH_LONG).show();
     }

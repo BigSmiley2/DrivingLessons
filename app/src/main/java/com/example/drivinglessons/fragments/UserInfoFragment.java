@@ -24,18 +24,18 @@ import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
-import com.example.drivinglessons.util.fragments.FragmentUpdate;
 
-public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate> extends Fragment implements Parcelable
+public class UserInfoFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "user info", ID = "id", IS_STUDENT = "is student", ADDITIONAL_FRAGMENT = "additional fragment";
+    private static final String FRAGMENT_TITLE = "user info", ID = "id", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment";
 
     private FirebaseManager fm;
     private SharedPreferencesManager spm;
 
     private String id;
     private boolean isStudent;
-    private T additionalFragment;
+    private StudentInfoFragment studentFragment;
+    private TeacherInfoFragment teacherFragment;
 
     private ConstraintLayout layout;
     private ImageView image;
@@ -44,15 +44,22 @@ public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate>
     public UserInfoFragment() {}
 
     @NonNull
-    public static <T extends Fragment & Parcelable & FragmentUpdate> UserInfoFragment<T> newInstance(String id, boolean isStudent, T additionalFragment)
+    public static UserInfoFragment newInstance(String id, boolean isStudent)
     {
-        UserInfoFragment<T> fragment = new UserInfoFragment<>();
+        return newInstance(id, isStudent, StudentInfoFragment.newInstance(), TeacherInfoFragment.newInstance());
+    }
+
+    @NonNull
+    public static UserInfoFragment newInstance(String id, boolean isStudent, StudentInfoFragment studentFragment, TeacherInfoFragment teacherFragment)
+    {
+        UserInfoFragment fragment = new UserInfoFragment();
 
         /* saving data state */
         Bundle args = new Bundle();
         args.putString(ID, id);
         args.putBoolean(IS_STUDENT, isStudent);
-        args.putParcelable(ADDITIONAL_FRAGMENT, additionalFragment);
+        args.putParcelable(STUDENT_FRAGMENT, studentFragment);
+        args.putParcelable(TEACHER_FRAGMENT, teacherFragment);
         fragment.setArguments(args);
 
         return fragment;
@@ -67,7 +74,8 @@ public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate>
         {
             id = args.getString(ID);
             isStudent = args.getBoolean(IS_STUDENT);
-            additionalFragment = args.getParcelable(ADDITIONAL_FRAGMENT);
+            studentFragment = args.getParcelable(STUDENT_FRAGMENT);
+            teacherFragment = args.getParcelable(TEACHER_FRAGMENT);
         }
     }
 
@@ -108,26 +116,32 @@ public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate>
             }
         };
 
-        if (isStudent) fm.getStudentChanged(id, new FirebaseRunnable()
+        if (isStudent)
         {
-            @Override
-            public void run(User user)
+            replaceFragment(studentFragment);
+            fm.getStudentChanged(id, new FirebaseRunnable()
             {
-                success.run(user);
-                additionalFragment.update((Student) user);
-            }
-        });
-        else fm.getTeacherChanged(id, new FirebaseRunnable()
+                @Override
+                public void run(User user)
+                {
+                    success.run(user);
+                    studentFragment.update((Student) user);
+                }
+            });
+        }
+        else
         {
-            @Override
-            public void run(User user)
+            replaceFragment(teacherFragment);
+            fm.getTeacherChanged(id, new FirebaseRunnable()
             {
-                success.run(user);
-                additionalFragment.update((Teacher) user);
-            }
-        });
-
-        replaceFragment(additionalFragment);
+                @Override
+                public void run(User user)
+                {
+                    success.run(user);
+                    teacherFragment.update((Teacher) user);
+                }
+            });
+        }
     }
 
     private void setVisible()
@@ -144,7 +158,8 @@ public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate>
     {
         id = in.readString();
         isStudent = in.readByte() == 1;
-        additionalFragment = in.readParcelable(Parcelable.class.getClassLoader());
+        studentFragment = in.readParcelable(StudentInfoFragment.class.getClassLoader());
+        teacherFragment = in.readParcelable(TeacherInfoFragment.class.getClassLoader());
     }
 
     @Override
@@ -152,7 +167,8 @@ public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate>
     {
         dest.writeString(id);
         dest.writeByte((byte) (isStudent ? 1 : 0));
-        dest.writeParcelable(additionalFragment, flags);
+        dest.writeParcelable(studentFragment, flags);
+        dest.writeParcelable(teacherFragment, flags);
     }
 
     @Override
@@ -161,16 +177,16 @@ public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate>
         return 0;
     }
 
-    public static final Creator<UserInfoFragment<?>> CREATOR = new Creator<UserInfoFragment<?>>()
+    public static final Creator<UserInfoFragment> CREATOR = new Creator<UserInfoFragment>()
     {
         @Override
-        public UserInfoFragment<?> createFromParcel(Parcel in)
+        public UserInfoFragment createFromParcel(Parcel in)
         {
-            return new UserInfoFragment<>(in);
+            return new UserInfoFragment(in);
         }
 
         @Override
-        public UserInfoFragment<?>[] newArray(int size)
+        public UserInfoFragment[] newArray(int size)
         {
             return new UserInfoFragment[size];
         }
