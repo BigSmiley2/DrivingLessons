@@ -22,23 +22,74 @@ import java.util.regex.Pattern;
 
 public class InputTeacherFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "teacher", MANUAL = "manual", TESTER = "tester", COST = "cost";
+    private static final String FRAGMENT_TITLE = "teacher", DATA = "data";
 
-    public static class Data
+    public static class Data implements Parcelable
     {
         public boolean manual, tester;
         public Double cost;
 
-        public Data (boolean manual, boolean tester, Double cost)
+        public Data(boolean manual, boolean tester, Double cost)
         {
             this.manual = manual;
             this.tester = tester;
             this.cost = cost;
         }
+
+        public Data()
+        {
+            this(false, false, null);
+        }
+
+        public Data(@NonNull Data data)
+        {
+            this(data.manual, data.tester, data.cost);
+        }
+
+        protected Data(@NonNull Parcel in)
+        {
+            manual = in.readByte() == 1;
+            tester = in.readByte() == 1;
+            cost = in.readByte() == 0 ? null : in.readDouble();
+        }
+
+        @Override
+        public void writeToParcel(@NonNull Parcel dest, int flags)
+        {
+            dest.writeByte((byte) (manual ? 1 : 0));
+            dest.writeByte((byte) (tester ? 1 : 0));
+            if (cost == null)
+                dest.writeByte((byte) 0);
+            else
+            {
+                dest.writeByte((byte) 1);
+                dest.writeDouble(cost);
+            }
+        }
+
+        @Override
+        public int describeContents()
+        {
+            return 0;
+        }
+
+        public static final Creator<Data> CREATOR = new Creator<Data>()
+        {
+            @Override
+            public Data createFromParcel(Parcel in)
+            {
+                return new Data(in);
+            }
+
+            @Override
+            public Data[] newArray(int size)
+            {
+                return new Data[size];
+            }
+        };
     }
 
-    private boolean manual, tester;
-    private Double cost;
+    private Data data;
 
     private Switch manualInput, testerInput;
     private TextInputLayout costInputLayout;
@@ -49,19 +100,23 @@ public class InputTeacherFragment extends Fragment implements Parcelable
     @NonNull
     public static InputTeacherFragment newInstance()
     {
-        return newInstance(false, false, null);
+        return newInstance(new Data());
     }
 
     @NonNull
     public static InputTeacherFragment newInstance(boolean manual, boolean tester, Double cost)
     {
+        return newInstance(new Data(manual, tester, cost));
+    }
+
+    @NonNull
+    public static InputTeacherFragment newInstance(Data data)
+    {
         InputTeacherFragment fragment = new InputTeacherFragment();
 
         /* saving data state */
         Bundle args = new Bundle();
-        args.putBoolean(MANUAL, manual);
-        args.putBoolean(TESTER, tester);
-        args.putSerializable(COST, cost);
+        args.putParcelable(DATA, data);
         fragment.setArguments(args);
 
         return fragment;
@@ -74,9 +129,7 @@ public class InputTeacherFragment extends Fragment implements Parcelable
         Bundle args = getArguments();
         if (args != null)
         {
-            manual = args.getBoolean(MANUAL);
-            tester = args.getBoolean(TESTER);
-            cost = (Double) args.getSerializable(COST);
+            data = args.getParcelable(DATA);
         }
     }
 
@@ -96,41 +149,41 @@ public class InputTeacherFragment extends Fragment implements Parcelable
         costInputLayout = view.findViewById(R.id.textInputLayoutFragmentInputTeacherCost);
         costInput = view.findViewById(R.id.editTextFragmentInputTeacherCost);
 
-        manualInput.setChecked(manual);
-        testerInput.setChecked(tester);
-        if (cost != null) costInput.setText(String.format(Locale.ROOT,"%f.2", cost));
+        manualInput.setChecked(data.manual);
+        testerInput.setChecked(data.tester);
+        if (data.cost != null) costInput.setText(String.format(Locale.ROOT,"%f.2", data.cost));
 
-        manualInput.setOnCheckedChangeListener((buttonView, isChecked) -> manual = isChecked);
-        testerInput.setOnCheckedChangeListener((buttonView, isChecked) -> tester = isChecked);
+        manualInput.setOnCheckedChangeListener((buttonView, isChecked) -> data.manual = isChecked);
+        testerInput.setOnCheckedChangeListener((buttonView, isChecked) -> data.tester = isChecked);
         costInput.addTextChangedListener((TextListener) s ->
         {
             String str = costInput.getText().toString();
             if (str.isEmpty())
             {
                 costInputLayout.setError(null);
-                cost = null;
+                data.cost = null;
             }
             else if (str.length() > 10)
             {
                 costInputLayout.setError("cost must contain at most 10 characters");
-                cost = null;
+                data.cost = null;
             }
             else if (Pattern.matches("[0-9]*(\\.[0-9]+)*", str))
             {
-                cost = Double.parseDouble(str);
+                data.cost = Double.parseDouble(str);
                 costInputLayout.setError(null);
             }
             else
             {
                 costInputLayout.setError("the lesson cost must be a real number");
-                cost = null;
+                data.cost = null;
             }
         });
     }
 
     public Data getData()
     {
-        return new Data(manual, tester, cost);
+        return new Data(data);
     }
 
     public void addCostError(String error)
@@ -140,22 +193,13 @@ public class InputTeacherFragment extends Fragment implements Parcelable
 
     protected InputTeacherFragment(@NonNull Parcel in)
     {
-        manual = in.readByte() == 1;
-        tester = in.readByte() == 1;
-        cost = in.readByte() == 0 ? null : in.readDouble();
+        data = in.readParcelable(Data.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags)
     {
-        dest.writeByte((byte) (manual ? 1 : 0));
-        dest.writeByte((byte) (tester ? 1 : 0));
-        if (cost == null) dest.writeByte((byte) 0);
-        else
-        {
-            dest.writeByte((byte) 1);
-            dest.writeDouble(cost);
-        }
+        dest.writeParcelable(data, flags);
     }
 
     @Override

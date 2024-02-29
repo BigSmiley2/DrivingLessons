@@ -16,9 +16,61 @@ import com.example.drivinglessons.R;
 
 public class InputStudentFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "student", THEORY = "theory";
+    private static final String FRAGMENT_TITLE = "student", DATA = "data";
 
-    private boolean theory;
+    public static class Data implements Parcelable
+    {
+        public boolean theory;
+
+        public Data(boolean theory)
+        {
+            this.theory = theory;
+        }
+
+        public Data()
+        {
+            this(false);
+        }
+
+        public Data(@NonNull Data data)
+        {
+            this(data.theory);
+        }
+
+        protected Data(@NonNull Parcel in)
+        {
+            theory = in.readByte() == 1;
+        }
+
+        @Override
+        public void writeToParcel(@NonNull Parcel dest, int flags)
+        {
+            dest.writeByte((byte) (theory ? 1 : 0));
+        }
+
+        @Override
+        public int describeContents()
+        {
+            return 0;
+        }
+
+        public static final Creator<Data> CREATOR = new Creator<Data>()
+        {
+            @Override
+            public Data createFromParcel(Parcel in)
+            {
+                return new Data(in);
+            }
+
+            @Override
+            public Data[] newArray(int size)
+            {
+                return new Data[size];
+            }
+        };
+    }
+
+    private Data data;
 
     private Switch theoryInput;
 
@@ -27,16 +79,22 @@ public class InputStudentFragment extends Fragment implements Parcelable
     @NonNull
     public static InputStudentFragment newInstance()
     {
-        return newInstance(true);
+        return newInstance(new Data());
     }
     @NonNull
     public static InputStudentFragment newInstance(boolean theory)
+    {
+        return newInstance(new Data(theory));
+    }
+
+    @NonNull
+    public static InputStudentFragment newInstance(Data data)
     {
         InputStudentFragment fragment = new InputStudentFragment();
 
         /* saving data state */
         Bundle args = new Bundle();
-        args.putBoolean(THEORY, theory);
+        args.putParcelable(DATA, data);
         fragment.setArguments(args);
 
         return fragment;
@@ -49,7 +107,7 @@ public class InputStudentFragment extends Fragment implements Parcelable
         Bundle args = getArguments();
         if (args != null)
         {
-            theory = args.getBoolean(THEORY);
+            data = args.getParcelable(DATA);
         }
     }
 
@@ -66,25 +124,25 @@ public class InputStudentFragment extends Fragment implements Parcelable
 
         theoryInput = view.findViewById(R.id.switchFragmentInputStudentTheory);
 
-        theoryInput.setChecked(theory);
+        theoryInput.setChecked(data.theory);
 
-        theoryInput.setOnCheckedChangeListener((buttonView, isChecked) -> theory = isChecked);
+        theoryInput.setOnCheckedChangeListener((buttonView, isChecked) -> data.theory = isChecked);
     }
 
-    public boolean isTheory()
+    public Data getData()
     {
-        return theory;
+        return new Data(data);
     }
 
     protected InputStudentFragment(@NonNull Parcel in)
     {
-        theory = in.readByte() == 1;
+        data = in.readParcelable(Data.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags)
     {
-        dest.writeByte((byte) (theory ? 1 : 0));
+        dest.writeParcelable(data, flags);
     }
 
     @Override

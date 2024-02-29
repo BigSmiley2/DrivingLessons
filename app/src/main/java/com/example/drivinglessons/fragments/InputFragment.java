@@ -329,7 +329,8 @@ public class InputFragment extends Fragment implements Parcelable
             @Override
             public void onClick(View view)
             {
-                InputTeacherFragment.Data data = teacherFragment.getData();
+                InputTeacherFragment.Data teacherData = teacherFragment.getData();
+                InputStudentFragment.Data studentData = studentFragment.getData();
 
                 if (user.name.isEmpty())
                     fullNameInputLayout.setError("full name mustn't be empty");
@@ -339,13 +340,13 @@ public class InputFragment extends Fragment implements Parcelable
                     passwordInputLayout.setError("password mustn't be empty");
                 if (confirmPasswordInput.getText().toString().isEmpty())
                     confirmPasswordInputLayout.setError("confirm password mustn't be empty");
-                if (!isStudent && data.cost == null)
+                if (!isStudent && teacherData.cost == null)
                     teacherFragment.addCostError("cost mustn't be empty");
                 if (user.birthdate == null)
                     birthdateInputLayout.setError("birthdate mustn't be empty");
                 if (image == null) Toast.makeText(requireContext(), R.string.enter_image_first, Toast.LENGTH_SHORT).show();
 
-                if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null || (!isStudent && data.cost == null) || image == null) return;
+                if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null || (!isStudent && teacherData.cost == null) || image == null) return;
 
                 buttonInput.setOnClickListener(null);
                 View.OnClickListener listener = this;
@@ -358,7 +359,7 @@ public class InputFragment extends Fragment implements Parcelable
 
                 if (isStudent)
                 {
-                    Student student = new Student(user, studentFragment.isTheory());
+                    Student student = new Student(user, studentData.theory);
                     fm.saveStudent(requireContext(), student, balance, bytes, new FirebaseRunnable()
                     {
                         @Override
@@ -377,7 +378,7 @@ public class InputFragment extends Fragment implements Parcelable
                 }
                 else
                 {
-                    Teacher teacher = new Teacher(user, data.manual, data.tester, data.cost, isRegister ? now : null);
+                    Teacher teacher = new Teacher(user, teacherData.manual, teacherData.tester, teacherData.cost, isRegister ? now : null);
                     fm.saveTeacher(requireContext(), teacher, balance, bytes, new FirebaseRunnable()
                     {
                         @Override
