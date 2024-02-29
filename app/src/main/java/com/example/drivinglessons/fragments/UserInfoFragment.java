@@ -140,7 +140,7 @@ public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate>
         getChildFragmentManager().beginTransaction().replace(R.id.FrameLayoutFragmentUserInfo, fragment).commit();
     }
 
-    protected UserInfoFragment(Parcel in)
+    protected UserInfoFragment(@NonNull Parcel in)
     {
         id = in.readString();
         isStudent = in.readByte() == 1;
@@ -148,7 +148,7 @@ public class UserInfoFragment <T extends Fragment & Parcelable & FragmentUpdate>
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
+    public void writeToParcel(@NonNull Parcel dest, int flags)
     {
         dest.writeString(id);
         dest.writeByte((byte) (isStudent ? 1 : 0));

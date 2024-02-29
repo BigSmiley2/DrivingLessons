@@ -53,7 +53,7 @@ public class StudentInfoFragment extends Fragment implements FragmentUpdate, Par
     }
 
     @Override
-    public void update(Student student)
+    public void update(@NonNull Student student)
     {
         theory.setText(String.format(Locale.ROOT, "%s %s a driving theory test", student.name, student.hasTheoryTest ? "passed" : "didn't pass"));
     }

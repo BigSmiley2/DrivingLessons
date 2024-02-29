@@ -1,22 +1,27 @@
 package com.example.drivinglessons.dialogs;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.util.dialogs.DialogCancel;
 
 public class LessonFiltersDialogFragment extends DialogFragment implements Parcelable
 {
-    private static final String TITLE = "lesson filters", CONFIRMED = "confirmed", PAST = "past", ASSIGNED = "assigned";
+    private static final String TITLE = "lesson filters", DATA = "data", IS_OWNER = "is owner", CANCEL = "cancel";
 
     public static class Data implements Parcelable
     {
@@ -34,13 +39,13 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
             this(false, false, false);
         }
 
-        public Data(Data data)
+        public Data(@NonNull Data data)
         {
             this(data.isConfirmed, data.isPast, data.isAssigned);
         }
 
 
-        protected Data(Parcel in)
+        protected Data(@NonNull Parcel in)
         {
             isConfirmed = in.readByte() == 1;
             isPast = in.readByte() == 1;
@@ -48,7 +53,7 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
         }
 
         @Override
-        public void writeToParcel(Parcel dest, int flags)
+        public void writeToParcel(@NonNull Parcel dest, int flags)
         {
             dest.writeByte((byte) (isConfirmed ? 1 : 0));
             dest.writeByte((byte) (isPast ? 1 : 0));
@@ -76,25 +81,36 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
             }
         };
     }
+
+    private boolean isOwner;
     private Data data;
+    private DialogCancel cancel;
 
     private Switch confirmInput, pastInput, assignedInput;
+    private TextView assignedText;
 
     public LessonFiltersDialogFragment() {}
 
-    public static LessonFiltersDialogFragment newInstance()
+    @NonNull
+    public static LessonFiltersDialogFragment newInstance(boolean isOwner)
     {
-        return newInstance(false, false, false);
+        return newInstance(isOwner, new Data());
     }
 
-    public static LessonFiltersDialogFragment newInstance(boolean isConfirmed, boolean isPast, boolean isAssigned)
+    @NonNull
+    public static LessonFiltersDialogFragment newInstance(boolean isOwner, boolean isConfirmed, boolean isPast, boolean isAssigned)
+    {
+        return newInstance(isOwner, new Data(isConfirmed, isPast, isAssigned));
+    }
+
+    @NonNull
+    public static LessonFiltersDialogFragment newInstance(boolean isOwner, Data data)
     {
         LessonFiltersDialogFragment fragment = new LessonFiltersDialogFragment();
 
         Bundle args = new Bundle();
-        args.putBoolean(CONFIRMED, isConfirmed);
-        args.putBoolean(PAST, isPast);
-        args.putBoolean(ASSIGNED, isAssigned);
+        args.putBoolean(IS_OWNER, isOwner);
+        args.putParcelable(DATA, data);
 
         fragment.setArguments(args);
         return fragment;
@@ -108,9 +124,8 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
         Bundle args = getArguments();
         if (args != null)
         {
-            data.isConfirmed = args.getBoolean(CONFIRMED);
-            data.isPast = args.getBoolean(PAST);
-            data.isAssigned = args.getBoolean(ASSIGNED);
+            isOwner = args.getBoolean(IS_OWNER);
+            data = args.getParcelable(DATA);
         }
     }
 
@@ -129,6 +144,13 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
         confirmInput = view.findViewById(R.id.switchFragmentLessonFiltersConfirmed);
         pastInput = view.findViewById(R.id.switchFragmentLessonFiltersPast);
         assignedInput = view.findViewById(R.id.switchFragmentLessonFiltersAssigned);
+        assignedText = view.findViewById(R.id.textViewFragmentLessonFiltersAssigned);
+
+        if (isOwner)
+        {
+            assignedInput.setVisibility(View.VISIBLE);
+            assignedText.setText(View.VISIBLE);
+        }
 
         confirmInput.setChecked(data.isConfirmed);
         pastInput.setChecked(data.isPast);
@@ -144,13 +166,39 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
         return new Data(data);
     }
 
-    protected LessonFiltersDialogFragment(Parcel in)
+    public void setCancel(DialogCancel cancel)
+    {
+        this.cancel = cancel;
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+    {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        Window window = dialog.getWindow();
+        if (window != null)
+        {
+            window.requestFeature(Window.FEATURE_NO_TITLE);
+            //window.setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        return dialog;
+    }
+
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog)
+    {
+        super.onCancel(dialog);
+        cancel.cancel();
+    }
+
+    protected LessonFiltersDialogFragment(@NonNull Parcel in)
     {
         data = in.readParcelable(Data.class.getClassLoader());
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
+    public void writeToParcel(@NonNull Parcel dest, int flags)
     {
         dest.writeParcelable(data, flags);
     }

@@ -6,6 +6,8 @@
     <string name="info"><b>Info</b></string>
     <string name="student"><b>Student</b></string>
     <string name="teacher"><b>Teacher</b></string>
+    <string name="lessons"><b>Lessons</b></string>
+    <string name="lesson_filters"><b>Lesson filters</b></string>
     <string name="went_wrong_error">something went wrong</string>
     <string name="email_or_password_incorrect">email or password are incorrect</string>
     <string name="reset_email_failure">couldn\'t send password reset email</string>

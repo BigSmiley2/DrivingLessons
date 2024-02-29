@@ -56,7 +56,7 @@ public class TeacherInfoFragment extends Fragment implements FragmentUpdate, Par
     }
 
     @Override
-    public void update(Teacher teacher)
+    public void update(@NonNull Teacher teacher)
     {
         manual.setText(String.format(Locale.ROOT, "%s has %s car", teacher.name, teacher.hasManual ? "a manual" : "an automatic"));
         tester.setText(String.format(Locale.ROOT, "%s is a %s", teacher.name, teacher.isTester ? "tester" : "teacher"));

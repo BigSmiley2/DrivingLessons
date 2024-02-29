@@ -1,11 +1,16 @@
 package com.example.drivinglessons.fragments;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +20,7 @@ import com.example.drivinglessons.R;
 import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class LessonViewFragment extends Fragment
+public class LessonViewFragment extends Fragment implements Parcelable
 {
     private static final String FRAGMENT_TITLE = "lessons", ID = "id", SEARCH = "search", LESSON_FILTERS = "lesson filters";
 
@@ -25,6 +30,20 @@ public class LessonViewFragment extends Fragment
     private ImageView filters;
     private TextInputLayout searchInputLayout;
     private EditText searchInput;
+
+    public LessonViewFragment() {}
+
+    @NonNull
+    public static LessonViewFragment newInstance()
+    {
+        return newInstance(false);
+    }
+
+    @NonNull
+    public static LessonViewFragment newInstance(boolean isOwner)
+    {
+        return newInstance(LessonFiltersDialogFragment.newInstance(isOwner));
+    }
 
     @NonNull
     public static LessonViewFragment newInstance(LessonFiltersDialogFragment lessonFilters)
@@ -62,7 +81,7 @@ public class LessonViewFragment extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        return inflater.inflate(R.layout.fragment_lesson_view, container, false);
     }
 
     @Override
@@ -70,15 +89,53 @@ public class LessonViewFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        filters = view.findViewById(R.id.imageViewFragmentLessonsViewFilters);
-        searchInputLayout = view.findViewById(R.id.textInputLayoutFragmentLessonsViewSearch);
-        searchInput = view.findViewById(R.id.editTextFragmentLessonsViewSearch);
+        filters = view.findViewById(R.id.imageViewFragmentLessonViewFilters);
+        searchInputLayout = view.findViewById(R.id.textInputLayoutFragmentLessonViewSearch);
+        searchInput = view.findViewById(R.id.editTextFragmentLessonViewSearch);
 
-        filters.setOnClickListener(v ->
+        lessonFilters.setCancel(() ->
         {
-            lessonFilters.show();
+            lessonFilters.getData();
         });
+
+        filters.setOnClickListener(v -> lessonFilters.show(getChildFragmentManager(), null));
     }
+
+    protected LessonViewFragment(@NonNull Parcel in)
+    {
+        id = in.readString();
+        search = in.readString();
+        lessonFilters = in.readParcelable(LessonFiltersDialogFragment.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags)
+    {
+        dest.writeString(id);
+        dest.writeString(search);
+        dest.writeParcelable(lessonFilters, flags);
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    public static final Creator<LessonViewFragment> CREATOR = new Creator<LessonViewFragment>()
+    {
+        @Override
+        public LessonViewFragment createFromParcel(Parcel in)
+        {
+            return new LessonViewFragment(in);
+        }
+
+        @Override
+        public LessonViewFragment[] newArray(int size)
+        {
+            return new LessonViewFragment[size];
+        }
+    };
 
     @NonNull
     @Override

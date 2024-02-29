@@ -1,97 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".dialogs.LessonFiltersDialogFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/textViewFragmentLessonFiltersTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/lesson_filters"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewFragmentLessonFiltersConfirmed"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textViewFragmentLessonFiltersTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Lesson filters"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <Switch
+        android:id="@+id/switchFragmentLessonFiltersConfirmed"
+        style="@style/Default.Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:checked="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentLessonFiltersConfirmed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textViewFragmentLessonFiltersConfirmed"
+        app:layout_constraintTop_toTopOf="@+id/textViewFragmentLessonFiltersConfirmed"
+        app:showText="false"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-        <Switch
-            android:id="@+id/switchFragmentLessonFiltersConfirmed"
-            style="@style/Default.Switch"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginEnd="16dp"
-            android:checked="true"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentLessonFiltersConfirmed"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewFragmentLessonFiltersConfirmed"
-            app:showText="false"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+    <Switch
+        android:id="@+id/switchFragmentLessonFiltersPast"
+        style="@style/Default.Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:checked="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentLessonFiltersPast"
+        app:layout_constraintEnd_toEndOf="@+id/switchFragmentLessonFiltersConfirmed"
+        app:layout_constraintTop_toTopOf="@+id/textViewFragmentLessonFiltersPast"
+        app:showText="false"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-        <Switch
-            android:id="@+id/switchFragmentLessonFiltersPast"
-            style="@style/Default.Switch"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginEnd="16dp"
-            android:checked="true"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentLessonFiltersPast"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewFragmentLessonFiltersPast"
-            app:showText="false"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+    <Switch
+        android:id="@+id/switchFragmentLessonFiltersAssigned"
+        style="@style/Default.Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:checked="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentLessonFiltersAssigned"
+        app:layout_constraintEnd_toEndOf="@+id/switchFragmentLessonFiltersPast"
+        app:layout_constraintTop_toTopOf="@+id/textViewFragmentLessonFiltersAssigned"
+        app:showText="false"
+        tools:ignore="UseSwitchCompatOrMaterialXml"
+        tools:visibility="visible" />
 
-        <Switch
-            android:id="@+id/switchFragmentLessonFiltersAssigned"
-            style="@style/Default.Switch"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginEnd="16dp"
-            android:checked="true"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentLessonFiltersAssigned"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewFragmentLessonFiltersAssigned"
-            app:showText="false"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+    <TextView
+        android:id="@+id/textViewFragmentLessonFiltersConfirmed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="show confirmed lessons"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/switchFragmentLessonFiltersConfirmed"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLessonFiltersTitle" />
 
-        <TextView
-            android:id="@+id/textViewFragmentLessonFiltersConfirmed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="show confirmed lessons"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/textViewFragmentLessonFiltersTitle"
-            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLessonFiltersTitle" />
+    <TextView
+        android:id="@+id/textViewFragmentLessonFiltersPast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="show past lessons"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewFragmentLessonFiltersConfirmed"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLessonFiltersConfirmed" />
 
-        <TextView
-            android:id="@+id/textViewFragmentLessonFiltersPast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="show past lessons"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/textViewFragmentLessonFiltersConfirmed"
-            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLessonFiltersConfirmed" />
+    <TextView
+        android:id="@+id/textViewFragmentLessonFiltersAssigned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="show assigned lessons"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/textViewFragmentLessonFiltersPast"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLessonFiltersPast"
+        tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/textViewFragmentLessonFiltersAssigned"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="24dp"
-            android:text="show assigned lessons"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textViewFragmentLessonFiltersPast"
-            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLessonFiltersPast" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

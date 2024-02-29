@@ -4,47 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.LessonViewFragment">
+    tools:context=".fragments.">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/textViewFragmentLessonViewTitle"
+            android:id="@+id/textViewFragmentUserViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="-16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/lessons"
+            android:text="Users"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentLessonViewSearch"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentUserViewSearch"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageViewFragmentLessonViewFilters"
+            android:id="@+id/imageViewFragmentUserViewFilters"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="8dp"
             android:src="@drawable/filter"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutFragmentLessonViewSearch"
+            app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutFragmentUserViewSearch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textInputLayoutFragmentLessonViewSearch" />
+            app:layout_constraintStart_toEndOf="@+id/textInputLayoutFragmentUserViewSearch" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutFragmentLessonViewSearch"
+            android:id="@+id/textInputLayoutFragmentUserViewSearch"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/imageViewFragmentLessonViewFilters"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewFragmentUserViewFilters"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentLessonViewTitle">
+            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentUserViewTitle">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextFragmentLessonViewSearch"
+                android:id="@+id/editTextFragmentUserViewSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="search user"
@@ -54,17 +54,17 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <View
-            android:id="@+id/viewFragmentLessonView"
+            android:id="@+id/viewFragmentUserView"
             android:layout_width="350dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentLessonViewSearch" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFragmentUserViewSearch" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewFragmentLessonView"
+            android:id="@+id/recyclerViewFragmentUserView"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -72,7 +72,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/viewFragmentLessonView" />
+            app:layout_constraintTop_toBottomOf="@+id/viewFragmentUserView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

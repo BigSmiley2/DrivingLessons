@@ -20,11 +20,13 @@ public class MainOfflineFragment extends Fragment implements Parcelable
 
     public MainOfflineFragment() {}
 
+    @NonNull
     public static MainOfflineFragment newInstance()
     {
         return newInstance(null);
     }
 
+    @NonNull
     public static MainOfflineFragment newInstance(LoginFragment loginFragment)
     {
         MainOfflineFragment fragment = new MainOfflineFragment();
@@ -49,7 +51,7 @@ public class MainOfflineFragment extends Fragment implements Parcelable
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_main_offline, container, false);
 
