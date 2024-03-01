@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -31,15 +32,13 @@ public class FirebaseManager
 {
     private static FirebaseManager fm;
     private final SharedPreferencesManager spm;
-    private final Context c;
     private final FirebaseAuth auth;
     private final FirebaseDatabase db;
     private final FirebaseStorage st;
 
     private FirebaseManager(Context context)
     {
-        c = context;
-        spm = SharedPreferencesManager.getInstance(c);
+        spm = SharedPreferencesManager.getInstance(context);
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
         st = FirebaseStorage.getInstance();
@@ -55,12 +54,52 @@ public class FirebaseManager
         return st.getReference(path);
     }
 
-    public void getStudentChanged(String id, FirebaseRunnable success)
+    public Query getDatabaseQuery(String path)
+    {
+        return db.getReference(path);
+    }
+
+    public Query getStudentsQuery()
+    {
+        return getDatabaseQuery("student").orderByChild("name");
+    }
+
+    public Query getTeachersQuery()
+    {
+        return getDatabaseQuery("teacher").orderByChild("name");
+    }
+
+    public Query getUsersQuery(boolean isStudent)
+    {
+        return isStudent ? getStudentsQuery() : getTeachersQuery();
+    }
+
+    public Query getTeacherLessonsQuery(String id)
+    {
+        return getDatabaseQuery("lesson").orderByChild("teacherId").equalTo(id);
+    }
+
+    public Query getStudentLessonsQuery(String id)
+    {
+        return getDatabaseQuery("lesson").orderByChild("studentId").equalTo(id);
+    }
+
+    public Query getUserLessonsQuery(boolean isStudent, String id)
+    {
+        return isStudent ? getStudentLessonsQuery(id) : getTeacherLessonsQuery(id);
+    }
+
+    public Query getTestLessonsQuery()
+    {
+        return getDatabaseQuery("lesson").orderByChild("isTest").equalTo(true);
+    }
+
+    public void getStudentChanged(String id, @NonNull FirebaseRunnable success)
     {
         getStudentChanged(id, success, new FirebaseRunnable() {});
     }
 
-    public void getStudentChanged(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    public void getStudentChanged(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("student").child(id).addValueEventListener(new ValueEventListener()
         {
@@ -80,12 +119,12 @@ public class FirebaseManager
         });
     }
 
-    public void getTeacherChanged(String id, FirebaseRunnable success)
+    public void getTeacherChanged(String id, @NonNull FirebaseRunnable success)
     {
         getTeacherChanged(id, success, new FirebaseRunnable() {});
     }
 
-    public void getTeacherChanged(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    public void getTeacherChanged(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("teacher").child(id).addValueEventListener(new ValueEventListener()
         {
@@ -106,7 +145,7 @@ public class FirebaseManager
     }
 
 
-    public void saveStudent(Student student, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
+    public void saveStudent(Context c, Student student, Balance balance, byte[] image, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable complete)
     {
         FirebaseRunnable failure = new FirebaseRunnable()
         {
@@ -114,7 +153,7 @@ public class FirebaseManager
             public void run(Exception e)
             {
                 super.run(e);
-                toastS( R.string.went_wrong_error);
+                toastS(c, R.string.went_wrong_error);
                 complete.runAll(e);
             }
         };
@@ -161,7 +200,7 @@ public class FirebaseManager
         else registerToAuth(student, onward, failure);
     }
 
-    public  void saveTeacher(Teacher teacher, Balance balance, byte[] image, FirebaseRunnable success, FirebaseRunnable complete)
+    public  void saveTeacher(Context c, Teacher teacher, Balance balance, byte[] image, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable complete)
     {
         FirebaseRunnable failure = new FirebaseRunnable()
         {
@@ -169,7 +208,7 @@ public class FirebaseManager
             public void run(Exception e)
             {
                 super.run(e);
-                toastS( R.string.went_wrong_error);
+                toastS(c, R.string.went_wrong_error);
                 complete.runAll(e);
             }
         };
@@ -216,56 +255,56 @@ public class FirebaseManager
         else registerToAuth(teacher, onward, failure);
     }
 
-    private void registerToAuth(User user, FirebaseRunnable success, FirebaseRunnable failure)
+    private void registerToAuth(@NonNull User user, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         auth.createUserWithEmailAndPassword(user.email, user.password)
                 .addOnSuccessListener(authResult -> success.runAll())
                 .addOnFailureListener(failure::runAll);
     }
 
-    public void saveBalanceInDatabase(String id, Balance balance, FirebaseRunnable success, FirebaseRunnable failure)
+    public void saveBalanceInDatabase(String id, @NonNull Balance balance, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("balance").child(id).updateChildren(balance.toMap())
                 .addOnSuccessListener(success::runAll)
                 .addOnFailureListener(failure::runAll);
     }
 
-    private void saveStudentInDatabase(Student student, FirebaseRunnable success, FirebaseRunnable failure)
+    private void saveStudentInDatabase(@NonNull Student student, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("student").child(student.id).updateChildren(student.toMap())
                 .addOnSuccessListener(success::runAll)
                 .addOnFailureListener(failure::runAll);
     }
 
-    private void saveInStorage(String path, byte[] image, FirebaseRunnable success, FirebaseRunnable failure)
+    private void saveInStorage(String path, byte[] image, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         st.getReference(path).putBytes(image)
                 .addOnSuccessListener(taskSnapshot -> success.runAll())
                 .addOnFailureListener(failure::runAll);
     }
 
-    public void deleteInStorage(String path, FirebaseRunnable success, FirebaseRunnable failure)
+    public void deleteInStorage(String path, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         st.getReference(path).delete()
                 .addOnSuccessListener(success::runAll)
                 .addOnFailureListener(failure::runAll);
     }
 
-    private void saveTeacherInDatabase(Teacher teacher, FirebaseRunnable success, FirebaseRunnable failure)
+    private void saveTeacherInDatabase(@NonNull Teacher teacher, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("teacher").child(teacher.id).updateChildren(teacher.toMap())
                 .addOnSuccessListener(success::runAll)
                 .addOnFailureListener(failure::runAll);
     }
 
-    public void sendPasswordReset(String email, FirebaseRunnable complete)
+    public void sendPasswordReset(Context c, String email, @NonNull FirebaseRunnable complete)
     {
         sendPasswordReset(email, new FirebaseRunnable()
         {
             @Override
             public void run()
             {
-                toastS( R.string.reset_email_success);
+                toastS(c, R.string.reset_email_success);
                 complete.runAll();
             }
         }, new FirebaseRunnable()
@@ -274,33 +313,33 @@ public class FirebaseManager
             public void run(Exception e)
             {
                 super.run(e);
-                toastS( R.string.reset_email_failure);
+                toastS(c, R.string.reset_email_failure);
                 complete.runAll();
             }
         });
     }
 
-    private void sendPasswordReset(String email, FirebaseRunnable success, FirebaseRunnable failure)
+    private void sendPasswordReset(String email, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         auth.sendPasswordResetEmail(email)
                 .addOnSuccessListener(success::runAll)
                 .addOnFailureListener(failure::runAll);
     }
 
-    private void signInAuth(String email, String password, FirebaseRunnable success, FirebaseRunnable failure)
+    private void signInAuth(String email, String password, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> success.runAll())
                 .addOnFailureListener(failure::runAll);
     }
 
-    private void signOutAuth(FirebaseRunnable success)
+    private void signOutAuth(@NonNull FirebaseRunnable success)
     {
         auth.signOut();
         success.runAll();
     }
 
-    public void signIn(String email, String password, FirebaseRunnable success, FirebaseRunnable complete)
+    public void signIn(Context c, String email, String password, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable complete)
     {
         fm.signInAuth(email, password, new FirebaseRunnable()
         {
@@ -326,7 +365,7 @@ public class FirebaseManager
                             public void run(Exception e)
                             {
                                 super.run(e);
-                                toastS( R.string.went_wrong_error);
+                                toastS(c, R.string.went_wrong_error);
                                 complete.runAll(e);
                             }
                         });
@@ -337,7 +376,7 @@ public class FirebaseManager
                     public void run(Exception e)
                     {
                         super.run(e);
-                        toastS( R.string.went_wrong_error);
+                        toastS(c, R.string.went_wrong_error);
                         complete.runAll(e);
                     }
                 });
@@ -348,13 +387,13 @@ public class FirebaseManager
             public void run(Exception e)
             {
                 super.run(e);
-                toastS( R.string.email_or_password_incorrect);
+                toastS(c, R.string.email_or_password_incorrect);
                 complete.runAll(e);
             }
         });
     }
 
-    public void signOut(FirebaseRunnable success)
+    public void signOut(@NonNull FirebaseRunnable success)
     {
         signOutAuth(new FirebaseRunnable()
         {
@@ -371,7 +410,7 @@ public class FirebaseManager
         signOut(new FirebaseRunnable() {});
     }
 
-    private void signInSharedPreferences(User user, FirebaseRunnable success, FirebaseRunnable failure)
+    private void signInSharedPreferences(@NonNull User user, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         boolean isStudent = user instanceof Student, isOwner = Constants.isOwner(user.email);
 
@@ -392,13 +431,13 @@ public class FirebaseManager
         }
     }
 
-    private void signOutSharedPreferences(FirebaseRunnable success)
+    private void signOutSharedPreferences(@NonNull FirebaseRunnable success)
     {
         spm.clear();
         success.runAll();
     }
 
-    public void getStudentCanTest(User user, FirebaseRunnable success, FirebaseRunnable failure)
+    public void getStudentCanTest(User user, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         getStudentLessons(user, new FirebaseRunnable()
         {
@@ -419,12 +458,12 @@ public class FirebaseManager
         }, failure);
     }
 
-    public void getStudentLessons(User user, FirebaseRunnable success, FirebaseRunnable failure)
+    public void getStudentLessons(@NonNull User user, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         getStudentLessons(user.id, success, failure);
     }
 
-    public void getStudentLessons(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    public void getStudentLessons(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("lesson").orderByChild("studentId").equalTo(id).get()
                 .addOnSuccessListener(dataSnapshot ->
@@ -439,12 +478,12 @@ public class FirebaseManager
                 .addOnFailureListener(failure::runAll);
     }
 
-    public void getTeacherLessons(User user, FirebaseRunnable success)
+    public void getTeacherLessons(@NonNull User user, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
-        getTeacherLessons(user.id, success);
+        getTeacherLessons(user.id, success, failure);
     }
 
-    public void getTeacherLessons(String id, FirebaseRunnable success)
+    public void getTeacherLessons(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("lesson").orderByChild("teacherId").equalTo(id).get()
                 .addOnSuccessListener(dataSnapshot ->
@@ -456,24 +495,17 @@ public class FirebaseManager
 
                     success.runAll(lessons);
                 })
-                .addOnFailureListener(e -> new FirebaseRunnable()
-                {
-                    @Override
-                    public void run(Exception e)
-                    {
-                        toastS( R.string.went_wrong_error);
-                    }
-                });
+                .addOnFailureListener(failure::runAll);
     }
 
-    public void getUserFromDatabase(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    public void getUserFromDatabase(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         getStudentFromDatabase(id, success, failure);
 
         getTeacherFromDatabase(id, success, failure);
     }
 
-    public void getStudentFromDatabase(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    public void getStudentFromDatabase(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("student").orderByKey().equalTo(id).limitToFirst(1).get()
                 .addOnSuccessListener(dataSnapshot ->
@@ -487,7 +519,7 @@ public class FirebaseManager
                 .addOnFailureListener(failure::runAll);
     }
 
-    public void getTeacherFromDatabase(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    public void getTeacherFromDatabase(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("teacher").orderByKey().equalTo(id).limitToFirst(1).get()
                 .addOnSuccessListener(dataSnapshot ->
@@ -501,7 +533,7 @@ public class FirebaseManager
                 .addOnFailureListener(failure::runAll);
     }
 
-    public void getCurrentUserFromDatabase(FirebaseRunnable success, FirebaseRunnable failure)
+    public void getCurrentUserFromDatabase(@NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         getUserFromDatabase(auth.getUid(), success, failure);
     }
@@ -516,28 +548,29 @@ public class FirebaseManager
         return getCurrentUid() != null;
     }
 
+    @NonNull
     private String getPath(String id)
     {
         Date now = Calendar.getInstance().getTime();
         return "image/" + id + "/" + Constants.FILE_FORMAT.format(now) + ".png";
     }
 
-    private void toastS(int message)
+    private void toastS(Context c, int message)
     {
         Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void toastS(String message)
+    private void toastS(Context c, String message)
     {
         Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void toastL(int message)
+    private void toastL(Context c, int message)
     {
         Toast.makeText(c, message, Toast.LENGTH_LONG).show();
     }
 
-    private void toastL(String message)
+    private void toastL(Context c, String message)
     {
         Toast.makeText(c, message, Toast.LENGTH_LONG).show();
     }

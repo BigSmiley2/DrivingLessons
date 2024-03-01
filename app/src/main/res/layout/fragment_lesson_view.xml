@@ -47,7 +47,7 @@
                 android:id="@+id/editTextFragmentLessonViewSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="search user"
+                android:hint="@string/search_user"
                 android:inputType="text"
                 tools:layout_editor_absoluteX="29dp"
                 tools:layout_editor_absoluteY="63dp" />

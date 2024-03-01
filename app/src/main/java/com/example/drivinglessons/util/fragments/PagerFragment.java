@@ -23,11 +23,15 @@ public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
     private TabLayoutMediator tabLayoutMediator;
     private ArrayList<T> fragments;
     private boolean isSwipeable;
+
+    public PagerFragment() {}
+    @NonNull
     public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments)
     {
      return newInstance(fragments, true);
     }
 
+    @NonNull
     public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments, boolean isSwipeable)
     {
         PagerFragment<T> fragment = new PagerFragment<>();
@@ -54,7 +58,7 @@ public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_pager, container, false);
 
@@ -75,6 +79,7 @@ public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
         tabLayoutMediator.attach();
     }
 
+    @NonNull
     private String getFragmentTitle(int position)
     {
         return fragments.get(position).toString();

@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".fragments.StudentFiltersFragment">
 
@@ -32,7 +32,6 @@
     <Switch
         android:id="@+id/switchFragmentStudentFiltersTheory"
         style="@style/Default.Switch"
-        tools:ignore="UseSwitchCompatOrMaterialXml"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="32dp"
@@ -42,5 +41,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textViewFragmentStudentFiltersTheory"
         app:layout_constraintTop_toTopOf="@+id/textViewFragmentStudentFiltersTheory"
-        app:showText="false" />
+        app:showText="false"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 </androidx.constraintlayout.widget.ConstraintLayout>

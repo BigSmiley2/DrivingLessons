@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="-16dp"
             android:layout_marginTop="8dp"
-            android:text="Users"
+            android:text="@string/users"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentUserViewSearch"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,7 @@
                 android:id="@+id/editTextFragmentUserViewSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="search user"
+                android:hint="@string/search_user"
                 android:inputType="text"
                 tools:layout_editor_absoluteX="29dp"
                 tools:layout_editor_absoluteY="63dp" />

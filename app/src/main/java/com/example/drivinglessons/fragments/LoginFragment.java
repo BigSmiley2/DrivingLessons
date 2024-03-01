@@ -139,7 +139,7 @@ public class LoginFragment extends Fragment implements Parcelable
                 login.setOnClickListener(null);
                 View.OnClickListener listener = this;
 
-                fm.signIn(email, password, new FirebaseRunnable()
+                fm.signIn(requireContext(), email, password, new FirebaseRunnable()
                 {
                     @Override
                     public void run()
@@ -170,7 +170,7 @@ public class LoginFragment extends Fragment implements Parcelable
                     forgot.setOnClickListener(null);
                     View.OnClickListener listener = this;
 
-                    fm.sendPasswordReset(email, new FirebaseRunnable()
+                    fm.sendPasswordReset(requireContext(), email, new FirebaseRunnable()
                     {
                         @Override
                         public void run()

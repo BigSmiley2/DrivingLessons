@@ -24,10 +24,6 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewHolder>
 {
-    public interface Runnable
-    {
-        void run(ViewHolder viewHolder, final int position, User user);
-    }
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         public TextView name, email, date, info;
@@ -38,40 +34,37 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
         {
             super(itemview);
 
-            imageView = itemview.findViewById(R.id.imageView);
+            imageView = itemview.findViewById(R.id.imageViewAdapterUser);
 
-            layout = itemview.findViewById(R.id.constraintLayout);
+            layout = itemview.findViewById(R.id.constraintLayoutAdapterUser);
 
-            name = itemview.findViewById(R.id.textViewName);
-            email = itemview.findViewById(R.id.textViewEmail);
-            date = itemview.findViewById(R.id.textViewDate);
-            info = itemview.findViewById(R.id.textViewInfo);
+            name = itemview.findViewById(R.id.textViewAdapterUserFullName);
+            email = itemview.findViewById(R.id.textViewAdapterUserEmail);
+            date = itemview.findViewById(R.id.textViewAdapterUserDate);
+            info = itemview.findViewById(R.id.textViewAdapterUserInfo);
         }
     }
 
     private FirebaseManager fm;
     private Context c;
-    private final Runnable onClick, onLongClick;
-    private boolean hasManual, isTester, hasTheory;
+    private boolean isManual, isTester, isTheory;
     private String name;
-    public UserAdapter(FirebaseRecyclerOptions<User> options, Runnable onClick, Runnable onLongClick, boolean hasManual, boolean isTester, boolean hasTheory)
+    public UserAdapter(FirebaseRecyclerOptions<User> options, boolean isManual, boolean isTester, boolean isTheory)
     {
         super(options);
-        this.onClick = onClick;
-        this.onLongClick = onLongClick;
-        this.hasManual = hasManual;
+        this.isManual = isManual;
         this.isTester = isTester;
-        this.hasTheory = hasTheory;
+        this.isTheory = isTheory;
         this.name = "";
     }
 
-    public UserAdapter(FirebaseRecyclerOptions<User> options, Runnable onClick, Runnable onLongClick)
+    public UserAdapter(FirebaseRecyclerOptions<User> options)
     {
-        this(options, onClick, onLongClick, false, false, false);
+        this(options, false, false, false);
     }
     public UserAdapter(FirebaseRecyclerOptions<User> options, @NonNull UserAdapter adapter)
     {
-        this(options, adapter.onClick, adapter.onLongClick, adapter.hasManual, adapter.isTester, adapter.hasTheory);
+        this(options, adapter.isManual, adapter.isTester, adapter.isTheory);
     }
 
     @NonNull
@@ -81,19 +74,13 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
         c = parent.getContext();
         fm = FirebaseManager.getInstance(c);
         ViewHolder holder = new ViewHolder(LayoutInflater.from(c).inflate(R.layout.adapter_user, parent, false));
-        holder.layout.setOnClickListener(v -> onClick.run(holder, holder.getAbsoluteAdapterPosition(), this.getItem(holder.getAbsoluteAdapterPosition())));
-        holder.layout.setOnLongClickListener(v ->
-        {
-            onLongClick.run(holder, holder.getAbsoluteAdapterPosition(), this.getItem(holder.getAbsoluteAdapterPosition()));
-            return true;
-        });
         return holder;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, final int position, @NonNull User user)
     {
-        Glide.with(c).load(fm.getStorageReference(user.imagePath))
+        Glide.with(c).load(fm.getStorageReference(user.imagePath)).circleCrop()
                 .thumbnail(Glide.with(c).load(R.drawable.loading).circleCrop())
                 .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(holder.imageView);
 
@@ -105,13 +92,13 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
         {
             Teacher teacher = (Teacher) user;
 
-            setVisibility(holder, !(teacher.hasManual != hasManual || teacher.isTester != isTester || !user.name.contains(name)));
+            setVisibility(holder, !(teacher.hasManual != isManual || teacher.isTester != isTester || !user.name.contains(name)));
         }
         else if (user instanceof Student)
         {
             Student student = (Student) user;
 
-            setVisibility(holder, !(student.hasTheoryTest != hasTheory || !user.name.contains(name)));
+            setVisibility(holder, !(student.hasTheoryTest != isTheory || !user.name.contains(name)));
         }
     }
 
@@ -134,14 +121,14 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
         this.isTester = isTester;
     }
 
-    public void setHasManual(boolean hasManual)
+    public void setManual(boolean isManual)
     {
-        this.hasManual = hasManual;
+        this.isManual = isManual;
     }
 
-    public void setHasTheory(boolean hasTheory)
+    public void setTheory(boolean isTheory)
     {
-        this.hasTheory = hasTheory;
+        this.isTheory = isTheory;
     }
 
     public void setName(String name)

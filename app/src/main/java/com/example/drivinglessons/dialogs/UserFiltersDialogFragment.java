@@ -106,12 +106,12 @@ public class UserFiltersDialogFragment extends DialogFragment implements Parcela
 
     public StudentFiltersFragment.Data getStudentData()
     {
-        return studentFilters.getData();
+        return studentFilters == null ? null : studentFilters.getData();
     }
 
     public TeacherFiltersFragment.Data getTeacherData()
     {
-        return teacherFilters.getData();
+        return teacherFilters == null ? null : teacherFilters.getData();
     }
 
     public void setCancel(DialogCancel cancel)

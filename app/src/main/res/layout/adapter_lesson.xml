@@ -2,12 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayoutLessonAdapter"
+    android:id="@+id/constraintLayoutAdapterLesson"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".adapters.LessonAdapter">
 
     <TextView
-        android:id="@+id/textViewLessonAdapterTitle"
+        android:id="@+id/textViewAdapterLessonTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -17,44 +18,44 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewLessonAdapterStartDate"
+        android:id="@+id/textViewAdapterLessonStartDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:text="start date"
-        app:layout_constraintBottom_toTopOf="@+id/textViewLessonAdapterEndDate"
+        app:layout_constraintBottom_toTopOf="@+id/textViewAdapterLessonEndDate"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLessonAdapterTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonTitle" />
 
     <TextView
-        android:id="@+id/textViewLessonAdapterEndDate"
+        android:id="@+id/textViewAdapterLessonEndDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:text="end date"
-        app:layout_constraintBottom_toTopOf="@+id/textViewLessonAdapterInfo"
+        app:layout_constraintBottom_toTopOf="@+id/textViewAdapterLessonInfo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLessonAdapterStartDate" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonStartDate" />
 
     <TextView
-        android:id="@+id/textViewLessonAdapterInfo"
+        android:id="@+id/textViewAdapterLessonInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:text="info"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLessonAdapterEndDate" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonEndDate" />
 
     <View
-        android:id="@+id/viewLessonAdapterLine"
+        android:id="@+id/viewAdapterLessonLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLessonAdapterInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonInfo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

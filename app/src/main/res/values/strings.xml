@@ -7,6 +7,7 @@
     <string name="student"><b>Student</b></string>
     <string name="teacher"><b>Teacher</b></string>
     <string name="lessons"><b>Lessons</b></string>
+    <string name="users"><b>Users</b></string>
     <string name="lesson_filters"><b>Lesson filters</b></string>
     <string name="went_wrong_error">something went wrong</string>
     <string name="email_or_password_incorrect">email or password are incorrect</string>
@@ -22,4 +23,5 @@
     <string name="birthdate">Birthdate</string>
     <string name="confirm_password">Confirm password</string>
     <string name="full_name">Full name</string>
+    <string name="search_user">Search user</string>
 </resources>

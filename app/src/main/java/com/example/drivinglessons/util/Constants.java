@@ -1,5 +1,7 @@
 package com.example.drivinglessons.util;
 
+import androidx.annotation.NonNull;
+
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -23,14 +25,30 @@ public class Constants
         return OWNER_EMAIL.equals(email);
     }
 
-    public static Period periodBetween(Date first, Date second)
+    public static Period periodBetween(@NonNull Date first, @NonNull Date second)
     {
         LocalDate f = first.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), s = second.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         return Period.between(f, s);
     }
 
-    public static Duration durationBetween(Date first, Date second)
+    public static Duration durationBetween(@NonNull Date first, @NonNull Date second)
     {
         return Duration.between(first.toInstant(), second.toInstant());
+    }
+
+    @NonNull
+    public static String fixName(@NonNull String name)
+    {
+        if (name.isEmpty()) return "";
+
+        StringBuilder stringBuilder = new StringBuilder(name);
+
+        stringBuilder.setCharAt(0, (char) (stringBuilder.charAt(0) - 'a' + 'A'));
+
+        for (int i = 0; i < stringBuilder.length() - 1; i++)
+            if (stringBuilder.charAt(i) == ' ' || stringBuilder.charAt(i) == '-')
+                stringBuilder.setCharAt(i + 1, (char) (stringBuilder.charAt(i + 1) - 'a' + 'A'));
+
+        return stringBuilder.toString();
     }
 }

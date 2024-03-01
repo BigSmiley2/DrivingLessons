@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.drivinglessons.R;
@@ -21,10 +20,6 @@ import java.util.Locale;
 
 public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter.ViewHolder>
 {
-    public interface Runnable
-    {
-        void run(ViewHolder viewHolder, final int position, Lesson lesson);
-    }
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         public TextView title, start, end, info;
@@ -34,23 +29,19 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
         {
             super(itemview);
 
-            title = itemview.findViewById(R.id.textViewLessonAdapterTitle);
-            start = itemview.findViewById(R.id.textViewLessonAdapterStartDate);
-            end = itemview.findViewById(R.id.textViewLessonAdapterEndDate);
-            info = itemview.findViewById(R.id.textViewLessonAdapterInfo);
-            line = itemview.findViewById(R.id.viewLessonAdapterLine);
+            title = itemview.findViewById(R.id.textViewAdapterLessonTitle);
+            start = itemview.findViewById(R.id.textViewAdapterLessonStartDate);
+            end = itemview.findViewById(R.id.textViewAdapterLessonEndDate);
+            info = itemview.findViewById(R.id.textViewAdapterLessonInfo);
+            line = itemview.findViewById(R.id.viewAdapterLessonLine);
         }
     }
-
-    private final Runnable onClick, onLongClick;
     private boolean isAdmin, isConfirmed, isPast, isAssigned;
     private String name;
 
-    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, Runnable onClick, Runnable onLongClick, boolean isConfirmed, boolean isPast, boolean isAssigned, boolean isAdmin, String name)
+    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, boolean isConfirmed, boolean isPast, boolean isAssigned, boolean isAdmin, String name)
     {
         super(options);
-        this.onClick = onClick;
-        this.onLongClick = onLongClick;
         this.isPast = isPast;
         this.isConfirmed = isConfirmed;
         this.isAssigned = isAssigned;
@@ -58,30 +49,20 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
         this.name = name;
     }
 
-    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, Runnable onClick, Runnable onLongClick)
-    {
-        this(options, onClick, onLongClick, false, false, false, false, "");
-    }
     public LessonAdapter(FirebaseRecyclerOptions<Lesson> options)
     {
-        this(options, null, null);
+        this(options, false, false, false, false, "");
     }
 
     public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, @NonNull LessonAdapter adapter)
     {
-        this(options, adapter.onClick, adapter.onLongClick, adapter.isConfirmed, adapter.isPast, adapter.isAssigned, adapter.isAdmin, adapter.name);
+        this(options, adapter.isConfirmed, adapter.isPast, adapter.isAssigned, adapter.isAdmin, adapter.name);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int ViewType)
     {
         ViewHolder viewHolder = new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_lesson, parent, false));
-        viewHolder.itemView.setOnClickListener(v -> onClick.run(viewHolder, viewHolder.getAbsoluteAdapterPosition(), getItem(viewHolder.getAbsoluteAdapterPosition())));
-        viewHolder.itemView.setOnLongClickListener(v ->
-        {
-            onLongClick.run(viewHolder, viewHolder.getAbsoluteAdapterPosition(), getItem(viewHolder.getAbsoluteAdapterPosition()));
-            return true;
-        });
         return viewHolder;
     }
 

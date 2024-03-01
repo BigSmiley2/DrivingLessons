@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -252,7 +251,7 @@ public class InputFragment extends Fragment implements Parcelable
                 fullNameInputLayout.setError("name must be separated by a dash or a space");
             else fullNameInputLayout.setError(null);
 
-            user.name = fixName(str);
+            user.name = Constants.fixName(str);
         });
 
         emailInput.addTextChangedListener((TextListener) s ->
@@ -366,7 +365,7 @@ public class InputFragment extends Fragment implements Parcelable
                 if (isStudent)
                 {
                     Student student = new Student(user, studentData.theory);
-                    fm.saveStudent(student, balance, bytes, new FirebaseRunnable()
+                    fm.saveStudent(requireContext(), student, balance, bytes, new FirebaseRunnable()
                     {
                         @Override
                         public void run()
@@ -385,7 +384,7 @@ public class InputFragment extends Fragment implements Parcelable
                 else
                 {
                     Teacher teacher = new Teacher(user, teacherData.manual, teacherData.tester, teacherData.cost, isRegister ? now : null);
-                    fm.saveTeacher(teacher, balance, bytes, new FirebaseRunnable()
+                    fm.saveTeacher(requireContext(), teacher, balance, bytes, new FirebaseRunnable()
                     {
                         @Override
                         public void run()
@@ -435,22 +434,6 @@ public class InputFragment extends Fragment implements Parcelable
     }
 
     @NonNull
-    private String fixName(@NonNull String name)
-    {
-        if (name.isEmpty()) return "";
-
-        StringBuilder stringBuilder = new StringBuilder(name);
-
-        stringBuilder.setCharAt(0, (char) (stringBuilder.charAt(0) - 'a' + 'A'));
-
-        for (int i = 0; i < stringBuilder.length() - 1; i++)
-            if (stringBuilder.charAt(i) == ' ' || stringBuilder.charAt(i) == '-')
-                stringBuilder.setCharAt(i + 1, (char) (stringBuilder.charAt(i + 1) - 'a' + 'A'));
-
-        return stringBuilder.toString();
-    }
-
-    @NonNull
     private static byte[] bitmapToBytes(Bitmap image)
     {
         return bitmapToBytes(image, 100);
@@ -463,18 +446,6 @@ public class InputFragment extends Fragment implements Parcelable
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, quality, baos);
         return baos.toByteArray();
-    }
-
-    private static String encodeBitmap(Bitmap bitmap)
-    {
-        byte[] bytes = bitmapToBytes(bitmap);
-        return Base64.encodeToString(bytes, Base64.DEFAULT);
-    }
-
-    private static Bitmap decodeBitmap(String image)
-    {
-        byte[] decodedString = Base64.decode(image, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
     private void clearFocus()

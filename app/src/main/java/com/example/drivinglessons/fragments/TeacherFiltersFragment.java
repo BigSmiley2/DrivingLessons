@@ -157,15 +157,15 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
 
     protected TeacherFiltersFragment(@NonNull Parcel in)
     {
-        data = in.readParcelable(Data.class.getClassLoader());
         isOwner = in.readByte() == 1;
+        data = in.readParcelable(Data.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags)
     {
-        dest.writeParcelable(data, flags);
         dest.writeByte((byte) (isOwner ? 1 : 0));
+        dest.writeParcelable(data, flags);
     }
 
     @Override

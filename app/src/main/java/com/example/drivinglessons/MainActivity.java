@@ -8,12 +8,9 @@ import androidx.fragment.app.FragmentContainerView;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
 import com.example.drivinglessons.fragments.LessonViewFragment;
 import com.example.drivinglessons.fragments.LoginFragment;
 import com.example.drivinglessons.fragments.MainOfflineFragment;
-import com.example.drivinglessons.fragments.StudentInfoFragment;
-import com.example.drivinglessons.fragments.TeacherInfoFragment;
 import com.example.drivinglessons.fragments.UserInfoFragment;
 import com.example.drivinglessons.fragments.UserViewFragment;
 import com.example.drivinglessons.util.SharedPreferencesManager;
@@ -56,7 +53,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
     private void replaceFragments()
     {
-        getSupportFragmentManager().beginTransaction().replace(container.getId(),pagerFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(container.getId(), pagerFragment).commit();
     }
 
     private void createFragments()
@@ -79,8 +76,8 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     private void createSignedIn(@NonNull ArrayList<T> fragments)
     {
         boolean isStudent = spm.getIsStudent();
-        fragments.add((T) UserViewFragment.newInstance(!isStudent));
+        fragments.add((T) UserViewFragment.newInstance(false, !isStudent));
         fragments.add((T) UserInfoFragment.newInstance(fm.getCurrentUid(), isStudent));
-        if (spm.getHasTeacher()) fragments.add((T) LessonViewFragment.newInstance());
+        if (spm.getHasTeacher() || !isStudent) fragments.add((T) LessonViewFragment.newInstance(fm.getCurrentUid(), isStudent));
     }
 }

@@ -7,8 +7,6 @@ import androidx.fragment.app.FragmentContainerView;
 import android.os.Bundle;
 
 import com.example.drivinglessons.fragments.InputFragment;
-import com.example.drivinglessons.fragments.InputStudentFragment;
-import com.example.drivinglessons.fragments.InputTeacherFragment;
 
 public class InputActivity extends AppCompatActivity
 {
