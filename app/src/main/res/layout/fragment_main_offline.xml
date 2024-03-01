@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     tools:context=".fragments.MainOfflineFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,13 +14,16 @@
             android:id="@+id/FrameLayoutFragmentMainOffline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/imageViewFragmentMainOffline" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageViewFragmentMainOffline"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_margin="16dp"

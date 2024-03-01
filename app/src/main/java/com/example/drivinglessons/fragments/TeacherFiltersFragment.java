@@ -1,5 +1,6 @@
 package com.example.drivinglessons.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -77,6 +78,7 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
     private boolean isOwner;
     private Data data;
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch manualInput, testerInput;
     private TextView testerText;
 

@@ -1,14 +1,17 @@
 package com.example.drivinglessons.dialogs;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -21,7 +24,7 @@ import com.example.drivinglessons.util.dialogs.DialogCancel;
 
 public class LessonFiltersDialogFragment extends DialogFragment implements Parcelable
 {
-    private static final String TITLE = "lesson filters", DATA = "data", IS_OWNER = "is owner", CANCEL = "cancel";
+    private static final String TITLE = "lesson filters", DATA = "data", IS_OWNER = "is owner";
 
     public static class Data implements Parcelable
     {
@@ -86,6 +89,7 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
     private Data data;
     private DialogCancel cancel;
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch confirmInput, pastInput, assignedInput;
     private TextView assignedText;
 
@@ -180,6 +184,8 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
         if (window != null)
         {
             window.requestFeature(Window.FEATURE_NO_TITLE);
+            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            window.setGravity(Gravity.BOTTOM);
             //window.setBackgroundDrawableResource(R.drawable.dialog_background);
         }
         return dialog;
@@ -189,7 +195,7 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
     public void onCancel(@NonNull DialogInterface dialog)
     {
         super.onCancel(dialog);
-        cancel.cancel();
+        if (cancel != null) cancel.cancel();
     }
 
     protected LessonFiltersDialogFragment(@NonNull Parcel in)

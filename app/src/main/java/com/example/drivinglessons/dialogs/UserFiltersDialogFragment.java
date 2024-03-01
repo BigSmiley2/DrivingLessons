@@ -5,11 +5,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -137,6 +138,8 @@ public class UserFiltersDialogFragment extends DialogFragment implements Parcela
         if (window != null)
         {
             window.requestFeature(Window.FEATURE_NO_TITLE);
+            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            window.setGravity(Gravity.BOTTOM);
             //window.setBackgroundDrawableResource(R.drawable.dialog_background);
         }
         return dialog;
@@ -146,7 +149,7 @@ public class UserFiltersDialogFragment extends DialogFragment implements Parcela
     public void onCancel(@NonNull DialogInterface dialog)
     {
         super.onCancel(dialog);
-        cancel.cancel();
+        if (cancel != null) cancel.cancel();
     }
 
     protected UserFiltersDialogFragment(@NonNull Parcel in)
