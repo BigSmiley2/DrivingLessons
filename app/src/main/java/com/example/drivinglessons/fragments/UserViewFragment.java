@@ -1,14 +1,18 @@
 package com.example.drivinglessons.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.drivinglessons.InfoActivity;
+import com.example.drivinglessons.MainActivity;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.adapters.UserAdapter;
 import com.example.drivinglessons.dialogs.UserFiltersDialogFragment;
@@ -24,6 +30,7 @@ import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
+import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.validation.TextListener;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.textfield.TextInputLayout;
@@ -33,10 +40,10 @@ import java.util.regex.Pattern;
 
 public class UserViewFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "users", SEARCH = "search", IS_OWNER = "is owner", IS_STUDENT = "is student", USER_FILTERS = "user filters";
+    private static final String FRAGMENT_TITLE = "users", ID = "id", SEARCH = "search", IS_OWNER = "is owner", IS_STUDENT = "is student", USER_FILTERS = "user filters";
 
     private boolean isOwner, isStudent;
-    private String search;
+    private String search, id;
     private UserFiltersDialogFragment userFilters;
 
     private FirebaseManager fm;
@@ -50,29 +57,30 @@ public class UserViewFragment extends Fragment implements Parcelable
     public UserViewFragment() {}
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner)
+    public static UserViewFragment newInstance(boolean isOwner, String id)
     {
-        return newInstance(isOwner, true);
+        return newInstance(isOwner, true, id);
     }
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isStudent)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isStudent, String id)
     {
-        return newInstance(isOwner, isStudent, UserFiltersDialogFragment.newInstance(isStudent));
+        return newInstance(isOwner, isStudent, id, UserFiltersDialogFragment.newInstance(isStudent));
     }
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isStudent, UserFiltersDialogFragment userFilters)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isStudent, String id, UserFiltersDialogFragment userFilters)
     {
-        return newInstance("", isOwner, isStudent, userFilters);
+        return newInstance(isOwner, isStudent, id, "", userFilters);
     }
     @NonNull
-    public static UserViewFragment newInstance(String search, boolean isOwner, boolean isStudent, UserFiltersDialogFragment userFilters)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isStudent, String id, String search, UserFiltersDialogFragment userFilters)
     {
         UserViewFragment fragment = new UserViewFragment();
 
         /* saving data state */
         Bundle args = new Bundle();
+        args.putString(ID, id);
         args.putString(SEARCH, search);
         args.putBoolean(IS_OWNER, isOwner);
         args.putBoolean(IS_STUDENT, isStudent);
@@ -92,6 +100,7 @@ public class UserViewFragment extends Fragment implements Parcelable
         Bundle args = getArguments();
         if (args != null)
         {
+            id = args.getString(ID);
             search = args.getString(SEARCH);
             isOwner = args.getBoolean(IS_OWNER);
             isStudent = args.getBoolean(IS_STUDENT);
@@ -117,13 +126,26 @@ public class UserViewFragment extends Fragment implements Parcelable
         searchInput = view.findViewById(R.id.editTextFragmentUserViewSearch);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setItemAnimator(null);
 
-        adapter = new UserAdapter(new FirebaseRecyclerOptions.Builder<User>().setQuery(fm.getUsersQuery(isStudent), this::getUser).build());
+        adapter = new UserAdapter(new FirebaseRecyclerOptions.Builder<User>().setQuery(fm.getUsersQuery(isStudent), this::getUser).build(), this::createOptions);
         recyclerView.setAdapter(adapter);
 
-        userFilters.setCancel(this::setFilters);
+        filters.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                filters.setOnClickListener(null);
 
-        filters.setOnClickListener(v -> userFilters.show(getChildFragmentManager(), null));
+                userFilters.show(getChildFragmentManager(), null);
+                userFilters.setCancel(() ->
+                {
+                    filters.setOnClickListener(this);
+                    setFilters();
+                });
+            }
+        });
 
         searchInput.addTextChangedListener((TextListener) s ->
         {
@@ -150,9 +172,17 @@ public class UserViewFragment extends Fragment implements Parcelable
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume()
+    {
+        super.onResume();
         adapter.startListening();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        adapter.stopListening();
     }
 
     private void setFilters()
@@ -187,8 +217,65 @@ public class UserViewFragment extends Fragment implements Parcelable
         return isStudent ? snapshot.getValue(Student.class) : snapshot.getValue(Teacher.class);
     }
 
+    private void createOptions(@NonNull UserAdapter.ViewHolder viewHolder, final int position, User user)
+    {
+        PopupMenu menu = new PopupMenu(requireContext(), viewHolder.options);
+
+        MenuItem info, assign, delete;
+
+        Menu m = menu.getMenu();
+
+        menu.getMenuInflater().inflate(R.menu.menu_user_options, m);
+
+        info = m.findItem(R.id.menuItemUserOptionsMenuInfo);
+        assign = m.findItem(R.id.menuItemUserOptionsMenuAssign);
+        delete = m.findItem(R.id.menuItemUserOptionsMenuDelete);
+
+        assign.setVisible(!isOwner && !isStudent);
+        delete.setVisible(isOwner);
+
+        menu.setOnMenuItemClickListener(menuItem ->
+        {
+            final int id = menuItem.getItemId();
+
+            if (id == info.getItemId()) startInfoActivity(user);
+            else if (id == assign.getItemId()) assign(user);
+            else if (id == delete.getItemId());
+            else return false;
+
+            return true;
+        });
+
+        menu.show();
+    }
+
+    private void startInfoActivity(User user)
+    {
+        Intent intent = new Intent(requireContext(), InfoActivity.class);
+        intent.putExtra(InfoActivity.USER, user);
+        startActivity(intent);
+    }
+
+    private void assign(User user)
+    {
+        if (isOwner)
+        {
+            Intent intent = requireActivity().getIntent();
+            intent.putExtra("user", user);
+            requireActivity().finish();
+        }
+        else if (!isStudent) fm.setCurrentTeacher(requireContext(), user.id, new FirebaseRunnable() {
+            @Override
+            public void run()
+            {
+                ((MainActivity<?>) requireActivity()).createAndLinkFragments();
+            }
+        });
+    }
+
     protected UserViewFragment(@NonNull Parcel in)
     {
+        id = in.readString();
         search = in.readString();
         isOwner = in.readByte() == 1;
         isStudent = in.readByte() == 1;
@@ -198,6 +285,7 @@ public class UserViewFragment extends Fragment implements Parcelable
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags)
     {
+        dest.writeString(id);
         dest.writeString(search);
         dest.writeByte((byte) (isOwner ? 1 : 0));
         dest.writeByte((byte) (isStudent ? 1 : 0));

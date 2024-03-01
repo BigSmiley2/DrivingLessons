@@ -10,6 +10,7 @@
     <string name="users"><b>Users</b></string>
     <string name="lesson_filters"><b>Lesson filters</b></string>
     <string name="went_wrong_error">something went wrong</string>
+    <string name="assigned_teacher">the teacher has been assigned</string>
     <string name="email_or_password_incorrect">email or password are incorrect</string>
     <string name="reset_email_failure">couldn\'t send password reset email</string>
     <string name="reset_email_success">password reset email sent successfully</string>
@@ -24,4 +25,7 @@
     <string name="confirm_password">Confirm password</string>
     <string name="full_name">Full name</string>
     <string name="search_user">Search user</string>
+    <string name="options"><b>⋮</b></string>
+    <string name="assign"><b>Assign</b></string>
+    <string name="delete"><b>Delete</b></string>
 </resources>

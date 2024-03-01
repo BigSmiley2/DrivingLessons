@@ -8,6 +8,18 @@
     tools:context=".adapters.LessonAdapter">
 
     <TextView
+        android:id="@+id/textViewAdapterLessonOptions"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:text="@string/options"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewAdapterLessonInfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textViewAdapterLessonTitle" />
+
+    <TextView
         android:id="@+id/textViewAdapterLessonTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,4 +70,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonInfo" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

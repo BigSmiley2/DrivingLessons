@@ -49,6 +49,60 @@ public class FirebaseManager
         return fm == null ? fm = new FirebaseManager(context) : fm;
     }
 
+    public void setCurrentTeacher(Context c, String teacherId, FirebaseRunnable success)
+    {
+        if (spm.getIsStudent())
+            setStudentTeacher(getCurrentUid(), teacherId, new FirebaseRunnable()
+            {
+                @Override
+                public void run()
+                {
+                    spm.putHasTeacher(true);
+                    toastS(c, R.string.assigned_teacher);
+                    success.runAll();
+                }
+            }, new FirebaseRunnable()
+            {
+                @Override
+                public void run(Exception e)
+                {
+                    super.run(e);
+                    toastS(c, R.string.went_wrong_error);
+                }
+            });
+        else toastS(c, R.string.went_wrong_error);
+    }
+
+    public void setStudentTeacher(Context c, String id, String teacherId)
+    {
+        setStudentTeacher(id, teacherId, new FirebaseRunnable()
+        {
+            @Override
+            public void run()
+            {
+                toastS(c, R.string.assigned_teacher);
+            }
+        }, new FirebaseRunnable()
+        {
+            @Override
+            public void run(Exception e)
+            {
+                super.run(e);
+                toastS(c, R.string.went_wrong_error);
+            }
+        });
+    }
+
+    private void setStudentTeacher(String id, String teacherId, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        Student student = new Student();
+        student.teacherId = teacherId;
+
+        db.getReference("student").child(id).updateChildren(student.toMap())
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
     public StorageReference getStorageReference(String path)
     {
         return st.getReference(path);

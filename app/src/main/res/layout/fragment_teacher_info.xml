@@ -10,28 +10,31 @@
         android:id="@+id/textViewFragmentTeacherInfoManual"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="manual"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoSeniority" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoTester" />
 
     <TextView
         android:id="@+id/textViewFragmentTeacherInfoTester"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="tester"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoManual" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoSeniority" />
 
     <TextView
         android:id="@+id/textViewFragmentTeacherInfoCost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="cost"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoTester" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoManual" />
 
     <TextView
         android:id="@+id/textViewFragmentTeacherInfoSeniority"

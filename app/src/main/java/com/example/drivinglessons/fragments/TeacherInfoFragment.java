@@ -50,7 +50,7 @@ public class TeacherInfoFragment extends Fragment implements Parcelable
 
         manual = view.findViewById(R.id.textViewFragmentTeacherInfoManual);
         tester = view.findViewById(R.id.textViewFragmentTeacherInfoTester);
-        cost = view.findViewById(R.id.editTextFragmentInputTeacherCost);
+        cost = view.findViewById(R.id.textViewFragmentTeacherInfoCost);
         seniority = view.findViewById(R.id.textViewFragmentTeacherInfoSeniority);
     }
 

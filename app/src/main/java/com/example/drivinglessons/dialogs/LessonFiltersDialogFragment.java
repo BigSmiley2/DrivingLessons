@@ -167,7 +167,7 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
 
     public Data getData()
     {
-        return new Data(data);
+        return data == null ? null : new Data(data);
     }
 
     public void setCancel(DialogCancel cancel)

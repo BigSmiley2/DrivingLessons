@@ -111,14 +111,29 @@ public class LessonViewFragment extends Fragment implements Parcelable
         searchInput = view.findViewById(R.id.editTextFragmentLessonViewSearch);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setItemAnimator(null);
 
-        adapter = new LessonAdapter(new FirebaseRecyclerOptions.Builder<Lesson>().setQuery(isOwner ? fm.getTestLessonsQuery() : fm.getUserLessonsQuery(isStudent, id), this::getLesson).build());
+        adapter = new LessonAdapter(new FirebaseRecyclerOptions.Builder<Lesson>().setQuery(isOwner ? fm.getTestLessonsQuery() : fm.getUserLessonsQuery(isStudent, id), this::getLesson).build(), (viewHolder, position, lesson) ->
+        {
+
+        });
         recyclerView.setAdapter(adapter);
-        adapter.startListening();
 
-        lessonFilters.setCancel(this::setFilters);
+        filters.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                filters.setOnClickListener(null);
 
-        filters.setOnClickListener(v -> lessonFilters.show(getChildFragmentManager(), null));
+                lessonFilters.show(getChildFragmentManager(), null);
+                lessonFilters.setCancel(() ->
+                {
+                    filters.setOnClickListener(this);
+                    setFilters();
+                });
+            }
+        });
 
         searchInput.addTextChangedListener((TextListener) s ->
         {
@@ -142,6 +157,20 @@ public class LessonViewFragment extends Fragment implements Parcelable
 
         adapter.setName(search);
         setFilters();
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        adapter.stopListening();
     }
 
     private Lesson getLesson(@NonNull DataSnapshot snapshot)

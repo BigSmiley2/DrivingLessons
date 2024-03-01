@@ -20,9 +20,13 @@ import java.util.Locale;
 
 public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter.ViewHolder>
 {
+    public interface Runnable
+    {
+        void run(ViewHolder viewHolder, final int position, Lesson lesson);
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView title, start, end, info;
+        public TextView title, start, end, info, options;
         public View line;
 
         public ViewHolder(@NonNull View itemview)
@@ -33,37 +37,42 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
             start = itemview.findViewById(R.id.textViewAdapterLessonStartDate);
             end = itemview.findViewById(R.id.textViewAdapterLessonEndDate);
             info = itemview.findViewById(R.id.textViewAdapterLessonInfo);
+            options = itemview.findViewById(R.id.textViewAdapterLessonOptions);
             line = itemview.findViewById(R.id.viewAdapterLessonLine);
         }
     }
-    private boolean isAdmin, isConfirmed, isPast, isAssigned;
+
+    private final Runnable onOptionsClick;
+    private final boolean isAdmin;
+    private boolean isConfirmed, isPast, isAssigned;
     private String name;
 
-    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, boolean isConfirmed, boolean isPast, boolean isAssigned, boolean isAdmin, String name)
+    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, boolean isConfirmed, boolean isPast, boolean isAssigned, boolean isAdmin, String name, Runnable onOptionsClick)
     {
         super(options);
-        this.isPast = isPast;
         this.isConfirmed = isConfirmed;
+        this.isPast = isPast;
         this.isAssigned = isAssigned;
         this.isAdmin = isAdmin;
         this.name = name;
+        this.onOptionsClick = onOptionsClick;
     }
 
-    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options)
+    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, Runnable onOptionsClick)
     {
-        this(options, false, false, false, false, "");
+        this(options, false, false, false, false, "", onOptionsClick);
     }
 
-    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, @NonNull LessonAdapter adapter)
+    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, @NonNull LessonAdapter other)
     {
-        this(options, adapter.isConfirmed, adapter.isPast, adapter.isAssigned, adapter.isAdmin, adapter.name);
+        this(options, other.isConfirmed, other.isPast, other.isAssigned, other.isAdmin, other.name, other.onOptionsClick);
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int ViewType)
     {
-        ViewHolder viewHolder = new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_lesson, parent, false));
-        return viewHolder;
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_lesson, parent, false));
     }
 
     @Override
@@ -73,6 +82,7 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
         holder.start.setText(toString(lesson.start));
         holder.end.setText(toString(lesson.end));
         holder.info.setText(String.format(Locale.ROOT, "cost: %.2f₪", lesson.cost));
+        holder.options.setOnClickListener(v -> onOptionsClick.run(holder, holder.getAbsoluteAdapterPosition(), lesson));
 
         if (isFiltered(lesson))
         {

@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,11 +23,14 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewHolder>
 {
+    public interface Runnable
+    {
+        void run(ViewHolder viewHolder, final int position, User user);
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView name, email, date, info;
+        public TextView name, email, date, info, options;
         public ImageView imageView;
-        ConstraintLayout layout;
 
         public ViewHolder(@NonNull View itemview)
         {
@@ -36,35 +38,36 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
 
             imageView = itemview.findViewById(R.id.imageViewAdapterUser);
 
-            layout = itemview.findViewById(R.id.constraintLayoutAdapterUser);
-
             name = itemview.findViewById(R.id.textViewAdapterUserFullName);
             email = itemview.findViewById(R.id.textViewAdapterUserEmail);
             date = itemview.findViewById(R.id.textViewAdapterUserDate);
+            options = itemview.findViewById(R.id.textViewAdapterUserOptions);
             info = itemview.findViewById(R.id.textViewAdapterUserInfo);
-        }
+         }
     }
 
     private FirebaseManager fm;
     private Context c;
+    private final Runnable onOptionsClick;
     private boolean isManual, isTester, isTheory;
     private String name;
-    public UserAdapter(FirebaseRecyclerOptions<User> options, boolean isManual, boolean isTester, boolean isTheory)
+    public UserAdapter(FirebaseRecyclerOptions<User> options, boolean isManual, boolean isTester, boolean isTheory, String name, Runnable onOptionsClick)
     {
         super(options);
         this.isManual = isManual;
         this.isTester = isTester;
         this.isTheory = isTheory;
-        this.name = "";
+        this.name = name;
+        this.onOptionsClick = onOptionsClick;
     }
 
-    public UserAdapter(FirebaseRecyclerOptions<User> options)
+    public UserAdapter(FirebaseRecyclerOptions<User> options, Runnable onOptionsClick)
     {
-        this(options, false, false, false);
+        this(options, false, false, false, "", onOptionsClick);
     }
-    public UserAdapter(FirebaseRecyclerOptions<User> options, @NonNull UserAdapter adapter)
+    public UserAdapter(FirebaseRecyclerOptions<User> options, @NonNull UserAdapter other)
     {
-        this(options, adapter.isManual, adapter.isTester, adapter.isTheory);
+        this(options, other.isManual, other.isTester, other.isTheory, other.name, other.onOptionsClick);
     }
 
     @NonNull
@@ -73,8 +76,7 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
     {
         c = parent.getContext();
         fm = FirebaseManager.getInstance(c);
-        ViewHolder holder = new ViewHolder(LayoutInflater.from(c).inflate(R.layout.adapter_user, parent, false));
-        return holder;
+        return new ViewHolder(LayoutInflater.from(c).inflate(R.layout.adapter_user, parent, false));
     }
 
     @Override
@@ -87,6 +89,7 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
         holder.name.setText(user.name);
         holder.email.setText(user.email);
         holder.date.setText(Constants.DATE_FORMAT.format(user.birthdate));
+        holder.options.setOnClickListener(v -> onOptionsClick.run(holder, position, user));
 
         if (user instanceof Teacher)
         {
