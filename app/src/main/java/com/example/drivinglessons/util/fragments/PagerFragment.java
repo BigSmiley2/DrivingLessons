@@ -18,27 +18,29 @@ import java.util.ArrayList;
 
 public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
 {
-    private static final String IS_SWIPEABLE = "is swipeable", FRAGMENTS = "fragments";
+    private static final String IS_SWIPEABLE = "is swipeable", FRAGMENTS = "fragments", POS = "pos";
     private ViewPager2 viewPager;
     private TabLayoutMediator tabLayoutMediator;
     private ArrayList<T> fragments;
     private boolean isSwipeable;
+    private int pos;
 
     public PagerFragment() {}
     @NonNull
-    public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments)
+    public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments, int pos)
     {
-     return newInstance(fragments, true);
+     return newInstance(fragments, pos, true);
     }
 
     @NonNull
-    public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments, boolean isSwipeable)
+    public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments, int pos, boolean isSwipeable)
     {
         PagerFragment<T> fragment = new PagerFragment<>();
 
         /* saving data state */
         Bundle args = new Bundle();
         args.putBoolean(IS_SWIPEABLE, isSwipeable);
+        args.putInt(POS, pos);
         args.putParcelableArrayList(FRAGMENTS, fragments);
         fragment.setArguments(args);
 
@@ -53,6 +55,7 @@ public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
         if (args != null)
         {
             isSwipeable = args.getBoolean(IS_SWIPEABLE);
+            pos = args.getInt(POS);
             fragments = args.getParcelableArrayList(FRAGMENTS);
         }
     }
@@ -60,14 +63,7 @@ public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_pager, container, false);
-
-        viewPager = view.findViewById(R.id.viewPagerPagerFragment);
-        tabLayoutMediator = new TabLayoutMediator(view.findViewById(R.id.tabLayoutPagerFragment), viewPager, (tab, position) -> tab.setText(getFragmentTitle(position)));
-
-        viewPager.setUserInputEnabled(isSwipeable);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_pager, container, false);
     }
 
     @Override
@@ -75,7 +71,13 @@ public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
+        viewPager = view.findViewById(R.id.viewPagerPagerFragment);
+        tabLayoutMediator = new TabLayoutMediator(view.findViewById(R.id.tabLayoutPagerFragment), viewPager, (tab, position) -> tab.setText(getFragmentTitle(position)));
+
+        setSwipeable(isSwipeable);
         viewPager.setAdapter(new PagerAdapter<>(requireActivity(), fragments));
+        viewPager.setCurrentItem(pos);
+
         tabLayoutMediator.attach();
     }
 

@@ -84,7 +84,12 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
         holder.info.setText(String.format(Locale.ROOT, "cost: %.2f₪", lesson.cost));
         holder.options.setOnClickListener(v -> onOptionsClick.run(holder, holder.getAbsoluteAdapterPosition(), lesson));
 
-        if (isFiltered(lesson))
+        setVisibility(holder, isFiltered(lesson));
+    }
+
+    private void setVisibility(ViewHolder holder, boolean visible)
+    {
+        if (visible)
         {
             holder.itemView.setVisibility(View.VISIBLE);
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -95,7 +100,6 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
         }
     }
-
     private boolean isFiltered(Lesson lesson)
     {
         return (!isAdmin || isAssigned == (lesson.teacherId != null)) &&

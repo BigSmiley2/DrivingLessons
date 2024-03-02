@@ -144,7 +144,7 @@ public class LoginFragment extends Fragment implements Parcelable
                     @Override
                     public void run()
                     {
-                        ((MainActivity<?>) requireActivity()).createAndLinkFragments();
+                        ((MainActivity<?>) requireActivity()).refresh();
                     }
                 }, new FirebaseRunnable() {
                     @Override
@@ -155,7 +155,7 @@ public class LoginFragment extends Fragment implements Parcelable
             }
         });
 
-        signup.setOnClickListener(v -> startActivity.launch(new Intent(getActivity(), InputActivity.class)));
+        signup.setOnClickListener(v -> startActivity.launch(new Intent(requireActivity(), InputActivity.class)));
 
         forgot.setOnClickListener(new View.OnClickListener()
         {

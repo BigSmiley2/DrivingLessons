@@ -1,4 +1,4 @@
-package com.example.drivinglessons.fragments;
+package com.example.drivinglessons.fragments.input;
 
 import android.os.Bundle;
 import android.os.Parcel;
@@ -183,7 +183,7 @@ public class InputTeacherFragment extends Fragment implements Parcelable
 
     public Data getData()
     {
-        return new Data(data);
+        return data == null ? null : new Data(data);
     }
 
     public void addCostError(String error)

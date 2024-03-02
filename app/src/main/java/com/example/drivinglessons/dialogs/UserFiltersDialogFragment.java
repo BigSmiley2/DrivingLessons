@@ -18,8 +18,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
-import com.example.drivinglessons.fragments.StudentFiltersFragment;
-import com.example.drivinglessons.fragments.TeacherFiltersFragment;
+import com.example.drivinglessons.fragments.filters.StudentFiltersFragment;
+import com.example.drivinglessons.fragments.filters.TeacherFiltersFragment;
 import com.example.drivinglessons.util.dialogs.DialogCancel;
 
 public class UserFiltersDialogFragment extends DialogFragment implements Parcelable

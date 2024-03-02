@@ -49,7 +49,14 @@ public class FirebaseManager
         return fm == null ? fm = new FirebaseManager(context) : fm;
     }
 
-    public void setCurrentTeacher(Context c, String teacherId, FirebaseRunnable success)
+    public Query getUserStudentsQuery()
+    {
+        if (!spm.getIsStudent())
+            return getDatabaseQuery("student").orderByChild("teacherId").equalTo(getCurrentUid());
+        return null;
+    }
+
+    public void setUserTeacher(Context c, String teacherId, FirebaseRunnable success)
     {
         if (spm.getIsStudent())
             setStudentTeacher(getCurrentUid(), teacherId, new FirebaseRunnable()
@@ -239,7 +246,7 @@ public class FirebaseManager
                                             public void run()
                                             {
                                                 success.runAll();
-                                                complete.runAll();
+                                                //complete.runAll();
                                             }
                                         }, failure);
                                     }
@@ -294,7 +301,7 @@ public class FirebaseManager
                                             public void run()
                                             {
                                                 success.runAll();
-                                                complete.runAll();
+                                                //complete.runAll();
                                             }
                                         }, failure);
                                     }
@@ -472,15 +479,14 @@ public class FirebaseManager
         {
             Student student = (Student) user;
 
-            boolean hasTeacher = student.teacherId != null;
-
-            spm.put(true, hasTeacher, null, isOwner);
+            spm.put(true, student.teacherId == null ? null : true, null, isOwner);
 
             getStudentCanTest(user, success, failure);
         }
         else
         {
             spm.put(false, null, null, isOwner);
+
             success.runAll(user);
         }
     }

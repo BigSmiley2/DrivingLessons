@@ -9,8 +9,7 @@ import android.os.Bundle;
 
 import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.User;
-import com.example.drivinglessons.fragments.InputFragment;
-import com.example.drivinglessons.fragments.UserInfoFragment;
+import com.example.drivinglessons.fragments.info.UserInfoFragment;
 
 public class InfoActivity extends AppCompatActivity
 {

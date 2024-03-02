@@ -1,4 +1,4 @@
-package com.example.drivinglessons.fragments;
+package com.example.drivinglessons.fragments.info;
 
 import android.os.Bundle;
 import android.os.Parcel;

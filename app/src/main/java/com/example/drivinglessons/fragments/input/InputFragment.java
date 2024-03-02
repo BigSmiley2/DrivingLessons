@@ -1,4 +1,4 @@
-package com.example.drivinglessons.fragments;
+package com.example.drivinglessons.fragments.input;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -80,6 +80,29 @@ public class InputFragment extends Fragment implements Parcelable
     private Button buttonInput;
 
     public InputFragment() {}
+
+    @NonNull
+    public static InputFragment newInstance(User user)
+    {
+        boolean isStudent = user instanceof Student;
+        InputStudentFragment studentFragment = InputStudentFragment.newInstance();
+        InputTeacherFragment teacherFragment = InputTeacherFragment.newInstance();
+
+        if (isStudent)
+        {
+            Student student = (Student) user;
+
+            studentFragment = InputStudentFragment.newInstance(student.hasTheoryTest);
+        }
+        else
+        {
+            Teacher teacher = (Teacher) user;
+
+            teacherFragment = InputTeacherFragment.newInstance(teacher.hasManual, teacher.isTester, teacher.costPerHour);
+        }
+
+        return newInstance(user, isStudent, studentFragment, teacherFragment);
+    }
 
     @NonNull
     public static InputFragment newInstance()
@@ -182,7 +205,7 @@ public class InputFragment extends Fragment implements Parcelable
             emailInputLayout.setVisibility(View.GONE);
             passwordInputLayout.setVisibility(View.GONE);
             confirmPasswordInputLayout.setVisibility(View.GONE);
-            roleInput.setFocusable(false);
+            disableRole();
             fullNameInput.setOnEditorActionListener((v, actionId, event) ->
                     (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) && user.birthdate == null && createBirthdateDialog());
         }
@@ -334,6 +357,9 @@ public class InputFragment extends Fragment implements Parcelable
             @Override
             public void onClick(View view)
             {
+                buttonInput.setOnClickListener(null);
+                View.OnClickListener listener = this;
+
                 InputTeacherFragment.Data teacherData = teacherFragment.getData();
                 InputStudentFragment.Data studentData = studentFragment.getData();
 
@@ -351,10 +377,11 @@ public class InputFragment extends Fragment implements Parcelable
                     birthdateInputLayout.setError("birthdate mustn't be empty");
                 if (image == null) Toast.makeText(requireContext(), R.string.enter_image_first, Toast.LENGTH_SHORT).show();
 
-                if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null || (!isStudent && teacherData.cost == null) || image == null) return;
-
-                buttonInput.setOnClickListener(null);
-                View.OnClickListener listener = this;
+                if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null || (!isStudent && teacherData != null && teacherData.cost == null) || image == null)
+                {
+                    buttonInput.setOnClickListener(listener);
+                    return;
+                }
 
                 Date now = Calendar.getInstance().getTime();
 
@@ -362,7 +389,7 @@ public class InputFragment extends Fragment implements Parcelable
 
                 byte[] bytes = bitmapToBytes(image);
 
-                if (isStudent)
+                if (isStudent && studentData != null)
                 {
                     Student student = new Student(user, studentData.theory);
                     fm.saveStudent(requireContext(), student, balance, bytes, new FirebaseRunnable()
@@ -381,7 +408,7 @@ public class InputFragment extends Fragment implements Parcelable
                         }
                     });
                 }
-                else
+                else if (!isStudent && teacherData != null)
                 {
                     Teacher teacher = new Teacher(user, teacherData.manual, teacherData.tester, teacherData.cost, isRegister ? now : null);
                     fm.saveTeacher(requireContext(), teacher, balance, bytes, new FirebaseRunnable()
@@ -400,8 +427,19 @@ public class InputFragment extends Fragment implements Parcelable
                         }
                     });
                 }
+                else
+                {
+                    buttonInput.setOnClickListener(listener);
+                    Toast.makeText(requireContext(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    private void disableRole()
+    {
+        for (int i = 0; i < roleInput.getChildCount(); i++)
+            roleInput.getChildAt(i).setEnabled(false);
     }
 
     private boolean createBirthdateDialog()

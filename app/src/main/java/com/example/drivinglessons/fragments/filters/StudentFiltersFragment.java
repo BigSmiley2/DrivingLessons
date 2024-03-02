@@ -1,4 +1,4 @@
-package com.example.drivinglessons.fragments;
+package com.example.drivinglessons.fragments.filters;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,41 +15,38 @@ import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
 
-public class TeacherFiltersFragment extends Fragment implements Parcelable
+public class StudentFiltersFragment extends Fragment implements Parcelable
 {
-    private static final String TITLE = "teacher filters", DATA = "data", IS_OWNER = "is owner";
+    private static final String TITLE = "student filters", DATA = "data";
 
     public static class Data implements Parcelable
     {
-        public boolean isManual, isTester;
+        public boolean isTheory;
 
-        public Data(boolean isManual, boolean isTester)
+        public Data(boolean isTheory)
         {
-            this.isManual = isManual;
-            this.isTester = isTester;
+            this.isTheory = isTheory;
         }
 
         public Data()
         {
-            this(false, false);
+            this(false);
         }
 
         public Data(@NonNull Data data)
         {
-            this(data.isManual, data.isTester);
+            this(data.isTheory);
         }
 
         protected Data(@NonNull Parcel in)
         {
-            isManual = in.readByte() == 1;
-            isTester = in.readByte() == 1;
+            isTheory = in.readByte() == 1;
         }
 
         @Override
         public void writeToParcel(@NonNull Parcel dest, int flags)
         {
-            dest.writeByte((byte) (isManual ? 1 : 0));
-            dest.writeByte((byte) (isTester ? 1 : 0));
+            dest.writeByte((byte) (isTheory ? 1 : 0));
         }
 
         @Override
@@ -75,34 +71,31 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
         };
     }
 
-    private boolean isOwner;
     private Data data;
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private Switch manualInput, testerInput;
-    private TextView testerText;
+    private Switch theoryInput;
 
-    public TeacherFiltersFragment() {}
+    public StudentFiltersFragment() {}
 
     @NonNull
-    public static TeacherFiltersFragment newInstance(boolean isOwner)
+    public static StudentFiltersFragment newInstance()
     {
-        return newInstance(isOwner, new Data());
+        return newInstance(new Data());
     }
 
     @NonNull
-    public static TeacherFiltersFragment newInstance(boolean isOwner, boolean isManual, boolean isTester)
+    public static StudentFiltersFragment newInstance(boolean isTheory)
     {
-        return newInstance(isOwner, new Data(isManual, isTester));
+        return newInstance(new Data(isTheory));
     }
 
     @NonNull
-    public static TeacherFiltersFragment newInstance(boolean isOwner, Data data)
+    public static StudentFiltersFragment newInstance(Data data)
     {
-        TeacherFiltersFragment fragment = new TeacherFiltersFragment();
+        StudentFiltersFragment fragment = new StudentFiltersFragment();
 
         Bundle args = new Bundle();
-        args.putBoolean(IS_OWNER, isOwner);
         args.putParcelable(DATA, data);
         fragment.setArguments(args);
 
@@ -116,7 +109,6 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
         Bundle args = getArguments();
         if (args != null)
         {
-            isOwner = args.getBoolean(IS_OWNER);
             data = args.getParcelable(DATA);
         }
     }
@@ -125,7 +117,7 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_teacher_filters, container, false);
+        return inflater.inflate(R.layout.fragment_student_filters, container, false);
     }
 
     @Override
@@ -133,21 +125,11 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
     {
         super.onViewCreated(view, savedInstanceState);
 
-        manualInput = view.findViewById(R.id.switchFragmentTeacherFiltersManual);
-        testerInput = view.findViewById(R.id.switchFragmentTeacherFiltersTester);
-        testerText = view.findViewById(R.id.textViewFragmentTeacherFiltersTester);
+        theoryInput = view.findViewById(R.id.switchFragmentStudentFiltersTheory);
 
-        if (isOwner)
-        {
-            testerInput.setVisibility(View.VISIBLE);
-            testerText.setVisibility(View.VISIBLE);
-        }
+        theoryInput.setChecked(data.isTheory);
 
-        manualInput.setChecked(data.isManual);
-        testerInput.setChecked(data.isTester);
-
-        manualInput.setOnCheckedChangeListener((buttonView, isChecked) -> data.isManual = isChecked);
-        testerInput.setOnCheckedChangeListener((buttonView, isChecked) -> data.isTester = isChecked);
+        theoryInput.setOnCheckedChangeListener((buttonView, isChecked) -> data.isTheory = isChecked);
     }
 
     public Data getData()
@@ -155,16 +137,14 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
         return new Data(data);
     }
 
-    protected TeacherFiltersFragment(@NonNull Parcel in)
+    protected StudentFiltersFragment(@NonNull Parcel in)
     {
-        isOwner = in.readByte() == 1;
         data = in.readParcelable(Data.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags)
     {
-        dest.writeByte((byte) (isOwner ? 1 : 0));
         dest.writeParcelable(data, flags);
     }
 
@@ -174,18 +154,18 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
         return 0;
     }
 
-    public static final Creator<TeacherFiltersFragment> CREATOR = new Creator<TeacherFiltersFragment>()
+    public static final Creator<StudentFiltersFragment> CREATOR = new Creator<StudentFiltersFragment>()
     {
         @Override
-        public TeacherFiltersFragment createFromParcel(Parcel in)
+        public StudentFiltersFragment createFromParcel(Parcel in)
         {
-            return new TeacherFiltersFragment(in);
+            return new StudentFiltersFragment(in);
         }
 
         @Override
-        public TeacherFiltersFragment[] newArray(int size)
+        public StudentFiltersFragment[] newArray(int size)
         {
-            return new TeacherFiltersFragment[size];
+            return new StudentFiltersFragment[size];
         }
     };
 
