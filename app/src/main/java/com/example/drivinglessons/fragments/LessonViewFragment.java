@@ -18,10 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.adapters.LessonAdapter;
-import com.example.drivinglessons.adapters.UserAdapter;
+import com.example.drivinglessons.dialogs.LessonDialog;
 import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
 import com.example.drivinglessons.firebase.entities.Lesson;
-import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.validation.TextListener;
@@ -128,7 +127,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
             {
                 add.setOnClickListener(null);
 
-
+                new LessonDialog(requireContext(), true).show();
             }
         });
 

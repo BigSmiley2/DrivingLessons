@@ -18,8 +18,10 @@ import java.util.Date;
 public class LessonDialog extends Dialog
 {
     private static final int MIN_HOUR = 8, MAX_HOUR = 18;
+
     private final Date begin, end;
     private TextView beginTime, beginDate, endTime, endDate, cancel, add;
+
     private boolean isCanceled, testMode;
     public LessonDialog(Context context, boolean testMode)
     {
@@ -31,12 +33,12 @@ public class LessonDialog extends Dialog
         this.begin = calendar.getTime();
         calendar.add(Calendar.HOUR_OF_DAY, 1);
         this.end = calendar.getTime();
-
-        this.fixDate();
-
-        this.setCancelable(false);
-        this.isCanceled = true;
         this.testMode = testMode;
+
+        fixDate();
+
+        setCancelable(false);
+        isCanceled = true;
     }
 
     public LessonDialog(Activity activity, boolean testMode, Date begin, Date end)
@@ -44,10 +46,11 @@ public class LessonDialog extends Dialog
         super(activity);
         this.begin = begin;
         this.end = end;
-
-        this.setCancelable(false);
-        this.isCanceled = true;
         this.testMode = testMode;
+
+        setCancelable(false);
+        isCanceled = true;
+
     }
 
     private void fixDate()
@@ -80,55 +83,54 @@ public class LessonDialog extends Dialog
 
         //this.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
 
-        this.add = findViewById(R.id.textViewDialogLessonAdd);
-        this.cancel = findViewById(R.id.textViewDialogLessonCancel);
+        add = findViewById(R.id.textViewDialogLessonAdd);
+        cancel = findViewById(R.id.textViewDialogLessonCancel);
+        beginTime = findViewById(R.id.textViewDialogLessonBeginTime);
+        beginDate = findViewById(R.id.textViewDialogLessonBeginDate);
+        endTime = findViewById(R.id.textViewDialogLessonEndTime);
+        endDate = findViewById(R.id.textViewDialogLessonEndDate);
 
-        this.beginTime = findViewById(R.id.textViewDialogLessonBeginTime);
-        this.beginDate = findViewById(R.id.textViewDialogLessonBeginDate);
-        this.endTime = findViewById(R.id.textViewDialogLessonEndTime);
-        this.endDate = findViewById(R.id.textViewDialogLessonEndDate);
+        updateText();
 
-        this.updateText();
-
-        this.cancel.setOnClickListener(v -> this.dismiss());
-        this.add.setOnClickListener(v ->
+        cancel.setOnClickListener(v -> dismiss());
+        add.setOnClickListener(v ->
         {
-            this.isCanceled = false;
-            this.dismiss();
+            isCanceled = false;
+            dismiss();
         });
 
-        this.beginTime.setOnClickListener(v -> createTimePickerDialog(true));
-        this.endTime.setOnClickListener(v -> createTimePickerDialog(false));
-        this.beginDate.setOnClickListener(v -> createDatePickerDialog());
-        this.endDate.setOnClickListener(v -> createDatePickerDialog());
+        beginTime.setOnClickListener(v -> createTimePickerDialog(true));
+        endTime.setOnClickListener(v -> createTimePickerDialog(false));
+        beginDate.setOnClickListener(v -> createDatePickerDialog());
+        endDate.setOnClickListener(v -> createDatePickerDialog());
     }
 
     private void updateText()
     {
-        this.beginTime.setText(Constants.TIME_FORMAT.format(this.begin));
-        this.endTime.setText(Constants.TIME_FORMAT.format(this.end));
-        this.beginDate.setText(Constants.DATE_FORMAT.format(this.begin));
-        this.endDate.setText(Constants.DATE_FORMAT.format(this.end));
+        beginTime.setText(Constants.TIME_FORMAT.format(begin));
+        endTime.setText(Constants.TIME_FORMAT.format(end));
+        beginDate.setText(Constants.DATE_FORMAT.format(begin));
+        endDate.setText(Constants.DATE_FORMAT.format(end));
     }
 
     public boolean isCanceled()
     {
-        return this.isCanceled;
+        return isCanceled;
     }
 
     public Date getEnd()
     {
-        return this.end;
+        return end;
     }
 
     public Date getBegin()
     {
-        return this.begin;
+        return begin;
     }
 
     public double getDuration()
     {
-        Duration d = Constants.durationBetween(this.begin, this.end);
+        Duration d = Constants.durationBetween(begin, end);
 
         int p_h = (int) d.getSeconds() / (60 * 60), p_m = (int) (d.getSeconds() / 60 - p_h * 60);
         return p_h + p_m / 60.0;
@@ -138,21 +140,21 @@ public class LessonDialog extends Dialog
     {
         Calendar c = Calendar.getInstance();
 
-        c.setTime(this.begin);
+        c.setTime(begin);
 
         int y = c.get(Calendar.YEAR), m = c.get(Calendar.MONTH), d = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), (view, year, month, dayOfMonth) ->
         {
-            c.setTime(this.begin);
+            c.setTime(begin);
             c.set(year, month, dayOfMonth);
-            this.begin.setTime(c.getTimeInMillis());
+            begin.setTime(c.getTimeInMillis());
 
-            c.setTime(this.end);
+            c.setTime(end);
             c.set(year, month, dayOfMonth);
-            this.end.setTime(c.getTimeInMillis());
+            end.setTime(c.getTimeInMillis());
 
-            this.updateText();
+            updateText();
 
         }, y, m, d);
 
@@ -168,12 +170,12 @@ public class LessonDialog extends Dialog
     {
         Calendar c = Calendar.getInstance();
 
-        Duration d = Constants.durationBetween(this.begin, this.end);
+        Duration d = Constants.durationBetween(begin, end);
 
         int p_h = (int) d.getSeconds() / (60 * 60), p_m = (int) (d.getSeconds() / 60 - p_h * 60);
 
-        if (isBegin) c.setTime(this.begin);
-        else c.setTime(this.end);
+        if (isBegin) c.setTime(begin);
+        else c.setTime(end);
 
         int h = c.get(Calendar.HOUR_OF_DAY), m = c.get(Calendar.MINUTE);
 
@@ -181,37 +183,33 @@ public class LessonDialog extends Dialog
         {
             if (isBegin)
             {
-                c.setTime(this.begin);
+                c.setTime(begin);
                 c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 c.set(Calendar.MINUTE, minute);
-                this.begin.setTime(c.getTimeInMillis());
+                begin.setTime(c.getTimeInMillis());
 
                 c.add(Calendar.HOUR_OF_DAY, p_h);
                 c.add(Calendar.MINUTE, p_m);
-                this.end.setTime(c.getTimeInMillis());
+                end.setTime(c.getTimeInMillis());
             }
             else
             {
-                c.setTime(this.end);
+                c.setTime(end);
                 c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 c.set(Calendar.MINUTE, minute);
-                this.end.setTime(c.getTimeInMillis());
+                end.setTime(c.getTimeInMillis());
 
                 if (testMode)
                 {
-                    c.add(Calendar.HOUR_OF_DAY, -p_h);
-                    c.add(Calendar.MINUTE, -p_m);
-                    this.begin.setTime(c.getTimeInMillis());
+                    c.add(Calendar.HOUR_OF_DAY, - p_h);
+                    c.add(Calendar.MINUTE, - p_m);
+                    begin.setTime(c.getTimeInMillis());
                 }
             }
-
-            this.updateText();
+            fixDate();
+            updateText();
 
         }, h, m, true);
-
-        //timePickerDialog.setMin(MIN_HOUR, -1);
-        //if (isBegin) timePickerDialog.setMax(MAX_HOUR - p_h - (p_m == 0 ? 0 : 1), 0);
-        //else timePickerDialog.setMax(MAX_HOUR, 0);
 
         timePickerDialog.show();
     }
