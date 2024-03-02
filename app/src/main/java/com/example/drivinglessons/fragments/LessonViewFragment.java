@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.adapters.LessonAdapter;
+import com.example.drivinglessons.adapters.UserAdapter;
 import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
 import com.example.drivinglessons.firebase.entities.Lesson;
+import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.validation.TextListener;
@@ -41,7 +43,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
     private LessonAdapter adapter;
 
     private RecyclerView recyclerView;
-    private ImageView filters;
+    private ImageView filters, add;
     private TextInputLayout searchInputLayout;
     private EditText searchInput;
 
@@ -107,17 +109,28 @@ public class LessonViewFragment extends Fragment implements Parcelable
 
         recyclerView = view.findViewById(R.id.recyclerViewFragmentLessonView);
         filters = view.findViewById(R.id.imageViewFragmentLessonViewFilters);
+        add = view.findViewById(R.id.imageViewFragmentLessonViewAdd);
         searchInputLayout = view.findViewById(R.id.textInputLayoutFragmentLessonViewSearch);
         searchInput = view.findViewById(R.id.editTextFragmentLessonViewSearch);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setItemAnimator(null);
 
-        adapter = new LessonAdapter(new FirebaseRecyclerOptions.Builder<Lesson>().setQuery(isOwner ? fm.getTestLessonsQuery() : fm.getUserLessonsQuery(isStudent, id), this::getLesson).build(), (viewHolder, position, lesson) ->
-        {
+        if (!isOwner && isStudent) add.setVisibility(View.VISIBLE);
 
-        });
+        adapter = new LessonAdapter(new FirebaseRecyclerOptions.Builder<Lesson>().setQuery(isOwner ? fm.getTestLessonsQuery() : fm.getUserLessonsQuery(isStudent, id), this::getLesson).build(), this::createOptions);
         recyclerView.setAdapter(adapter);
+
+        add.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                add.setOnClickListener(null);
+
+
+            }
+        });
 
         filters.setOnClickListener(new View.OnClickListener()
         {
@@ -190,6 +203,11 @@ public class LessonViewFragment extends Fragment implements Parcelable
             adapter.setAssigned(data.isAssigned);
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private void createOptions(@NonNull LessonAdapter.ViewHolder viewHolder, final int position, Lesson lesson)
+    {
+
     }
 
     protected LessonViewFragment(@NonNull Parcel in)

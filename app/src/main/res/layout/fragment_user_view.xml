@@ -10,6 +10,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <RadioGroup
+            android:id="@+id/radioGroupFragmentUserViewRole"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentUserViewTitle">
+
+            <RadioButton
+                android:id="@+id/radioButtonFragmentUserViewStudent"
+                style="@style/Default.RadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="@string/student" />
+
+            <RadioButton
+                android:id="@+id/radioButtonFragmentUserViewTeacher"
+                style="@style/Default.RadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/teacher" />
+
+        </RadioGroup>
+
         <TextView
             android:id="@+id/textViewFragmentUserViewTitle"
             android:layout_width="wrap_content"
@@ -28,8 +58,7 @@
             android:layout_marginStart="8dp"
             android:src="@drawable/filter"
             app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutFragmentUserViewSearch"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toEndOf="@+id/radioGroupFragmentUserViewRole"
             app:layout_constraintStart_toEndOf="@+id/textInputLayoutFragmentUserViewSearch" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -38,10 +67,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toStartOf="@+id/imageViewFragmentUserViewFilters"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewFragmentUserViewTitle">
+            app:layout_constraintStart_toStartOf="@+id/radioGroupFragmentUserViewRole"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroupFragmentUserViewRole">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextFragmentUserViewSearch"

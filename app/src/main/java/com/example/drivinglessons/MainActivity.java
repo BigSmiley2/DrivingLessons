@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -20,6 +21,7 @@ import com.example.drivinglessons.fragments.LoginFragment;
 import com.example.drivinglessons.fragments.MainOfflineFragment;
 import com.example.drivinglessons.fragments.info.UserInfoFragment;
 import com.example.drivinglessons.fragments.UserViewFragment;
+import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
@@ -109,13 +111,16 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
     private void signOut()
     {
-        fm.signOut(new FirebaseRunnable()
+        Constants.createAlertDialog(this, "Are you sure you want to logout?", "Yes", "No", (dialogInterface, i) ->
         {
-            @Override
-            public void run()
+            if (i == Dialog.BUTTON_POSITIVE) fm.signOut(new FirebaseRunnable()
             {
-                refresh();
-            }
+                @Override
+                public void run()
+                {
+                    refresh();
+                }
+            });
         });
     }
 

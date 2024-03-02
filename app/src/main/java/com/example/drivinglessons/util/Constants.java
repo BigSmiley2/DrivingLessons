@@ -1,6 +1,10 @@
 package com.example.drivinglessons.util;
 
+import android.content.Context;
+import android.content.DialogInterface;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -50,5 +54,16 @@ public class Constants
                 stringBuilder.setCharAt(i + 1, (char) (stringBuilder.charAt(i + 1) - 'a' + 'A'));
 
         return stringBuilder.toString();
+    }
+
+    public static void createAlertDialog(Context context, String message, String positive, String negative, DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setMessage(message);
+        builder.setPositiveButton(positive, listener);
+        builder.setNegativeButton(negative, listener);
+
+        builder.create().show();
     }
 }

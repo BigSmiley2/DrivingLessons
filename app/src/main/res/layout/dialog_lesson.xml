@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textViewDialogLessonTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/add_a_lesson"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutDialogLessonBegin"
+        app:layout_constraintStart_toStartOf="@+id/linearLayoutDialogLessonBegin"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutDialogLessonBegin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutDialogLessonEnd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDialogLessonTitle">
+
+        <TextView
+            android:id="@+id/textViewDialogLessonBeginDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:text="date"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textViewDialogLessonBeginTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="time"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutDialogLessonEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutDialogLessonBegin">
+
+        <TextView
+            android:id="@+id/textViewDialogLessonEndDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:text="date"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/textViewDialogLessonEndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="time"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewDialogLessonCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/cancel"
+        android:textColor="@color/button_cold"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textViewDialogLessonAdd"
+        app:layout_constraintStart_toStartOf="@+id/linearLayoutDialogLessonEnd"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutDialogLessonEnd" />
+
+    <TextView
+        android:id="@+id/textViewDialogLessonAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add"
+        android:textColor="@color/button_cold"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewDialogLessonCancel"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayoutDialogLessonEnd"
+        app:layout_constraintStart_toEndOf="@+id/textViewDialogLessonCancel"
+        app:layout_constraintTop_toTopOf="@+id/textViewDialogLessonCancel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

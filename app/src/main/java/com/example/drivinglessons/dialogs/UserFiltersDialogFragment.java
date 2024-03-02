@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.fragments.filters.StudentFiltersFragment;
@@ -30,6 +32,8 @@ public class UserFiltersDialogFragment extends DialogFragment implements Parcela
     private TeacherFiltersFragment teacherFilters;
     private StudentFiltersFragment studentFilters;
     private DialogCancel cancel;
+
+    private FrameLayout container;
 
     public UserFiltersDialogFragment() {}
 
@@ -90,6 +94,8 @@ public class UserFiltersDialogFragment extends DialogFragment implements Parcela
     {
         super.onViewCreated(view, savedInstanceState);
 
+        container = view.findViewById(R.id.FrameLayoutFragmentUserFilters);
+
         replaceFragment();
     }
 
@@ -101,7 +107,7 @@ public class UserFiltersDialogFragment extends DialogFragment implements Parcela
 
     private void replaceFragment(Fragment fragment)
     {
-        getChildFragmentManager().beginTransaction().replace(R.id.FrameLayoutFragmentUserFilters, fragment).commit();
+        getChildFragmentManager().beginTransaction().replace(container.getId(), fragment).commit();
     }
 
     public StudentFiltersFragment.Data getStudentData()
@@ -117,16 +123,6 @@ public class UserFiltersDialogFragment extends DialogFragment implements Parcela
     public void setCancel(DialogCancel cancel)
     {
         this.cancel = cancel;
-    }
-
-    public boolean isStudent()
-    {
-        return isStudent;
-    }
-
-    public void setStudent(boolean isStudent)
-    {
-        this.isStudent = isStudent;
     }
 
     @NonNull

@@ -152,7 +152,7 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
 
     public Data getData()
     {
-        return new Data(data);
+        return data == null ? null : new Data(data);
     }
 
     protected TeacherFiltersFragment(@NonNull Parcel in)

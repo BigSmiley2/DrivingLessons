@@ -6,6 +6,8 @@
     <string name="info"><b>Info</b></string>
     <string name="student"><b>Student</b></string>
     <string name="teacher"><b>Teacher</b></string>
+    <string name="students"><b>Students</b></string>
+    <string name="teachers"><b>Teachers</b></string>
     <string name="lessons"><b>Lessons</b></string>
     <string name="users"><b>Users</b></string>
     <string name="lesson_filters"><b>Lesson filters</b></string>
@@ -25,7 +27,12 @@
     <string name="confirm_password">Confirm password</string>
     <string name="full_name">Full name</string>
     <string name="search_user">Search user</string>
+    <string name="search_student">Search student</string>
+    <string name="search_teacher">Search teacher</string>
     <string name="options"><b>⋮</b></string>
     <string name="assign"><b>Assign</b></string>
     <string name="delete"><b>Delete</b></string>
+    <string name="add"><b>Add</b></string>
+    <string name="cancel"><b>Cancel</b></string>
+    <string name="add_a_lesson"><b>Add a lesson</b></string>
 </resources>
