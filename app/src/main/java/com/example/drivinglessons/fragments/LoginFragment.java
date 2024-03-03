@@ -82,9 +82,7 @@ public class LoginFragment extends Fragment implements Parcelable
         super.onViewCreated(view, savedInstanceState);
 
         startActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r ->
-        {
-            if (r.getResultCode() == Activity.RESULT_OK) ((MainActivity<?>) requireActivity()).createAndLinkFragments();
-        });
+            ((MainActivity<?>) requireActivity()).createAndLinkFragments());
 
         fm = FirebaseManager.getInstance(requireContext());
 

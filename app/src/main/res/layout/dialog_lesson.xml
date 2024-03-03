@@ -38,7 +38,7 @@
             android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:text="date"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textViewDialogLessonBeginTime"
@@ -50,7 +50,7 @@
             android:layout_weight="2"
             android:gravity="right"
             android:text="time"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -74,7 +74,7 @@
             android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:text="date"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
 
         <TextView
@@ -86,7 +86,7 @@
             android:layout_weight="2"
             android:gravity="right"
             android:text="time"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -97,8 +97,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/cancel"
-        android:textColor="@color/button_cold"
-        android:textSize="16sp"
+        android:textColor="@color/button_warm"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/textViewDialogLessonAdd"
         app:layout_constraintStart_toStartOf="@+id/linearLayoutDialogLessonEnd"
@@ -109,8 +109,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add"
-        android:textColor="@color/button_cold"
-        android:textSize="16sp"
+        android:textColor="@color/button_warm"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/textViewDialogLessonCancel"
         app:layout_constraintEnd_toEndOf="@+id/linearLayoutDialogLessonEnd"
         app:layout_constraintStart_toEndOf="@+id/textViewDialogLessonCancel"
