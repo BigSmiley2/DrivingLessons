@@ -84,12 +84,14 @@ public class User implements Parcelable
     public Map<String, Object> toMap()
     {
         Map<String, Object> map = new HashMap<>();
+
         if (id != null) map.put(ID, id);
         if (name != null) map.put(NAME, name);
         if (email != null) map.put(EMAIL, email);
         if (password != null) map.put(PASSWORD, password);
         if (imagePath != null) map.put(IMAGE_PATH, imagePath);
         if (birthdate != null) map.put(BIRTHDATE, birthdate);
+
         return map;
     }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItemLessonOptionsMenuInfo"
+        android:title="@string/info" />
+    <item
+        android:id="@+id/menuItemLessonOptionsMenuConfirm"
+        android:title="@string/confirm" />
+    <item
+        android:id="@+id/menuItemLessonOptionsMenuAssign"
+        android:title="@string/assign" />
+</menu>

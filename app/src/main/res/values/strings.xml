@@ -32,7 +32,16 @@
     <string name="options"><b>⋮</b></string>
     <string name="assign"><b>Assign</b></string>
     <string name="delete"><b>Delete</b></string>
+    <string name="confirm"><b>Confirm</b></string>
     <string name="add"><b>Add</b></string>
     <string name="cancel"><b>Cancel</b></string>
     <string name="add_a_lesson"><b>Add a lesson</b></string>
+    <string name="student_filters"><b>Student filters</b></string>
+    <string name="student_has_theory_test">Student has theory test</string>
+    <string name="teacher_drives_a_manual_car">Teacher drives a manual car</string>
+    <string name="enough_money_error">You don\'t have enough money in your account</string>
+    <string name="lesson_past_error">You can\'t have a lesson in the past</string>
+    <string name="lesson_added">Your lesson has been added</string>
+    <string name="test_added">Your test has been added</string>
+    <string name="teacher_filters"><b>Teacher filters</b></string>
 </resources>

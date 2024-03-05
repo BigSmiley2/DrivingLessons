@@ -80,8 +80,10 @@ public class Student extends User
     public Map<String, Object> toMap()
     {
         Map<String, Object> map = super.toMap();
+
         if (hasTheoryTest != null) map.put(HAS_THEORY_TEST, hasTheoryTest);
         if (teacherId != null) map.put(TEACHER_ID, teacherId);
+
         return map;
     }
 }

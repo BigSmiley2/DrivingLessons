@@ -1,16 +1,19 @@
 package com.example.drivinglessons.dialogs;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.firebase.entities.Lesson;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.util.firebase.FirebaseManager;
+import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 
 import java.time.Duration;
 import java.util.Calendar;
@@ -21,39 +24,42 @@ public class LessonDialog extends Dialog
 {
     private static final int MIN_HOUR = 8, MAX_HOUR = 18;
 
-    private final Date start, end;
-    private TextView startTime, startDate, endTime, endDate, cancel, add;
+    private final FirebaseManager fm;
 
-    private boolean isCanceled;
-    private final boolean testMode;
-    public LessonDialog(Context context, boolean testMode)
+    private final String id;
+    private final boolean isTest;
+    private final Date start, end;
+
+    private TextView startTime, startDate, endTime, endDate, cancel, add;
+    public LessonDialog(Context context, String id, boolean isTest)
     {
         super(context);
 
+        fm = FirebaseManager.getInstance(context);
+        this.id = id;
+
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
-        calendar.add(Calendar.MINUTE, 30);
-        this.start = calendar.getTime();
+        start = calendar.getTime();
         calendar.add(Calendar.HOUR_OF_DAY, 1);
-        this.end = calendar.getTime();
-        this.testMode = testMode;
+        end = calendar.getTime();
+        this.isTest = isTest;
 
         fixDate(start, end);
 
         setCancelable(false);
-        isCanceled = true;
     }
 
-    public LessonDialog(Activity activity, boolean testMode, Date start, Date end)
+    public LessonDialog(Context context, String id, boolean isTest, Date start, Date end)
     {
-        super(activity);
+        super(context);
+        fm = FirebaseManager.getInstance(context);
+        this.id = id;
         this.start = start;
         this.end = end;
-        this.testMode = testMode;
+        this.isTest = isTest;
 
         setCancelable(false);
-        isCanceled = true;
-
     }
 
     private boolean fixDate(Date start, Date end)
@@ -113,10 +119,39 @@ public class LessonDialog extends Dialog
         updateText();
 
         cancel.setOnClickListener(v -> dismiss());
-        add.setOnClickListener(v ->
+        add.setOnClickListener(new View.OnClickListener()
         {
-            isCanceled = false;
-            dismiss();
+            @Override
+            public void onClick(View view)
+            {
+                add.setOnClickListener(null);
+
+                View.OnClickListener listener = this;
+
+                Date now = Calendar.getInstance().getTime();
+
+                if (start.getTime() < now.getTime())
+                {
+                    Toast.makeText(getContext(), R.string.lesson_past_error, Toast.LENGTH_SHORT).show();
+                    add.setOnClickListener(listener);
+                }
+                else fm.saveLesson(getContext(), new Lesson(id, start, end, false, isTest), new FirebaseRunnable() {
+                    @Override
+                    public void run()
+                    {
+                        Toast.makeText(getContext(), isTest ? R.string.test_added : R.string.lesson_added, Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    }
+                }, new FirebaseRunnable()
+                {
+                    @Override
+                    public void run(Exception e)
+                    {
+                        super.run(e);
+                        add.setOnClickListener(listener);
+                    }
+                });
+            }
         });
 
         startTime.setOnClickListener(v -> createTimePickerDialog(true));
@@ -131,29 +166,6 @@ public class LessonDialog extends Dialog
         endTime.setText(Constants.TIME_FORMAT.format(end));
         startDate.setText(Constants.DATE_FORMAT.format(start));
         endDate.setText(Constants.DATE_FORMAT.format(end));
-    }
-
-    public boolean isCanceled()
-    {
-        return isCanceled;
-    }
-
-    public Date getEnd()
-    {
-        return end;
-    }
-
-    public Date getStart()
-    {
-        return start;
-    }
-
-    public double getDuration()
-    {
-        Duration d = Constants.durationBetween(start, end);
-
-        int p_h = (int) d.getSeconds() / (60 * 60), p_m = (int) (d.getSeconds() / 60 - p_h * 60);
-        return p_h + p_m / 60.0;
     }
 
     private void createDatePickerDialog()
@@ -201,7 +213,13 @@ public class LessonDialog extends Dialog
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), (view, hourOfDay, minute) ->
         {
-            Date start = new Date(), end = new Date();
+            Date start, end;
+
+            c.setTime(this.start);
+            start = c.getTime();
+            c.setTime(this.end);
+            end = c.getTime();
+
             if (isStart)
             {
                 c.setTime(this.start);
@@ -220,7 +238,7 @@ public class LessonDialog extends Dialog
                 c.set(Calendar.MINUTE, minute);
                 end.setTime(c.getTimeInMillis());
 
-                if (testMode)
+                if (isTest)
                 {
                     c.add(Calendar.HOUR_OF_DAY, - p_h);
                     c.add(Calendar.MINUTE, - p_m);

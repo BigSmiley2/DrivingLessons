@@ -56,10 +56,11 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
             android:src="@drawable/filter"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutFragmentUserViewSearch"
             app:layout_constraintEnd_toEndOf="@+id/radioGroupFragmentUserViewRole"
-            app:layout_constraintStart_toEndOf="@+id/textInputLayoutFragmentUserViewSearch" />
+            app:layout_constraintStart_toEndOf="@+id/textInputLayoutFragmentUserViewSearch"
+            app:layout_constraintTop_toTopOf="@+id/textInputLayoutFragmentUserViewSearch" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutFragmentUserViewSearch"

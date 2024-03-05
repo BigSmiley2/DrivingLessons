@@ -1,6 +1,7 @@
 package com.example.drivinglessons.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -23,6 +24,7 @@ import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
 import com.example.drivinglessons.firebase.entities.Lesson;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
+import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.validation.TextListener;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.textfield.TextInputLayout;
@@ -127,7 +129,11 @@ public class LessonViewFragment extends Fragment implements Parcelable
             {
                 add.setOnClickListener(null);
 
-                new LessonDialog(requireContext(), true).show();
+                LessonDialog lessonDialog = new LessonDialog(requireContext(), id, false);
+
+                lessonDialog.setOnDismissListener(dialogInterface -> add.setOnClickListener(this));
+
+                lessonDialog.show();
             }
         });
 

@@ -11,6 +11,7 @@ import com.example.drivinglessons.firebase.entities.Balance;
 import com.example.drivinglessons.firebase.entities.Lesson;
 import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.Teacher;
+import com.example.drivinglessons.firebase.entities.Transaction;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FirebaseManager
 {
@@ -596,6 +598,147 @@ public class FirebaseManager
     public void getCurrentUserFromDatabase(@NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         getUserFromDatabase(auth.getUid(), success, failure);
+    }
+
+    public void saveLessonInDatabase(@NonNull Lesson lesson, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        db.getReference("lesson").child(lesson.id).updateChildren(lesson.toMap())
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
+    public void saveTransactionInDatabase(@NonNull Transaction transaction, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        db.getReference("transaction").child(transaction.id).updateChildren(transaction.toMap())
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
+    public void getBalanceFromDatabase(@NonNull String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        db.getReference("balance").child(id).get()
+                .addOnSuccessListener(snapshot ->
+                {
+                    Balance balance = snapshot.getValue(Balance.class);
+                    success.runAll(balance);
+                })
+                .addOnFailureListener(failure::runAll);
+    }
+
+    public void saveLesson(Context c, @NonNull Lesson lesson, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        FirebaseRunnable failure1 = new FirebaseRunnable()
+        {
+            @Override
+            public void run(Exception e)
+            {
+                super.run(e);
+                toastS(c, R.string.went_wrong_error);
+                failure.runAll();
+            }
+        };
+
+        FirebaseRunnable onward = new FirebaseRunnable()
+        {
+            @Override
+            public void run()
+            {
+                getBalanceFromDatabase(lesson.studentId, new FirebaseRunnable()
+                {
+                    @Override
+                    public void run(Balance balance)
+                    {
+
+                        if (balance.amount < lesson.cost)
+                        {
+                            toastS(c, R.string.enough_money_error);
+                            failure.runAll();
+                        }
+                        else
+                        {
+                            balance.amount -= lesson.cost;
+
+                            saveBalanceInDatabase(lesson.studentId, balance, new FirebaseRunnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    Date now = Calendar.getInstance().getTime();
+
+                                    String id = db.getReference("transaction").push().getKey();
+
+                                    lesson.id = id;
+                                    saveTransactionInDatabase(new Transaction(id, lesson.studentId, lesson.teacherId, now, lesson.cost), new FirebaseRunnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            saveLessonInDatabase(lesson, success, failure1);
+                                        }
+                                    }, failure1);
+                                }
+                            }, failure1);
+                        }
+                    }
+                }, failure1);
+            }
+        };
+
+        getStudentFromDatabase(lesson.studentId, new FirebaseRunnable()
+        {
+            @Override
+            public void run(User user)
+            {
+                Student student = (Student) user;
+
+                lesson.studentName = user.name;
+
+                if (lesson.isTest)
+                {
+                    lesson.cost = lesson.getDuration() * Constants.TEST_COST;
+                    onward.runAll();
+                }
+
+                else
+                {
+                    lesson.teacherId = student.teacherId;
+                    getTeacherFromDatabase(lesson.teacherId, new FirebaseRunnable()
+                    {
+                        @Override
+                        public void run(User user)
+                        {
+                            Teacher teacher = (Teacher) user;
+
+                            lesson.teacherName = user.name;
+                            lesson.cost = lesson.getDuration() * teacher.costPerHour;
+
+                            getTeacherLessons(lesson.teacherId, new FirebaseRunnable()
+                            {
+                                @Override
+                                public void run(List<Lesson> lessons)
+                                {
+                                    boolean isIntercepting = false;
+                                    int i;
+
+                                    for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting(lessons.get(i))); i++);
+
+                                    if (isIntercepting)
+                                    {
+                                        Lesson intercepted = lessons.get(i);
+                                        toastS(c, String.format(Locale.ROOT, "Lesson is intercepting another who is between %s - %s",
+                                                Constants.TIME_FORMAT.format(intercepted.start), Constants.TIME_FORMAT.format(intercepted.end)));
+                                        failure.runAll();
+                                    }
+
+                                    else onward.runAll();
+                                }
+                            }, failure1);
+                        }
+                    }, failure1);
+                }
+            }
+        }, failure1);
+
     }
 
     public String getCurrentUid()

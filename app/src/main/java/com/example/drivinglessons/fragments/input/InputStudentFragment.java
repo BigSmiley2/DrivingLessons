@@ -1,5 +1,6 @@
 package com.example.drivinglessons.fragments.input;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -72,6 +73,7 @@ public class InputStudentFragment extends Fragment implements Parcelable
 
     private Data data;
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch theoryInput;
 
     public InputStudentFragment() {}

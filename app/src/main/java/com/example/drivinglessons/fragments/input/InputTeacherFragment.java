@@ -1,5 +1,6 @@
 package com.example.drivinglessons.fragments.input;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -91,6 +92,7 @@ public class InputTeacherFragment extends Fragment implements Parcelable
 
     private Data data;
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch manualInput, testerInput;
     private TextInputLayout costInputLayout;
     private EditText costInput;
@@ -151,7 +153,7 @@ public class InputTeacherFragment extends Fragment implements Parcelable
 
         manualInput.setChecked(data.manual);
         testerInput.setChecked(data.tester);
-        if (data.cost != null) costInput.setText(String.format(Locale.ROOT,"%f.2", data.cost));
+        if (data.cost != null) costInput.setText(String.format(Locale.ROOT,"%.2f", data.cost));
 
         manualInput.setOnCheckedChangeListener((buttonView, isChecked) -> data.manual = isChecked);
         testerInput.setOnCheckedChangeListener((buttonView, isChecked) -> data.tester = isChecked);

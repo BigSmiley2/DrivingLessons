@@ -271,7 +271,7 @@ public class UserViewFragment extends Fragment implements Parcelable
         assign = m.findItem(R.id.menuItemUserOptionsMenuAssign);
         delete = m.findItem(R.id.menuItemUserOptionsMenuDelete);
 
-        assign.setVisible(isSelector || !(isOwner && isStudent));
+        assign.setVisible(isSelector || (!isStudent && !isOwner));
         delete.setVisible(isOwner);
 
         menu.setOnMenuItemClickListener(menuItem ->

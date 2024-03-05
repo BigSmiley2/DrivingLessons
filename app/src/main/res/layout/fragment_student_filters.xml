@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="-8dp"
         android:layout_marginTop="16dp"
-        android:text="student filters"
+        android:text="@string/student_filters"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="@+id/textViewFragmentStudentFiltersTheory"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="student has theory test"
+        android:text="@string/student_has_theory_test"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

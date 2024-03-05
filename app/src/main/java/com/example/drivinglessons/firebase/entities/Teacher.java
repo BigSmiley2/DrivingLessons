@@ -76,10 +76,12 @@ public class Teacher extends User implements Parcelable
     public Map<String, Object> toMap()
     {
         Map<String, Object> map = super.toMap();
+
         if (hasManual != null) map.put(HAS_MANUAL, hasManual);
         if (isTester != null) map.put(IS_TESTER, isTester);
         if (costPerHour != null) map.put(COST_PER_HOUR, costPerHour);
         if (seniority != null) map.put(SENIORITY, seniority);
+
         return map;
     }
 }
