@@ -1,22 +1,28 @@
-package com.example.drivinglessons.fragments.filters;
+package com.example.drivinglessons.dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.util.dialogs.DialogCancel;
 
-public class TeacherFiltersFragment extends Fragment implements Parcelable
+public class TeacherFiltersDialogFragment extends DialogFragment implements Parcelable
 {
     private static final String TITLE = "teacher filters", DATA = "data", IS_OWNER = "is owner";
 
@@ -76,30 +82,31 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
     }
 
     private boolean isOwner;
+    private DialogCancel cancel;
     private Data data;
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch manualInput, testerInput;
     private TextView testerText;
 
-    public TeacherFiltersFragment() {}
+    public TeacherFiltersDialogFragment() {}
 
     @NonNull
-    public static TeacherFiltersFragment newInstance(boolean isOwner)
+    public static TeacherFiltersDialogFragment newInstance(boolean isOwner)
     {
         return newInstance(isOwner, new Data());
     }
 
     @NonNull
-    public static TeacherFiltersFragment newInstance(boolean isOwner, boolean isManual, boolean isTester)
+    public static TeacherFiltersDialogFragment newInstance(boolean isOwner, boolean isManual, boolean isTester)
     {
         return newInstance(isOwner, new Data(isManual, isTester));
     }
 
     @NonNull
-    public static TeacherFiltersFragment newInstance(boolean isOwner, Data data)
+    public static TeacherFiltersDialogFragment newInstance(boolean isOwner, Data data)
     {
-        TeacherFiltersFragment fragment = new TeacherFiltersFragment();
+        TeacherFiltersDialogFragment fragment = new TeacherFiltersDialogFragment();
 
         Bundle args = new Bundle();
         args.putBoolean(IS_OWNER, isOwner);
@@ -125,7 +132,7 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_teacher_filters, container, false);
+        return inflater.inflate(R.layout.dialog_fragment_teacher_filters, container, false);
     }
 
     @Override
@@ -155,7 +162,35 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
         return data == null ? null : new Data(data);
     }
 
-    protected TeacherFiltersFragment(@NonNull Parcel in)
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+    {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        Window window = dialog.getWindow();
+        if (window != null)
+        {
+            window.requestFeature(Window.FEATURE_NO_TITLE);
+            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            window.setGravity(Gravity.BOTTOM);
+            //window.setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        return dialog;
+    }
+
+    public void setCancel(DialogCancel cancel)
+    {
+        this.cancel = cancel;
+    }
+
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog)
+    {
+        super.onCancel(dialog);
+        if (cancel != null) cancel.cancel();
+    }
+
+    protected TeacherFiltersDialogFragment(@NonNull Parcel in)
     {
         isOwner = in.readByte() == 1;
         data = in.readParcelable(Data.class.getClassLoader());
@@ -174,18 +209,18 @@ public class TeacherFiltersFragment extends Fragment implements Parcelable
         return 0;
     }
 
-    public static final Creator<TeacherFiltersFragment> CREATOR = new Creator<TeacherFiltersFragment>()
+    public static final Creator<TeacherFiltersDialogFragment> CREATOR = new Creator<TeacherFiltersDialogFragment>()
     {
         @Override
-        public TeacherFiltersFragment createFromParcel(Parcel in)
+        public TeacherFiltersDialogFragment createFromParcel(Parcel in)
         {
-            return new TeacherFiltersFragment(in);
+            return new TeacherFiltersDialogFragment(in);
         }
 
         @Override
-        public TeacherFiltersFragment[] newArray(int size)
+        public TeacherFiltersDialogFragment[] newArray(int size)
         {
-            return new TeacherFiltersFragment[size];
+            return new TeacherFiltersDialogFragment[size];
         }
     };
 

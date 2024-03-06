@@ -26,12 +26,11 @@ import com.example.drivinglessons.InfoActivity;
 import com.example.drivinglessons.MainActivity;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.adapters.UserAdapter;
-import com.example.drivinglessons.dialogs.UserFiltersDialogFragment;
 import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.User;
-import com.example.drivinglessons.fragments.filters.StudentFiltersFragment;
-import com.example.drivinglessons.fragments.filters.TeacherFiltersFragment;
+import com.example.drivinglessons.dialogs.StudentFiltersDialogFragment;
+import com.example.drivinglessons.dialogs.TeacherFiltersDialogFragment;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
@@ -49,7 +48,8 @@ public class UserViewFragment extends Fragment implements Parcelable
 
     private boolean isOwner, isSelector, isStudent;
     private String search, id;
-    private UserFiltersDialogFragment studentFilters, teacherFilters;
+    private StudentFiltersDialogFragment studentFilters;
+    private TeacherFiltersDialogFragment teacherFilters;
 
     // change the dialogs to be separate
 
@@ -74,16 +74,16 @@ public class UserViewFragment extends Fragment implements Parcelable
     @NonNull
     public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id)
     {
-        return newInstance(isOwner, isSelector, isStudent, id, UserFiltersDialogFragment.newInstance(true), UserFiltersDialogFragment.newInstance(false));
+        return newInstance(isOwner, isSelector, isStudent, id, StudentFiltersDialogFragment.newInstance(true), TeacherFiltersDialogFragment.newInstance(false));
     }
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id, UserFiltersDialogFragment studentFilters, UserFiltersDialogFragment teacherFilters)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
     {
         return newInstance(isOwner, isSelector, isStudent, id, "", studentFilters, teacherFilters);
     }
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id, String search, UserFiltersDialogFragment studentFilters, UserFiltersDialogFragment teacherFilters)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id, String search, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
     {
         UserViewFragment fragment = new UserViewFragment();
 
@@ -227,12 +227,12 @@ public class UserViewFragment extends Fragment implements Parcelable
 
     private void setFilters()
     {
-        if (isStudent) setStudentFilters(studentFilters.getStudentData());
-        else setTeacherFilters(teacherFilters.getTeacherData());
+        if (isStudent) setStudentFilters(studentFilters.getData());
+        else setTeacherFilters(teacherFilters.getData());
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void setStudentFilters(StudentFiltersFragment.Data data)
+    private void setStudentFilters(StudentFiltersDialogFragment.Data data)
     {
         if (data != null)
         {
@@ -242,7 +242,7 @@ public class UserViewFragment extends Fragment implements Parcelable
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void setTeacherFilters(TeacherFiltersFragment.Data data)
+    private void setTeacherFilters(TeacherFiltersDialogFragment.Data data)
     {
         if (data != null)
         {
@@ -323,8 +323,8 @@ public class UserViewFragment extends Fragment implements Parcelable
         isOwner = in.readByte() == 1;
         isSelector = in.readByte() == 1;
         isStudent = in.readByte() == 1;
-        studentFilters = in.readParcelable(UserFiltersDialogFragment.class.getClassLoader());
-        teacherFilters = in.readParcelable(UserFiltersDialogFragment.class.getClassLoader());
+        studentFilters = in.readParcelable(StudentFiltersDialogFragment.class.getClassLoader());
+        teacherFilters = in.readParcelable(TeacherFiltersDialogFragment.class.getClassLoader());
     }
 
     @Override

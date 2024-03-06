@@ -1,21 +1,27 @@
-package com.example.drivinglessons.fragments.filters;
+package com.example.drivinglessons.dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.util.dialogs.DialogCancel;
 
-public class StudentFiltersFragment extends Fragment implements Parcelable
+public class StudentFiltersDialogFragment extends DialogFragment implements Parcelable
 {
     private static final String TITLE = "student filters", DATA = "data";
 
@@ -73,27 +79,29 @@ public class StudentFiltersFragment extends Fragment implements Parcelable
 
     private Data data;
 
+    private DialogCancel cancel;
+
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch theoryInput;
 
-    public StudentFiltersFragment() {}
+    public StudentFiltersDialogFragment() {}
 
     @NonNull
-    public static StudentFiltersFragment newInstance()
+    public static StudentFiltersDialogFragment newInstance()
     {
         return newInstance(new Data());
     }
 
     @NonNull
-    public static StudentFiltersFragment newInstance(boolean isTheory)
+    public static StudentFiltersDialogFragment newInstance(boolean isTheory)
     {
         return newInstance(new Data(isTheory));
     }
 
     @NonNull
-    public static StudentFiltersFragment newInstance(Data data)
+    public static StudentFiltersDialogFragment newInstance(Data data)
     {
-        StudentFiltersFragment fragment = new StudentFiltersFragment();
+        StudentFiltersDialogFragment fragment = new StudentFiltersDialogFragment();
 
         Bundle args = new Bundle();
         args.putParcelable(DATA, data);
@@ -117,7 +125,7 @@ public class StudentFiltersFragment extends Fragment implements Parcelable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_student_filters, container, false);
+        return inflater.inflate(R.layout.dialog_fragment_student_filters, container, false);
     }
 
     @Override
@@ -137,7 +145,35 @@ public class StudentFiltersFragment extends Fragment implements Parcelable
         return data == null ? null : new Data(data);
     }
 
-    protected StudentFiltersFragment(@NonNull Parcel in)
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+    {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        Window window = dialog.getWindow();
+        if (window != null)
+        {
+            window.requestFeature(Window.FEATURE_NO_TITLE);
+            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            window.setGravity(Gravity.BOTTOM);
+            //window.setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        return dialog;
+    }
+
+    public void setCancel(DialogCancel cancel)
+    {
+        this.cancel = cancel;
+    }
+
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog)
+    {
+        super.onCancel(dialog);
+        if (cancel != null) cancel.cancel();
+    }
+
+    protected StudentFiltersDialogFragment(@NonNull Parcel in)
     {
         data = in.readParcelable(Data.class.getClassLoader());
     }
@@ -154,18 +190,18 @@ public class StudentFiltersFragment extends Fragment implements Parcelable
         return 0;
     }
 
-    public static final Creator<StudentFiltersFragment> CREATOR = new Creator<StudentFiltersFragment>()
+    public static final Creator<StudentFiltersDialogFragment> CREATOR = new Creator<StudentFiltersDialogFragment>()
     {
         @Override
-        public StudentFiltersFragment createFromParcel(Parcel in)
+        public StudentFiltersDialogFragment createFromParcel(Parcel in)
         {
-            return new StudentFiltersFragment(in);
+            return new StudentFiltersDialogFragment(in);
         }
 
         @Override
-        public StudentFiltersFragment[] newArray(int size)
+        public StudentFiltersDialogFragment[] newArray(int size)
         {
-            return new StudentFiltersFragment[size];
+            return new StudentFiltersDialogFragment[size];
         }
     };
 
