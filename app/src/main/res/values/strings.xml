@@ -41,6 +41,9 @@
     <string name="teacher_drives_a_manual_car">Teacher drives a manual car</string>
     <string name="enough_money_error">You don\'t have enough money in your account</string>
     <string name="lesson_past_error">You can\'t have a lesson in the past</string>
+    <string name="lesson_confirmed">This lesson has been confirmed</string>
+    <string name="lesson_canceled">This lesson has been canceled</string>
+    <string name="lesson_already_confirmed_error">This lesson is already confirmed</string>
     <string name="lesson_added">Your lesson has been added</string>
     <string name="test_added">Your test has been added</string>
     <string name="teacher_filters"><b>Teacher filters</b></string>

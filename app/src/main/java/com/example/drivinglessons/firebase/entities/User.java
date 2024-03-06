@@ -34,12 +34,12 @@ public class User implements Parcelable
         this.birthdate = birthdate;
     }
 
-    public User(User user)
+    public User(@NonNull User user)
     {
         this(user.id, user.name, user.email, user.password, user.imagePath, user.birthdate);
     }
 
-    protected User(Parcel in)
+    protected User(@NonNull Parcel in)
     {
         id = in.readString();
         name = in.readString();

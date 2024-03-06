@@ -51,6 +51,109 @@ public class FirebaseManager
         return fm == null ? fm = new FirebaseManager(context) : fm;
     }
 
+    public void confirmLesson(Context c, @NonNull Lesson lesson)
+    {
+        FirebaseRunnable failure = new FirebaseRunnable()
+        {
+            @Override
+            public void run(Exception e)
+            {
+                super.run(e);
+                toastS(c, R.string.went_wrong_error);
+            }
+        };
+
+        confirmLesson(lesson.id, new FirebaseRunnable()
+        {
+            @Override
+            public void run()
+            {
+                getBalanceFromDatabase(lesson.teacherId, new FirebaseRunnable()
+                {
+                    @Override
+                    public void run(Balance balance)
+                    {
+                        balance.amount += lesson.cost;
+                        saveBalanceInDatabase(lesson.teacherId, balance, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                toastS(c, R.string.lesson_confirmed);
+                            }
+                        }, failure);
+                    }
+                }, failure);
+            }
+        }, failure);
+    }
+
+    public void cancelLesson(Context c, @NonNull Lesson lesson)
+    {
+        FirebaseRunnable failure = new FirebaseRunnable()
+        {
+            @Override
+            public void run(Exception e)
+            {
+                super.run(e);
+                toastS(c, R.string.went_wrong_error);
+            }
+        };
+        cancelLesson(lesson.id, new FirebaseRunnable()
+        {
+            @Override
+            public void run()
+            {
+                cancelTransaction(lesson.id, new FirebaseRunnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        getBalanceFromDatabase(lesson.studentId, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run(Balance balance)
+                            {
+                                balance.amount += lesson.cost;
+                                saveBalanceInDatabase(lesson.studentId, balance, new FirebaseRunnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        toastS(c, R.string.lesson_canceled);
+                                    }
+                                }, failure);
+                            }
+                        }, failure);
+                    }
+                }, failure);
+            }
+        }, failure);
+    }
+
+    public void cancelTransaction(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        db.getReference("transaction").child(id).removeValue()
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
+    public void cancelLesson(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        db.getReference("lesson").child(id).removeValue()
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
+    public void confirmLesson(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        Lesson l = new Lesson();
+        l.isConfirmed = true;
+        db.getReference("lesson").child(id).updateChildren(l.toMap())
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
     public Query getUserStudentsQuery()
     {
         if (!spm.getIsStudent())
@@ -263,7 +366,7 @@ public class FirebaseManager
         else registerToAuth(student, onward, failure);
     }
 
-    public  void saveTeacher(Context c, Teacher teacher, Balance balance, byte[] image, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable complete)
+    public void saveTeacher(Context c, Teacher teacher, Balance balance, byte[] image, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable complete)
     {
         FirebaseRunnable failure = new FirebaseRunnable()
         {
