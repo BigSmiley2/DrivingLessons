@@ -21,27 +21,32 @@ public abstract class FirebaseRunnable
 
     public void run(Balance balance) {}
 
+    public void run(Lesson lesson) {}
+
     public void run(List<Lesson> lessons) {}
 
-    public void runAll(Exception e, Void unused, User user, Balance balance, List<Lesson> lessons)
+    public void runAll(Exception e, Void unused, User user, Balance balance, Lesson lesson, List<Lesson> lessons)
     {
         run();
         run(e);
         run(unused);
         run(user);
         run(balance);
+        run(lesson);
         run(lessons);
     }
 
-    public void runAll() { runAll(null, null, null, null, null); }
+    public void runAll() { runAll(null, null, null, null, null, null); }
 
-    public void runAll(Exception e) { runAll(e, null, null, null, null); }
+    public void runAll(Exception e) { runAll(e, null, null, null, null, null); }
 
-    public void runAll(Void unused) { runAll(null, unused, null, null, null); }
+    public void runAll(Void unused) { runAll(null, unused, null, null, null, null); }
 
-    public void runAll(User user) { runAll(null, null, user, null, null); }
+    public void runAll(User user) { runAll(null, null, user, null, null, null); }
 
-    public void runAll(Balance balance) { runAll(null, null, null, balance, null); }
+    public void runAll(Balance balance) { runAll(null, null, null, balance, null, null); }
 
-    public void runAll(List<Lesson> lessons) { runAll(null, null, null, null, lessons); }
+    public void runAll(Lesson lesson) { runAll(null, null, null, null, lesson, null); }
+
+    public void runAll(List<Lesson> lessons) { runAll(null, null, null, null, null, lessons); }
 }

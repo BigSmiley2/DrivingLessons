@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.example.drivinglessons.R;
 import com.example.drivinglessons.adapters.LessonAdapter;
 import com.example.drivinglessons.dialogs.LessonDialog;
 import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
+import com.example.drivinglessons.dialogs.LessonInfoDialogFragment;
 import com.example.drivinglessons.firebase.entities.Lesson;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
@@ -36,11 +38,12 @@ import java.util.regex.Pattern;
 
 public class LessonViewFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "lessons", ID = "id", SEARCH = "search", IS_OWNER = "is owner", IS_STUDENT = "is student", LESSON_FILTERS = "lesson filters";
+    private static final String FRAGMENT_TITLE = "lessons", ID = "id", SEARCH = "search", IS_OWNER = "is owner", IS_STUDENT = "is student", LESSON_FILTERS = "lesson filters", LESSON_INFO = "lesson info";
 
     private boolean isOwner, isStudent;
     private String id, search;
     private LessonFiltersDialogFragment lessonFilters;
+    private LessonInfoDialogFragment lessonInfo;
 
     private FirebaseManager fm;
     private LessonAdapter adapter;
@@ -55,16 +58,16 @@ public class LessonViewFragment extends Fragment implements Parcelable
     @NonNull
     public static LessonViewFragment newInstance()
     {
-        return newInstance(null, "", true, false, LessonFiltersDialogFragment.newInstance(true));
+        return newInstance(null, "", true, false, LessonFiltersDialogFragment.newInstance(true), LessonInfoDialogFragment.newInstance(null));
     }
 
     @NonNull
     public static LessonViewFragment newInstance(String id, boolean isStudent)
     {
-        return newInstance(id, "", false, isStudent, LessonFiltersDialogFragment.newInstance(false));
+        return newInstance(id, "", false, isStudent, LessonFiltersDialogFragment.newInstance(false), LessonInfoDialogFragment.newInstance(null));
     }
     @NonNull
-    public static LessonViewFragment newInstance(String id, String search, boolean isOwner, boolean isStudent, LessonFiltersDialogFragment lessonFilters)
+    public static LessonViewFragment newInstance(String id, String search, boolean isOwner, boolean isStudent, LessonFiltersDialogFragment lessonFilters, LessonInfoDialogFragment lessonInfo)
     {
         LessonViewFragment fragment = new LessonViewFragment();
 
@@ -75,6 +78,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
         args.putBoolean(IS_OWNER, isOwner);
         args.putBoolean(IS_STUDENT, isStudent);
         args.putParcelable(LESSON_FILTERS, lessonFilters);
+        args.putParcelable(LESSON_INFO, lessonInfo);
         fragment.setArguments(args);
 
         return fragment;
@@ -95,6 +99,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
             isOwner = args.getBoolean(IS_OWNER);
             isStudent = args.getBoolean(IS_STUDENT);
             lessonFilters = args.getParcelable(LESSON_FILTERS);
+            lessonInfo = args.getParcelable(LESSON_INFO);
         }
     }
 
@@ -224,13 +229,18 @@ public class LessonViewFragment extends Fragment implements Parcelable
 
         info = m.findItem(R.id.menuItemLessonOptionsMenuInfo);
         confirm = m.findItem(R.id.menuItemLessonOptionsMenuConfirm);
-        assign = m.findItem(R.id.menuItemUserOptionsMenuAssign);
+        assign = m.findItem(R.id.menuItemLessonOptionsMenuAssign);
+
+        confirm.setVisible(!isStudent && !isOwner);
+        assign.setVisible(isOwner);
 
         menu.setOnMenuItemClickListener(menuItem ->
         {
             final int id = menuItem.getItemId();
 
-            if (id == info.getItemId());
+            if (id == info.getItemId()) lessonInfo(lesson);
+
+            else if (id == confirm.getItemId() && lesson.isConfirmed) Toast.makeText(requireContext(), "The lesson is already confirmed", Toast.LENGTH_SHORT).show();
 
             else if (id == confirm.getItemId()) confirmLesson(lesson);
 
@@ -253,6 +263,12 @@ public class LessonViewFragment extends Fragment implements Parcelable
         });
     }
 
+    private void lessonInfo(@NonNull Lesson lesson)
+    {
+        lessonInfo.setId(lesson.id);
+        lessonInfo.show(getChildFragmentManager(), null);
+    }
+
     protected LessonViewFragment(@NonNull Parcel in)
     {
         id = in.readString();
@@ -260,6 +276,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
         isOwner = in.readByte() == 1;
         isStudent = in.readByte() == 1;
         lessonFilters = in.readParcelable(LessonFiltersDialogFragment.class.getClassLoader());
+        lessonInfo = in.readParcelable(LessonInfoDialogFragment.class.getClassLoader());
     }
 
     @Override
@@ -270,6 +287,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
         dest.writeByte((byte) (isOwner ? 1 : 0));
         dest.writeByte((byte) (isStudent ? 1 : 0));
         dest.writeParcelable(lessonFilters, flags);
+        dest.writeParcelable(lessonInfo, flags);
     }
 
     @Override

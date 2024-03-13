@@ -3,6 +3,8 @@ package com.example.drivinglessons.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,9 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
     }
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView title, start, end, info, options;
+        public TextView title, start, end, options, student, teacher;
+        public LinearLayout studentLayout, teacherLayout;
+        public ImageView confirmed;
         public View line;
 
         public ViewHolder(@NonNull View itemview)
@@ -36,7 +40,11 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
             title = itemview.findViewById(R.id.textViewAdapterLessonTitle);
             start = itemview.findViewById(R.id.textViewAdapterLessonStartDate);
             end = itemview.findViewById(R.id.textViewAdapterLessonEndDate);
-            info = itemview.findViewById(R.id.textViewAdapterLessonInfo);
+            studentLayout = itemview.findViewById(R.id.linearLayoutAdapterLessonStudent);
+            teacherLayout = itemview.findViewById(R.id.linearLayoutAdapterLessonTeacher);
+            student = itemview.findViewById(R.id.textViewAdapterLessonStudent);
+            teacher = itemview.findViewById(R.id.textViewAdapterLessonTeacher);
+            confirmed = itemview.findViewById(R.id.imageViewAdapterLessonConfirmed);
             options = itemview.findViewById(R.id.textViewAdapterLessonOptions);
             line = itemview.findViewById(R.id.viewAdapterLessonLine);
         }
@@ -78,10 +86,12 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Lesson lesson)
     {
-        holder.title.setText(String.format(Locale.ROOT, "Driving %s\n\nwith %s, %s", lesson.isTest ? "test" : "lesson", lesson.studentName, lesson.teacherName == null ? "?": lesson.teacherName));
+        holder.title.setText(lesson.isTest ? R.string.driving_test : R.string.driving_lesson);
         holder.start.setText(toString(lesson.start));
         holder.end.setText(toString(lesson.end));
-        holder.info.setText(String.format(Locale.ROOT, "cost: %.2f₪", lesson.cost));
+        holder.student.setText(lesson.studentName);
+        holder.teacher.setText(lesson.teacherName == null ? "?" : lesson.teacherName);
+        holder.confirmed.setImageResource(lesson.isConfirmed ? R.drawable.check_colored : R.drawable.uncheck_colored);
         holder.options.setOnClickListener(v -> onOptionsClick.run(holder, holder.getAbsoluteAdapterPosition(), lesson));
 
         setVisibility(holder, isFiltered(lesson));

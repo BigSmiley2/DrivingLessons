@@ -47,4 +47,7 @@
     <string name="lesson_added">Your lesson has been added</string>
     <string name="test_added">Your test has been added</string>
     <string name="teacher_filters"><b>Teacher filters</b></string>
+    <string name="driving_lesson"><b>Driving Lesson</b></string>
+    <string name="driving_test"><b>Driving Test</b></string>
+    <string name="confirmed"><b>Confirmed:</b></string>
 </resources>

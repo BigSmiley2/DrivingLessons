@@ -285,6 +285,31 @@ public class FirebaseManager
         });
     }
 
+    public void getLessonChanged(String id, @NonNull FirebaseRunnable success)
+    {
+        getLessonChanged(id, success, new FirebaseRunnable() {});
+    }
+
+    public void getLessonChanged(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        db.getReference("lesson").child(id).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                Lesson lesson = snapshot.getValue(Lesson.class);
+
+                success.runAll(lesson);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                failure.runAll();
+            }
+        });
+    }
+
     public void getTeacherChanged(String id, @NonNull FirebaseRunnable success)
     {
         getTeacherChanged(id, success, new FirebaseRunnable() {});

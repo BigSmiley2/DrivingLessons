@@ -51,8 +51,6 @@ public class UserViewFragment extends Fragment implements Parcelable
     private StudentFiltersDialogFragment studentFilters;
     private TeacherFiltersDialogFragment teacherFilters;
 
-    // change the dialogs to be separate
-
     private FirebaseManager fm;
     private UserAdapter adapter;
 

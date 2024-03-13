@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".dialogs.LessonInfoDialogFragment">
+
+    <TextView
+        android:id="@+id/textViewDialogFragmentLessonInfoTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/driving_lesson"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewDialogFragmentLessonInfoConfirmed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/confirmed"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewDialogFragmentLessonInfoTitle"
+        app:layout_constraintStart_toEndOf="@+id/textViewDialogFragmentLessonInfoTitle"
+        app:layout_constraintTop_toTopOf="@+id/textViewDialogFragmentLessonInfoTitle" />
+
+    <ImageView
+        android:id="@+id/imageViewDialogFragmentLessonInfoConfirmed"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/uncheck_colored"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewDialogFragmentLessonInfoConfirmed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewDialogFragmentLessonInfoConfirmed"
+        app:layout_constraintTop_toTopOf="@+id/textViewDialogFragmentLessonInfoConfirmed" />
+
+    <TextView
+        android:id="@+id/textViewDialogFragmentLessonInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text=","
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutDialogFragmentLessonInfoStudent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayoutDialogFragmentLessonInfoStudent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayoutDialogFragmentLessonInfoStudent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutDialogFragmentLessonInfoStudent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/textViewDialogFragmentLessonInfoTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDialogFragmentLessonInfoTitle">
+
+        <ImageView
+            android:id="@+id/imageViewDialogFragmentLessonInfoStudent"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/user_icon" />
+
+        <TextView
+            android:id="@+id/textViewDialogFragmentLessonInfoStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="@string/student"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutDialogFragmentLessonInfoTeacher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutAdapterLessonStudent"
+        app:layout_constraintStart_toEndOf="@+id/textViewDialogFragmentLessonInfo"
+        app:layout_constraintTop_toTopOf="@+id/linearLayoutDialogFragmentLessonInfoStudent">
+
+        <ImageView
+            android:id="@+id/imageViewDialogFragmentLessonInfoTeacher"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/user_icon" />
+
+        <TextView
+            android:id="@+id/textViewDialogFragmentLessonInfoTeacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="@string/teacher"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewDialogFragmentLessonInfoStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="start date"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/linearLayoutDialogFragmentLessonInfoStudent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutDialogFragmentLessonInfoStudent" />
+
+    <TextView
+        android:id="@+id/textViewDialogFragmentLessonInfoEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="end date"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewDialogFragmentLessonInfoStartDate"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDialogFragmentLessonInfoStartDate" />
+
+    <TextView
+        android:id="@+id/textViewDialogFragmentLessonInfoCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="cost"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textViewDialogFragmentLessonInfoEndDate"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDialogFragmentLessonInfoEndDate" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
