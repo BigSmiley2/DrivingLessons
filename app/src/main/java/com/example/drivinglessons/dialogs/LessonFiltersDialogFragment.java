@@ -153,7 +153,7 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
         if (isOwner)
         {
             assignedInput.setVisibility(View.VISIBLE);
-            assignedText.setText(View.VISIBLE);
+            assignedText.setVisibility(View.VISIBLE);
         }
 
         confirmInput.setChecked(data.isConfirmed);

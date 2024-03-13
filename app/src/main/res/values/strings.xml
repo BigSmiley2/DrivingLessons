@@ -50,4 +50,9 @@
     <string name="driving_lesson"><b>Driving Lesson</b></string>
     <string name="driving_test"><b>Driving Test</b></string>
     <string name="confirmed"><b>Confirmed:</b></string>
+    <string name="logout"><b>Logout</b></string>
+    <string name="balance"><b>Balance</b></string>
+    <string name="about"><b>About</b></string>
+    <string name="not_owner">Not owner</string>
+    <string name="owner">Owner</string>
 </resources>

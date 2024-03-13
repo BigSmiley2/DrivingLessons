@@ -31,6 +31,7 @@ import java.util.ArrayList;
 
 public class MainActivity <T extends Fragment & Parcelable> extends AppCompatActivity
 {
+    private boolean isOwnerMode;
 
     private FirebaseManager fm;
     private SharedPreferencesManager spm;
@@ -44,6 +45,8 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        isOwnerMode = false;
 
         fm = FirebaseManager.getInstance(this);
         spm = SharedPreferencesManager.getInstance(this);
@@ -67,15 +70,21 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     {
         getMenuInflater().inflate(R.menu.menu_main_options, menu);
 
-        MenuItem logout, edit;
+        MenuItem logout, edit, balance, owner, notOwner;
 
         logout = menu.findItem(R.id.menuItemMainOptionsMenuLogout);
         edit = menu.findItem(R.id.menuItemMainOptionsMenuEdit);
+        balance = menu.findItem(R.id.menuItemMainOptionsMenuBalance);
+        owner = menu.findItem(R.id.menuItemMainOptionsMenuOwner);
+        notOwner = menu.findItem(R.id.menuItemMainOptionsMenuNotOwner);
 
-        final boolean isSigned = fm.isSigned();
+        final boolean isSigned = fm.isSigned(), isOwner = spm.getIsOwner();
 
         logout.setVisible(isSigned);
         edit.setVisible(isSigned);
+        balance.setVisible(isSigned);
+        owner.setVisible(isOwner && isOwnerMode);
+        notOwner.setVisible(isOwner && !isOwnerMode);
 
         return true;
     }
@@ -88,6 +97,20 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         if (id == R.id.menuItemMainOptionsMenuLogout) signOut();
 
         else if (id == R.id.menuItemMainOptionsMenuEdit) startInputActivity();
+
+        else if (id == R.id.menuItemMainOptionsMenuBalance);
+
+        else if (id == R.id.menuItemMainOptionsMenuOwner)
+        {
+            isOwnerMode = false;
+            refresh();
+        }
+
+        else if (id == R.id.menuItemMainOptionsMenuNotOwner)
+        {
+            isOwnerMode = true;
+            refresh();
+        }
 
         else if (id == R.id.menuItemMainOptionsMenuAbout);
 
@@ -147,7 +170,8 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         final int pos;
 
-        if (fm.isSigned()) pos = createSignedIn(fragments);
+        if (fm.isSigned() && isOwnerMode) pos = createOwner(fragments);
+        else if (fm.isSigned()) pos = createSignedIn(fragments);
         else pos = createSignedOut(fragments);
 
         pagerFragment = PagerFragment.newInstance(fragments, pos);
@@ -170,5 +194,18 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         if (spm.getHasTeacher() || !isStudent) fragments.add((T) LessonViewFragment.newInstance(id, isStudent));
         return 1;
+    }
+
+    @SuppressWarnings("unchecked")
+    private int createOwner(@NonNull ArrayList<T> fragments)
+    {
+        String id = fm.getCurrentUid();
+        boolean isStudent = spm.getIsStudent();
+
+        fragments.add((T) UserViewFragment.newInstance(true, false, true, id));
+        fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
+        fragments.add((T) LessonViewFragment.newInstance());
+
+        return 0;
     }
 }
