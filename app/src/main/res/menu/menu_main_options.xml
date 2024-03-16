@@ -3,35 +3,38 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menuItemMainOptionsMenuNotOwner"
-        android:icon="@drawable/key_off"
-        android:title="@string/not_owner"
-        android:visible="false"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/menuItemMainOptionsMenuOwner"
-        android:icon="@drawable/key"
-        android:title="@string/owner"
-        android:visible="false"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/menuItemMainOptionsMenuAbout"
         android:icon="@drawable/about"
         android:title="@string/about"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+
     <item
-        android:id="@+id/menuItemMainOptionsMenuEdit"
-        android:icon="@drawable/edit"
-        android:title="@string/edit"
-        app:showAsAction="ifRoom|withText" />
-    <item
-        android:id="@+id/menuItemMainOptionsMenuBalance"
-        android:icon="@drawable/balance"
-        android:title="@string/balance"
-        app:showAsAction="ifRoom|withText" />
-    <item
-        android:id="@+id/menuItemMainOptionsMenuLogout"
-        android:icon="@drawable/logout"
-        android:title="@string/logout"
-        app:showAsAction="always" />
+        android:id="@+id/menuItemMainOptionsMenuOverflowMenu"
+        android:icon="@drawable/arrow_down"
+        android:title=""
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menuItemMainOptionsMenuNotOwner"
+                android:icon="@drawable/key_off"
+                android:title="@string/not_owner" />
+            <item
+                android:id="@+id/menuItemMainOptionsMenuOwner"
+                android:icon="@drawable/key"
+                android:title="@string/owner" />
+            <item
+                android:id="@+id/menuItemMainOptionsMenuEdit"
+                android:icon="@drawable/edit"
+                android:title="@string/edit" />
+            <item
+                android:id="@+id/menuItemMainOptionsMenuBalance"
+                android:icon="@drawable/balance"
+                android:title="@string/balance" />
+
+            <item
+                android:id="@+id/menuItemMainOptionsMenuLogout"
+                android:icon="@drawable/logout"
+                android:title="@string/logout" />
+        </menu>
+    </item>
 </menu>

@@ -29,7 +29,7 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
     }
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView name, email, date, info, options;
+        public TextView name, email, date, options;
         public ImageView imageView;
 
         public ViewHolder(@NonNull View itemview)
@@ -42,7 +42,6 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
             email = itemview.findViewById(R.id.textViewAdapterUserEmail);
             date = itemview.findViewById(R.id.textViewAdapterUserDate);
             options = itemview.findViewById(R.id.textViewAdapterUserOptions);
-            info = itemview.findViewById(R.id.textViewAdapterUserInfo);
          }
     }
 

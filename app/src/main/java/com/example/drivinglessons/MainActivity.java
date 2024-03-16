@@ -70,8 +70,9 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     {
         getMenuInflater().inflate(R.menu.menu_main_options, menu);
 
-        MenuItem logout, edit, balance, owner, notOwner;
+        MenuItem logout, edit, balance, owner, notOwner, overflow;
 
+        overflow = menu.findItem(R.id.menuItemMainOptionsMenuOverflowMenu);
         logout = menu.findItem(R.id.menuItemMainOptionsMenuLogout);
         edit = menu.findItem(R.id.menuItemMainOptionsMenuEdit);
         balance = menu.findItem(R.id.menuItemMainOptionsMenuBalance);
@@ -80,6 +81,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         final boolean isSigned = fm.isSigned(), isOwner = spm.getIsOwner();
 
+        overflow.setVisible(isSigned); 
         logout.setVisible(isSigned);
         edit.setVisible(isSigned);
         balance.setVisible(isSigned);
@@ -90,7 +92,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         final int id = item.getItemId();
 
@@ -123,9 +125,11 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     {
         Intent intent = new Intent(this, InputActivity.class);
 
-        fm.getCurrentUserFromDatabase(new FirebaseRunnable() {
+        fm.getCurrentUserFromDatabase(new FirebaseRunnable()
+        {
             @Override
-            public void run(User user) {
+            public void run(User user)
+            {
                 intent.putExtra(InputActivity.USER, user);
                 startActivity.launch(intent);
             }
@@ -206,6 +210,6 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         fragments.add((T) LessonViewFragment.newInstance());
 
-        return 0;
+        return 1;
     }
 }

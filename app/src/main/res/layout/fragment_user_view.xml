@@ -44,11 +44,10 @@
             android:id="@+id/textViewFragmentUserViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="-16dp"
             android:layout_marginTop="8dp"
             android:text="@string/users"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayoutFragmentUserViewSearch"
+            app:layout_constraintStart_toStartOf="@+id/viewFragmentUserView"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView

@@ -39,11 +39,13 @@ public class LoginFragment extends Fragment implements Parcelable
     private ActivityResultLauncher<Intent> startActivity;
 
     public LoginFragment() {}
+
     @NonNull
     public static LoginFragment newInstance()
     {
         return newInstance("", "");
     }
+
     @NonNull
     public static LoginFragment newInstance(String email, String password)
     {

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textViewAdapterTransactionToTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/to"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewAdapterTransactionFromTitle"
+        app:layout_constraintStart_toStartOf="@+id/linearLayoutAdapterTransactionTo"
+        app:layout_constraintTop_toTopOf="@+id/textViewAdapterTransactionFromTitle" />
+
+    <TextView
+        android:id="@+id/textViewAdapterTransactionFromTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/from"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutAdapterTransactionFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/textViewAdapterTransactionFromTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewAdapterTransactionToTitle">
+
+        <ImageView
+            android:id="@+id/imageViewAdapterTransactionFrom"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/user_icon" />
+
+        <TextView
+            android:id="@+id/textViewAdapterTransactionFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="2dp"
+            android:text="@string/from" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutAdapterTransactionTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutAdapterTransactionFrom"
+        app:layout_constraintStart_toEndOf="@+id/linearLayoutAdapterTransactionFrom"
+        app:layout_constraintTop_toTopOf="@+id/linearLayoutAdapterTransactionFrom">
+
+        <ImageView
+            android:id="@+id/imageViewAdapterTransactionTo"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/user_icon" />
+
+        <TextView
+            android:id="@+id/textViewAdapterTransactionTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="2dp"
+            android:text="@string/to" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewAdapterTransactionConfirmed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/confirmed"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewAdapterTransactionToTitle"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewAdapterLessonConfirmed2"
+        app:layout_constraintTop_toTopOf="@+id/textViewAdapterTransactionToTitle" />
+
+    <ImageView
+        android:id="@+id/imageViewAdapterLessonConfirmed2"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/uncheck_colored"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewAdapterTransactionConfirmed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textViewAdapterTransactionConfirmed" />
+
+    <TextView
+        android:id="@+id/textViewAdapterTransactionDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="date"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/linearLayoutAdapterTransactionFrom"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutAdapterTransactionFrom" />
+
+    <TextView
+        android:id="@+id/textViewAdapterTransactionAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="amount"
+        app:layout_constraintStart_toStartOf="@+id/linearLayoutAdapterTransactionTo"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutAdapterTransactionTo" />
+</androidx.constraintlayout.widget.ConstraintLayout>

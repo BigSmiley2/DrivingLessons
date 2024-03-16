@@ -53,6 +53,9 @@
     <string name="logout"><b>Logout</b></string>
     <string name="balance"><b>Balance</b></string>
     <string name="about"><b>About</b></string>
-    <string name="not_owner">Not owner</string>
-    <string name="owner">Owner</string>
+    <string name="not_owner"><b>Owner mode disabled</b></string>
+    <string name="owner"><b>Owner mode active</b></string>
+    <string name="transactions"><b>Transactions</b></string>
+    <string name="from"><b>From</b></string>
+    <string name="to"><b>To</b></string>
 </resources>
