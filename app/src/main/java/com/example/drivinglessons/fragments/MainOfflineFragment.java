@@ -53,17 +53,15 @@ public class MainOfflineFragment extends Fragment implements Parcelable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_main_offline, container, false);
-
-        if (loginFragment != null) replaceFragment(loginFragment);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_main_offline, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        if (loginFragment != null) replaceFragment(loginFragment);
     }
 
     private void replaceFragment(Fragment fragment)

@@ -155,7 +155,15 @@ public class LoginFragment extends Fragment implements Parcelable
             }
         });
 
-        signup.setOnClickListener(v -> startActivity.launch(new Intent(requireActivity(), InputActivity.class)));
+        signup.setOnClickListener(v ->
+        {
+            Intent intent = new Intent(requireActivity(), InputActivity.class);
+
+            intent.putExtra(InputActivity.EMAIL, email);
+            intent.putExtra(InputActivity.PASSWORD, password);
+
+            startActivity.launch(intent);
+        });
 
         forgot.setOnClickListener(new View.OnClickListener()
         {

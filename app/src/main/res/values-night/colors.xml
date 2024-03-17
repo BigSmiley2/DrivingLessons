@@ -4,5 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="button_warm">#CC1479</color>
     <color name="button_cold">#5B2DAE</color>
-    <color name="text_color">@color/black</color>
+    <color name="text_color">@color/white</color>
 </resources>

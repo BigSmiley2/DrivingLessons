@@ -100,7 +100,12 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         else if (id == R.id.menuItemMainOptionsMenuEdit) startInputActivity();
 
-        else if (id == R.id.menuItemMainOptionsMenuBalance);
+        else if (id == R.id.menuItemMainOptionsMenuBalance)
+        {
+            Intent intent = new Intent(this, BalanceActivity.class);
+            intent.putExtra(BalanceActivity.ID, fm.getCurrentUid());
+            startActivity(intent);
+        }
 
         else if (id == R.id.menuItemMainOptionsMenuOwner)
         {

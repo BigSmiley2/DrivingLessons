@@ -31,6 +31,7 @@
             android:layout_marginStart="16dp"
             android:text="@string/full_name"
             android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/textViewAdapterUserEmail"
             app:layout_constraintStart_toEndOf="@+id/imageViewAdapterUser"
             app:layout_constraintTop_toTopOf="@+id/imageViewAdapterUser" />

@@ -68,18 +68,25 @@ public class FirebaseManager
             @Override
             public void run()
             {
-                getBalanceFromDatabase(lesson.teacherId, new FirebaseRunnable()
+                confirmTransaction(lesson.id, new FirebaseRunnable()
                 {
                     @Override
-                    public void run(Balance balance)
+                    public void run()
                     {
-                        balance.amount += lesson.cost;
-                        saveBalanceInDatabase(lesson.teacherId, balance, new FirebaseRunnable()
+                        getBalanceFromDatabase(lesson.teacherId, new FirebaseRunnable()
                         {
                             @Override
-                            public void run()
+                            public void run(Balance balance)
                             {
-                                toastS(c, R.string.lesson_confirmed);
+                                balance.amount += lesson.cost;
+                                saveBalanceInDatabase(lesson.teacherId, balance, new FirebaseRunnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        toastS(c, R.string.lesson_confirmed);
+                                    }
+                                }, failure);
                             }
                         }, failure);
                     }
@@ -134,6 +141,15 @@ public class FirebaseManager
     public void cancelTransaction(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         db.getReference("transaction").child(id).removeValue()
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
+    }
+
+    public  void confirmTransaction(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        Transaction t = new Transaction();
+        t.isConfirmed = true;
+        db.getReference("transaction").child(id).updateChildren(t.toMap())
                 .addOnSuccessListener(success::runAll)
                 .addOnFailureListener(failure::runAll);
     }
@@ -255,9 +271,39 @@ public class FirebaseManager
         return isStudent ? getStudentLessonsQuery(id) : getTeacherLessonsQuery(id);
     }
 
+    public Query getTransactionsQuery()
+    {
+        return getDatabaseQuery("transaction").orderByChild("date");
+    }
+
     public Query getTestLessonsQuery()
     {
         return getDatabaseQuery("lesson").orderByChild("isTest").equalTo(true);
+    }
+
+    public void getBalanceChanged(String id, @NonNull FirebaseRunnable success)
+    {
+        getBalanceChanged(id, success, new FirebaseRunnable() {});
+    }
+
+    public void getBalanceChanged(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        db.getReference("balance").child(id).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                Balance balance = snapshot.getValue(Balance.class);
+
+                success.runAll(balance);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                failure.runAll();
+            }
+        });
     }
 
     public void getStudentChanged(String id, @NonNull FirebaseRunnable success)
@@ -796,7 +842,7 @@ public class FirebaseManager
                                     String id = db.getReference("transaction").push().getKey();
 
                                     lesson.id = id;
-                                    saveTransactionInDatabase(new Transaction(id, lesson.studentId, lesson.teacherId, now, lesson.cost), new FirebaseRunnable()
+                                    saveTransactionInDatabase(new Transaction(id, lesson.studentId, lesson.teacherId, lesson.studentName, lesson.teacherName, now, lesson.cost, false), new FirebaseRunnable()
                                     {
                                         @Override
                                         public void run()

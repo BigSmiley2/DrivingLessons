@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class LessonInfoDialogFragment extends DialogFragment implements Parcelable
 {
-    private static final String TITLE = "lesson info", ID = "id";
+    private static final String FRAGMENT_TITLE = "lesson info", ID = "id";
 
     private String id;
 
@@ -166,6 +166,6 @@ public class LessonInfoDialogFragment extends DialogFragment implements Parcelab
     @Override
     public String toString()
     {
-        return TITLE;
+        return FRAGMENT_TITLE;
     }
 }

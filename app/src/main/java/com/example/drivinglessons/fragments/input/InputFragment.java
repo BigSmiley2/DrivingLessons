@@ -105,15 +105,15 @@ public class InputFragment extends Fragment implements Parcelable
     }
 
     @NonNull
-    public static InputFragment newInstance()
+    public static InputFragment newInstance(String email, String password)
     {
-        return newInstance(InputStudentFragment.newInstance(), InputTeacherFragment.newInstance());
+        return newInstance(email, password, InputStudentFragment.newInstance(), InputTeacherFragment.newInstance());
     }
 
     @NonNull
-    public static InputFragment newInstance(InputStudentFragment studentFragment, InputTeacherFragment teacherFragment)
+    public static InputFragment newInstance(String email, String password, InputStudentFragment studentFragment, InputTeacherFragment teacherFragment)
     {
-        return newInstance(null, true, studentFragment, teacherFragment);
+        return newInstance(null, email, password, true, studentFragment, teacherFragment);
     }
 
     @NonNull
@@ -128,6 +128,21 @@ public class InputFragment extends Fragment implements Parcelable
         args.putBoolean(IS_STUDENT, isStudent);
         args.putParcelable(STUDENT_FRAGMENT, studentFragment);
         args.putParcelable(TEACHER_FRAGMENT, teacherFragment);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @NonNull
+    public static InputFragment newInstance(User user, String email, String password, boolean isStudent, InputStudentFragment studentFragment, InputTeacherFragment teacherFragment)
+    {
+        InputFragment fragment = newInstance(user, isStudent, studentFragment, teacherFragment);
+
+        Bundle args = fragment.getArguments();
+        user = User.emptyUser();
+        user.email = email;
+        user.password = password;
+        if (args != null) args.putParcelable(USER, user);
         fragment.setArguments(args);
 
         return fragment;
@@ -213,6 +228,8 @@ public class InputFragment extends Fragment implements Parcelable
         {
             title.setText(R.string.register);
             buttonInput.setText(R.string.register);
+            emailInput.setText(user.email);
+            passwordInput.setText(user.password);
             confirmPasswordInput.setOnEditorActionListener((v, actionId, event) ->
                     (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) && user.birthdate == null && createBirthdateDialog());
         }

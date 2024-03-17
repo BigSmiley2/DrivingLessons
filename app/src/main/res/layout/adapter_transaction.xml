@@ -47,7 +47,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginStart="2dp"
-            android:text="@string/from" />
+            android:text="@string/from"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,7 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginStart="2dp"
-            android:text="@string/to" />
+            android:text="@string/to"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
@@ -82,11 +84,11 @@
         android:layout_marginEnd="8dp"
         android:text="@string/confirmed"
         app:layout_constraintBottom_toBottomOf="@+id/textViewAdapterTransactionToTitle"
-        app:layout_constraintEnd_toStartOf="@+id/imageViewAdapterLessonConfirmed2"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewAdapterTransactionConfirmed"
         app:layout_constraintTop_toTopOf="@+id/textViewAdapterTransactionToTitle" />
 
     <ImageView
-        android:id="@+id/imageViewAdapterLessonConfirmed2"
+        android:id="@+id/imageViewAdapterTransactionConfirmed"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginEnd="8dp"
@@ -102,6 +104,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="date"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/linearLayoutAdapterTransactionFrom"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutAdapterTransactionFrom" />
@@ -112,6 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="amount"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/linearLayoutAdapterTransactionTo"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutAdapterTransactionTo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

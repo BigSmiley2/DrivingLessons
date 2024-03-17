@@ -24,7 +24,7 @@ import com.example.drivinglessons.util.dialogs.DialogCancel;
 
 public class LessonFiltersDialogFragment extends DialogFragment implements Parcelable
 {
-    private static final String TITLE = "lesson filters", DATA = "data", IS_OWNER = "is owner";
+    private static final String FRAGMENT_TITLE = "lesson filters", DATA = "data", IS_OWNER = "is owner";
 
     public static class Data implements Parcelable
     {
@@ -234,6 +234,6 @@ public class LessonFiltersDialogFragment extends DialogFragment implements Parce
     @Override
     public String toString()
     {
-        return TITLE;
+        return FRAGMENT_TITLE;
     }
 }

@@ -12,9 +12,11 @@ import com.example.drivinglessons.fragments.input.InputFragment;
 
 public class InputActivity extends AppCompatActivity
 {
-    public static final String USER = "user";
+    public static final String USER = "user", EMAIL = "email", PASSWORD = "password";
 
     private User user;
+    private String email;
+    private String password;
     private FragmentContainerView container;
 
     @Override
@@ -26,7 +28,12 @@ public class InputActivity extends AppCompatActivity
         container = findViewById(R.id.fragmentContainerViewActivityInput);
 
         Intent intent = getIntent();
-        if (intent != null) user = intent.getParcelableExtra(USER);
+        if (intent != null)
+        {
+            user = intent.getParcelableExtra(USER);
+            email = intent.getStringExtra(EMAIL);
+            password = intent.getStringExtra(PASSWORD);
+        }
 
         if (savedInstanceState == null) createAndLinkFragment();
     }
@@ -38,6 +45,6 @@ public class InputActivity extends AppCompatActivity
 
     private void createAndLinkFragment()
     {
-        replaceFragment(user == null ? InputFragment.newInstance() : InputFragment.newInstance(user));
+        replaceFragment(user == null ? InputFragment.newInstance(email, password) : InputFragment.newInstance(user));
     }
 }

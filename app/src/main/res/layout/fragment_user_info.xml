@@ -42,6 +42,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/full_name"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/imageViewFragmentUserInfo"
             app:layout_constraintStart_toStartOf="@+id/imageViewFragmentUserInfo"
             app:layout_constraintTop_toBottomOf="@+id/imageViewFragmentUserInfo" />
