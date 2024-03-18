@@ -72,7 +72,7 @@ public class UserViewFragment extends Fragment implements Parcelable
     @NonNull
     public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id)
     {
-        return newInstance(isOwner, isSelector, isStudent, id, StudentFiltersDialogFragment.newInstance(true), TeacherFiltersDialogFragment.newInstance(false));
+        return newInstance(isOwner, isSelector, isStudent, id, StudentFiltersDialogFragment.newInstance(), TeacherFiltersDialogFragment.newInstance(false));
     }
 
     @NonNull

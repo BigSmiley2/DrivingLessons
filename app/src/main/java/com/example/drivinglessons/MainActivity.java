@@ -177,24 +177,21 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     {
         ArrayList<T> fragments = new ArrayList<>();
 
-        final int pos;
+        if (fm.isSigned() && isOwnerMode) createOwner(fragments);
+        else if (fm.isSigned()) createSignedIn(fragments);
+        else createSignedOut(fragments);
 
-        if (fm.isSigned() && isOwnerMode) pos = createOwner(fragments);
-        else if (fm.isSigned()) pos = createSignedIn(fragments);
-        else pos = createSignedOut(fragments);
-
-        pagerFragment = PagerFragment.newInstance(fragments, pos);
+        pagerFragment = PagerFragment.newInstance(fragments);
     }
 
     @SuppressWarnings("unchecked")
-    private int createSignedOut(@NonNull ArrayList<T> fragments)
+    private void createSignedOut(@NonNull ArrayList<T> fragments)
     {
         fragments.add((T) MainOfflineFragment.newInstance(LoginFragment.newInstance()));
-        return 0;
     }
 
     @SuppressWarnings("unchecked")
-    private int createSignedIn(@NonNull ArrayList<T> fragments)
+    private void createSignedIn(@NonNull ArrayList<T> fragments)
     {
         String id = fm.getCurrentUid();
         boolean isStudent = spm.getIsStudent();
@@ -202,11 +199,10 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         fragments.add((T) UserViewFragment.newInstance(false, false, !isStudent, id));
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         if (spm.getHasTeacher() || !isStudent) fragments.add((T) LessonViewFragment.newInstance(id, isStudent));
-        return 1;
     }
 
     @SuppressWarnings("unchecked")
-    private int createOwner(@NonNull ArrayList<T> fragments)
+    private void createOwner(@NonNull ArrayList<T> fragments)
     {
         String id = fm.getCurrentUid();
         boolean isStudent = spm.getIsStudent();
@@ -214,7 +210,5 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         fragments.add((T) UserViewFragment.newInstance(true, false, true, id));
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         fragments.add((T) LessonViewFragment.newInstance());
-
-        return 1;
     }
 }

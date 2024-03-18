@@ -18,29 +18,27 @@ import java.util.ArrayList;
 
 public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
 {
-    private static final String IS_SWIPEABLE = "is swipeable", FRAGMENTS = "fragments", POS = "pos";
+    private static final String IS_SWIPEABLE = "is swipeable", FRAGMENTS = "fragments";
     private ViewPager2 viewPager;
     private TabLayoutMediator tabLayoutMediator;
     private ArrayList<T> fragments;
     private boolean isSwipeable;
-    private int pos;
 
     public PagerFragment() {}
     @NonNull
-    public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments, int pos)
+    public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments)
     {
-     return newInstance(fragments, pos, true);
+     return newInstance(fragments, true);
     }
 
     @NonNull
-    public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments, int pos, boolean isSwipeable)
+    public static <T extends Fragment & Parcelable> PagerFragment<T> newInstance(ArrayList<T> fragments, boolean isSwipeable)
     {
         PagerFragment<T> fragment = new PagerFragment<>();
 
         /* saving data state */
         Bundle args = new Bundle();
         args.putBoolean(IS_SWIPEABLE, isSwipeable);
-        args.putInt(POS, pos);
         args.putParcelableArrayList(FRAGMENTS, fragments);
         fragment.setArguments(args);
 
@@ -55,7 +53,6 @@ public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
         if (args != null)
         {
             isSwipeable = args.getBoolean(IS_SWIPEABLE);
-            pos = args.getInt(POS);
             fragments = args.getParcelableArrayList(FRAGMENTS);
         }
     }
@@ -76,7 +73,6 @@ public class PagerFragment <T extends Fragment & Parcelable> extends Fragment
 
         setSwipeable(isSwipeable);
         viewPager.setAdapter(new PagerAdapter<>(requireActivity(), fragments));
-        viewPager.setCurrentItem(pos);
 
         tabLayoutMediator.attach();
     }

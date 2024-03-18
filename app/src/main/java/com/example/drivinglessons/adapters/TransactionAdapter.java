@@ -63,6 +63,7 @@ public class TransactionAdapter extends FirebaseRecyclerAdapter<Transaction, Tra
         holder.to.setText(transaction.toName);
         holder.date.setText(Constants.DATE_FORMAT.format(transaction.date));
         holder.amount.setText(String.format(Locale.ROOT, "%.2f₪", transaction.amount));
+        holder.confirmed.setImageResource(transaction.isConfirmed ? R.drawable.check_colored : R.drawable.uncheck_colored);
 
         setVisibility(holder, isFiltered(transaction));
     }
