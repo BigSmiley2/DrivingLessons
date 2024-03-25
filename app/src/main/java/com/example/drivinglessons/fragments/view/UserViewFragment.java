@@ -1,4 +1,4 @@
-package com.example.drivinglessons.fragments;
+package com.example.drivinglessons.fragments.view;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

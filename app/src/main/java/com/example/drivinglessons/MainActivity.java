@@ -16,11 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.drivinglessons.firebase.entities.User;
-import com.example.drivinglessons.fragments.LessonViewFragment;
+import com.example.drivinglessons.fragments.view.LessonViewFragment;
 import com.example.drivinglessons.fragments.LoginFragment;
 import com.example.drivinglessons.fragments.MainOfflineFragment;
 import com.example.drivinglessons.fragments.info.UserInfoFragment;
-import com.example.drivinglessons.fragments.UserViewFragment;
+import com.example.drivinglessons.fragments.view.UserViewFragment;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;

@@ -170,6 +170,11 @@ public class FirebaseManager
                 .addOnFailureListener(failure::runAll);
     }
 
+    public Query getRatingQuery(String id)
+    {
+        return db.getReference("rating").child(id).orderByChild("date");
+    }
+
     public Query getUserStudentsQuery()
     {
         if (!spm.getIsStudent())

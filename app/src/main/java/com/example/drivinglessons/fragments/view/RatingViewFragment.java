@@ -1,4 +1,4 @@
-package com.example.drivinglessons.fragments;
+package com.example.drivinglessons.fragments.view;
 
 import android.os.Bundle;
 import android.os.Parcel;
@@ -14,28 +14,29 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.drivinglessons.R;
-import com.example.drivinglessons.adapters.TransactionAdapter;
-import com.example.drivinglessons.firebase.entities.Transaction;
+import com.example.drivinglessons.adapters.RatingAdapter;
+import com.example.drivinglessons.firebase.entities.Rating;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 
-public class TransactionViewFragment extends Fragment implements Parcelable
+public class RatingViewFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "transactions", ID = "id";
+    private static final String FRAGMENT_TITLE = "ratings", ID = "id";
 
     private String id;
 
     private FirebaseManager fm;
-    private TransactionAdapter adapter;
+    private RatingAdapter adapter;
 
     private RecyclerView recyclerView;
-    public TransactionViewFragment() {}
+
+    public RatingViewFragment() {}
 
     @NonNull
-    public static TransactionViewFragment newInstance(String id)
+    public static RatingViewFragment newInstance(String id)
     {
-        TransactionViewFragment fragment = new TransactionViewFragment();
+        RatingViewFragment fragment = new RatingViewFragment();
 
         Bundle args = new Bundle();
         args.putString(ID, id);
@@ -61,7 +62,7 @@ public class TransactionViewFragment extends Fragment implements Parcelable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_transaction_view, container, false);
+        return inflater.inflate(R.layout.fragment_rating_view, container, false);
     }
 
     @Override
@@ -69,10 +70,10 @@ public class TransactionViewFragment extends Fragment implements Parcelable
     {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.recyclerViewFragmentTransactionView);
+        recyclerView = view.findViewById(R.id.recyclerViewFragmentRatingView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new TransactionAdapter(new FirebaseRecyclerOptions.Builder<Transaction>().setQuery(fm.getTransactionsQuery(), this::getTransaction).build(), id);
+        adapter = new RatingAdapter(new FirebaseRecyclerOptions.Builder<Rating>().setQuery(fm.getRatingQuery(id), this::getRating).build());
         recyclerView.setAdapter(adapter);
     }
 
@@ -90,12 +91,12 @@ public class TransactionViewFragment extends Fragment implements Parcelable
         adapter.stopListening();
     }
 
-    private Transaction getTransaction(@NonNull DataSnapshot snapshot)
+    private Rating getRating(@NonNull DataSnapshot snapshot)
     {
-        return snapshot.getValue(Transaction.class);
+        return snapshot.getValue(Rating.class);
     }
 
-    protected TransactionViewFragment(@NonNull Parcel in)
+    protected RatingViewFragment(@NonNull Parcel in)
     {
         id = in.readString();
     }
@@ -112,18 +113,18 @@ public class TransactionViewFragment extends Fragment implements Parcelable
         return 0;
     }
 
-    public static final Creator<TransactionViewFragment> CREATOR = new Creator<TransactionViewFragment>()
+    public static final Creator<RatingViewFragment> CREATOR = new Creator<RatingViewFragment>()
     {
         @Override
-        public TransactionViewFragment createFromParcel(Parcel in)
+        public RatingViewFragment createFromParcel(Parcel in)
         {
-            return new TransactionViewFragment(in);
+            return new RatingViewFragment(in);
         }
 
         @Override
-        public TransactionViewFragment[] newArray(int size)
+        public RatingViewFragment[] newArray(int size)
         {
-            return new TransactionViewFragment[size];
+            return new RatingViewFragment[size];
         }
     };
 

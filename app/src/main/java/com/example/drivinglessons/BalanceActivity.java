@@ -7,9 +7,7 @@ import androidx.fragment.app.FragmentContainerView;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.drivinglessons.firebase.entities.Student;
-import com.example.drivinglessons.fragments.BalanceViewFragment;
-import com.example.drivinglessons.fragments.info.UserInfoFragment;
+import com.example.drivinglessons.fragments.view.BalanceViewFragment;
 
 public class BalanceActivity extends AppCompatActivity
 {

@@ -58,4 +58,5 @@
     <string name="transactions"><b>Transactions</b></string>
     <string name="from"><b>From</b></string>
     <string name="to"><b>To</b></string>
+    <string name="ratings"><b>Ratings</b></string>
 </resources>
