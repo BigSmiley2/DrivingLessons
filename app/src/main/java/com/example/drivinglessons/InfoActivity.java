@@ -1,5 +1,6 @@
 package com.example.drivinglessons;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -9,15 +10,18 @@ import android.os.Bundle;
 
 import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.User;
+import com.example.drivinglessons.fragments.AddRatingFragment;
 import com.example.drivinglessons.fragments.info.UserInfoFragment;
+import com.example.drivinglessons.util.firebase.FirebaseManager;
 
 public class InfoActivity extends AppCompatActivity
 {
     public final static String USER = "user";
 
     private User user;
+    private FirebaseManager fm;
 
-    private FragmentContainerView container;
+    private FragmentContainerView containerInfo, containerAddRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -25,7 +29,10 @@ public class InfoActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
-        container = findViewById(R.id.fragmentContainerViewActivityInfo);
+        fm = FirebaseManager.getInstance(this);
+
+        containerInfo = findViewById(R.id.fragmentContainerViewActivityInfoInfo);
+        containerAddRating = findViewById(R.id.fragmentContainerViewActivityInfoAddRating);
 
         Intent intent = getIntent();
 
@@ -34,13 +41,14 @@ public class InfoActivity extends AppCompatActivity
         if (savedInstanceState == null) createAndLinkFragment();
     }
 
-    private void replaceFragment(Fragment fragment)
+    private void replaceFragment(@NonNull FragmentContainerView container, Fragment fragment)
     {
         getSupportFragmentManager().beginTransaction().replace(container.getId(), fragment).commit();
     }
 
     private void createAndLinkFragment()
     {
-        replaceFragment(UserInfoFragment.newInstance(user.id, user instanceof Student));
+        replaceFragment(containerInfo, UserInfoFragment.newInstance(user.id, user instanceof Student));
+        if (fm.isSigned()) replaceFragment(containerAddRating, AddRatingFragment.newInstance(user.id, fm.getCurrentUid(), user instanceof Student));
     }
 }

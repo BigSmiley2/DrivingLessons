@@ -59,4 +59,8 @@
     <string name="from"><b>From</b></string>
     <string name="to"><b>To</b></string>
     <string name="ratings"><b>Ratings</b></string>
+    <string name="add_teacher_rating"><b>Add teacher rating</b></string>
+    <string name="add_student_rating"><b>Add student rating</b></string>
+    <string name="add_rating">Add rating</string>
+    <string name="rating_added">Rating has been added</string>
 </resources>

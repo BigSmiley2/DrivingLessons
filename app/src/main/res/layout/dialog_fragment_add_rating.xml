@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ConstraintLayoutDialogFragmentAddRating"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    tools:visibility="visible"
+    tools:context=".dialogs.AddRatingDialogFragment">
+
+    <TextView
+        android:id="@+id/textViewDialogFragmentAddRatingTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_teacher_rating"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewDialogFragmentAddRatingFullName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/full_name"
+        app:layout_constraintStart_toStartOf="@+id/textViewDialogFragmentAddRatingTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDialogFragmentAddRatingTitle" />
+
+    <ImageView
+        android:id="@+id/imageViewDialogFragmentAddRating"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewDialogFragmentAddRatingFullName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textViewDialogFragmentAddRatingFullName"
+        app:srcCompat="@drawable/user_icon" />
+
+    <RatingBar
+        android:id="@+id/ratingBarDialogFragmentAddRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:numStars="5"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewDialogFragmentAddRating" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutDialogFragmentAddRatingMessage"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBarDialogFragmentAddRating">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextDialogFragmentAddRatingMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="add message"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/imageViewDialogFragmentAddRatingSend"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
+        app:layout_constraintStart_toEndOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
+        app:layout_constraintTop_toTopOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
+        app:srcCompat="@drawable/send" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

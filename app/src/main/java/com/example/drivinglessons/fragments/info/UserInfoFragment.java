@@ -20,6 +20,7 @@ import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.User;
+import com.example.drivinglessons.fragments.view.RatingViewFragment;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
@@ -27,15 +28,15 @@ import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 
 public class UserInfoFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "user info", ID = "id", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment";
+    private static final String FRAGMENT_TITLE = "user info", ID = "id", IS_STUDENT = "is student", STUDENT_FRAGMENT = "student fragment", TEACHER_FRAGMENT = "teacher fragment", RATING_FRAGMENT = "rating fragment";
 
     private FirebaseManager fm;
-    private SharedPreferencesManager spm;
 
     private String id;
     private boolean isStudent;
     private StudentInfoFragment studentFragment;
     private TeacherInfoFragment teacherFragment;
+    private RatingViewFragment ratingFragment;
 
     private ConstraintLayout layout;
     private ImageView image;
@@ -46,11 +47,11 @@ public class UserInfoFragment extends Fragment implements Parcelable
     @NonNull
     public static UserInfoFragment newInstance(String id, boolean isStudent)
     {
-        return newInstance(id, isStudent, StudentInfoFragment.newInstance(), TeacherInfoFragment.newInstance());
+        return newInstance(id, isStudent, StudentInfoFragment.newInstance(), TeacherInfoFragment.newInstance(), RatingViewFragment.newInstance(id));
     }
 
     @NonNull
-    public static UserInfoFragment newInstance(String id, boolean isStudent, StudentInfoFragment studentFragment, TeacherInfoFragment teacherFragment)
+    public static UserInfoFragment newInstance(String id, boolean isStudent, StudentInfoFragment studentFragment, TeacherInfoFragment teacherFragment, RatingViewFragment ratingFragment)
     {
         UserInfoFragment fragment = new UserInfoFragment();
 
@@ -60,6 +61,7 @@ public class UserInfoFragment extends Fragment implements Parcelable
         args.putBoolean(IS_STUDENT, isStudent);
         args.putParcelable(STUDENT_FRAGMENT, studentFragment);
         args.putParcelable(TEACHER_FRAGMENT, teacherFragment);
+        args.putParcelable(RATING_FRAGMENT, ratingFragment);
         fragment.setArguments(args);
 
         return fragment;
@@ -76,6 +78,7 @@ public class UserInfoFragment extends Fragment implements Parcelable
             isStudent = args.getBoolean(IS_STUDENT);
             studentFragment = args.getParcelable(STUDENT_FRAGMENT);
             teacherFragment = args.getParcelable(TEACHER_FRAGMENT);
+            ratingFragment = args.getParcelable(RATING_FRAGMENT);
         }
     }
 
@@ -118,7 +121,7 @@ public class UserInfoFragment extends Fragment implements Parcelable
 
         if (isStudent)
         {
-            replaceFragment(studentFragment);
+            replaceInfoFragment(studentFragment);
             fm.getStudentChanged(id, new FirebaseRunnable()
             {
                 @Override
@@ -131,7 +134,7 @@ public class UserInfoFragment extends Fragment implements Parcelable
         }
         else
         {
-            replaceFragment(teacherFragment);
+            replaceInfoFragment(teacherFragment);
             fm.getTeacherChanged(id, new FirebaseRunnable()
             {
                 @Override
@@ -142,6 +145,8 @@ public class UserInfoFragment extends Fragment implements Parcelable
                 }
             });
         }
+        replaceRatingFragment(ratingFragment);
+
     }
 
     private void setVisible()
@@ -149,9 +154,14 @@ public class UserInfoFragment extends Fragment implements Parcelable
         layout.setVisibility(View.VISIBLE);
     }
 
-    private void replaceFragment(Fragment fragment)
+    private void replaceInfoFragment(Fragment fragment)
     {
         getChildFragmentManager().beginTransaction().replace(R.id.FrameLayoutFragmentUserInfo, fragment).commit();
+    }
+
+    private void replaceRatingFragment(Fragment fragment)
+    {
+        getChildFragmentManager().beginTransaction().replace(R.id.FrameLayoutFragmentUserInfoAddRating, fragment).commit();
     }
 
     protected UserInfoFragment(@NonNull Parcel in)

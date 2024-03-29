@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Balance;
 import com.example.drivinglessons.firebase.entities.Lesson;
+import com.example.drivinglessons.firebase.entities.Rating;
 import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.Transaction;
@@ -49,6 +50,14 @@ public class FirebaseManager
     public static FirebaseManager getInstance(Context context)
     {
         return fm == null ? fm = new FirebaseManager(context) : fm;
+    }
+
+    public void saveRating(@NonNull Rating rating, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        rating.id = db.getReference("rating").child(rating.toId).push().getKey();
+        db.getReference("rating").child(rating.toId).child(rating.id).updateChildren(rating.toMap())
+                .addOnSuccessListener(success::runAll)
+                .addOnFailureListener(failure::runAll);
     }
 
     public void confirmLesson(Context c, @NonNull Lesson lesson)

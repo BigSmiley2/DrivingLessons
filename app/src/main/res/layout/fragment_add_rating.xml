@@ -3,62 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".fragments.AddRatingFragment">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutFragmentAddRatingRate"
-        android:layout_width="65dp"
+    <RatingBar
+        android:id="@+id/ratingBarFragmentAddRating"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutFragmentAddRatingMessage"
-        app:layout_constraintStart_toEndOf="@+id/textInputLayoutFragmentAddRatingMessage"
-        app:layout_constraintTop_toTopOf="@+id/textInputLayoutFragmentAddRatingMessage">
+        android:layout_marginTop="8dp"
+        android:numStars="5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentAddRatingTitle" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextFragmentAddRatingRate"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="rate"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutFragmentAddRatingMessage"
-        android:layout_width="200dp"
+    <TextView
+        android:id="@+id/textViewFragmentAddRatingTitle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageViewFragmentAddRating"
-        app:layout_constraintStart_toEndOf="@+id/imageViewFragmentAddRating"
-        app:layout_constraintTop_toTopOf="@+id/imageViewFragmentAddRating">
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_teacher_rating"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextFragmentAddRatingMessage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="add message"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <ImageView
-        android:id="@+id/imageViewFragmentAddRating"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
+    <TextView
+        android:id="@+id/textViewFragmentAddRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:text="@string/add_rating"
+        android:textColor="@color/button_warm"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/user_icon" />
-
-    <ImageView
-        android:id="@+id/imageViewFragmentAddRatingAdd"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutFragmentAddRatingRate"
-        app:layout_constraintStart_toEndOf="@+id/textInputLayoutFragmentAddRatingRate"
-        app:layout_constraintTop_toTopOf="@+id/textInputLayoutFragmentAddRatingRate"
-        app:srcCompat="@drawable/add" />
-
+        app:layout_constraintEnd_toEndOf="@+id/ratingBarFragmentAddRating"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBarFragmentAddRating" />
 </androidx.constraintlayout.widget.ConstraintLayout>
