@@ -12,6 +12,7 @@ import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.fragments.AddRatingFragment;
 import com.example.drivinglessons.fragments.info.UserInfoFragment;
+import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 
 public class InfoActivity extends AppCompatActivity

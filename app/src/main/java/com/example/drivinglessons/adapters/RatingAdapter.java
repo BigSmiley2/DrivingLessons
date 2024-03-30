@@ -63,7 +63,7 @@ public class RatingAdapter extends FirebaseRecyclerAdapter<Rating, RatingAdapter
                 .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(holder.image);
 
         holder.name.setText(rating.fromName);
-        holder.rating.setText(String.format(Locale.ROOT, "%.2f", rating.rate));
+        holder.rating.setText(String.format(Locale.ROOT, "%.1f", rating.rate));
         holder.date.setText(Constants.DATE_FORMAT.format(rating.date));
         holder.message.setText(rating.message);
 

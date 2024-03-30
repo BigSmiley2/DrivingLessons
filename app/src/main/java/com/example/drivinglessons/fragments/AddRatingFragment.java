@@ -19,10 +19,11 @@ import com.example.drivinglessons.dialogs.AddRatingDialogFragment;
 
 public class AddRatingFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "add rating", ID = "id", IS_STUDENT = "is student", DIALOG = "dialog";
+    private static final String FRAGMENT_TITLE = "add rating", IS_STUDENT = "is student", TO_ID = "to id", FROM_ID = "from id";
 
     private AddRatingDialogFragment dialog;
 
+    private String toId, fromId;
     private boolean isStudent;
     private double rate;
 
@@ -35,17 +36,12 @@ public class AddRatingFragment extends Fragment implements Parcelable
     @NonNull
     public static AddRatingFragment newInstance(String toId, String fromId, boolean isStudent)
     {
-        return newInstance(isStudent, AddRatingDialogFragment.newInstance(toId, fromId, isStudent));
-    }
-
-    @NonNull
-    public static AddRatingFragment newInstance(boolean isStudent, AddRatingDialogFragment dialog)
-    {
         AddRatingFragment fragment = new AddRatingFragment();
 
         Bundle args = new Bundle();
+        args.putString(TO_ID, toId);
+        args.putString(FROM_ID, fromId);
         args.putBoolean(IS_STUDENT, isStudent);
-        args.putParcelable(DIALOG, dialog);
         fragment.setArguments(args);
 
         return fragment;
@@ -59,8 +55,9 @@ public class AddRatingFragment extends Fragment implements Parcelable
         Bundle args = getArguments();
         if (args != null)
         {
+            toId = args.getString(TO_ID);
+            fromId = args.getString(FROM_ID);
             isStudent = args.getBoolean(IS_STUDENT);
-            dialog = args.getParcelable(DIALOG);
         }
     }
 
@@ -82,6 +79,7 @@ public class AddRatingFragment extends Fragment implements Parcelable
         title.setText(isStudent ? R.string.add_student_rating : R.string.add_teacher_rating);
         addRating.setOnClickListener(v ->
         {
+            dialog = AddRatingDialogFragment.newInstance(toId, fromId, isStudent);
             dialog.reset(rate);
             dialog.show(getChildFragmentManager(), null);
         });
@@ -90,8 +88,10 @@ public class AddRatingFragment extends Fragment implements Parcelable
             if (b)
             {
                 rate = v;
+                dialog = AddRatingDialogFragment.newInstance(toId, fromId, isStudent);
                 dialog.reset(rate);
                 dialog.show(getChildFragmentManager(), null);
+                ratingInput.setRating(0);
             }
         });
     }

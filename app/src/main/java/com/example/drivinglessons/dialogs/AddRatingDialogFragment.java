@@ -1,13 +1,18 @@
 package com.example.drivinglessons.dialogs;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +27,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Rating;
 import com.example.drivinglessons.firebase.entities.User;
+import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.validation.TextListener;
@@ -31,13 +37,14 @@ import java.util.Calendar;
 
 public class AddRatingDialogFragment extends DialogFragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "add rating", TO_ID = "to id", FROM_ID = "from id", IS_STUDENT = "is student";
+    private static final String FRAGMENT_TITLE = "add rating", TO_ID = "to id", FROM_ID = "from id", IS_STUDENT = "is student", RATE = "rate", MESSAGE = "message";
 
     private String toId, fromId, message, name, imagePath;
     private boolean isStudent;
     private double rate;
 
     private FirebaseManager fm;
+    private SharedPreferencesManager spm;
 
     private ConstraintLayout layout;
     private EditText messageInput;
@@ -69,6 +76,7 @@ public class AddRatingDialogFragment extends DialogFragment implements Parcelabl
         super.onCreate(savedInstanceState);
 
         fm = FirebaseManager.getInstance(requireContext());
+        spm = SharedPreferencesManager.getInstance(requireContext());
 
         Bundle args = getArguments();
         if (args != null)
@@ -76,6 +84,8 @@ public class AddRatingDialogFragment extends DialogFragment implements Parcelabl
             toId = args.getString(TO_ID);
             fromId = args.getString(FROM_ID);
             isStudent = args.getBoolean(IS_STUDENT);
+            rate = args.getDouble(RATE);
+            message = args.getString(MESSAGE);
         }
     }
 
@@ -99,10 +109,13 @@ public class AddRatingDialogFragment extends DialogFragment implements Parcelabl
         image = view.findViewById(R.id.imageViewDialogFragmentAddRating);
         layout = view.findViewById(R.id.ConstraintLayoutDialogFragmentAddRating);
 
+        messageInput.setText(message);
+        ratingInput.setRating((float) rate);
+
         FirebaseRunnable success = new FirebaseRunnable()
         {
             @Override
-            public void run(User user)
+            public void run(@NonNull User user)
             {
                 fullName.setText(user.name);
                 Glide.with(requireContext()).load(fm.getStorageReference(user.imagePath))
@@ -114,7 +127,7 @@ public class AddRatingDialogFragment extends DialogFragment implements Parcelabl
             }
         };
 
-        if (isStudent) fm.getStudentChanged(fromId, success);
+        if (spm.getIsStudent()) fm.getStudentChanged(fromId, success);
         else fm.getTeacherChanged(fromId, success);
 
         title.setText(isStudent ? R.string.add_student_rating : R.string.add_teacher_rating);
@@ -176,8 +189,29 @@ public class AddRatingDialogFragment extends DialogFragment implements Parcelabl
 
     public void reset(double rate)
     {
-        this.rate = rate;
-        this.message = "";
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            args.putDouble(RATE, rate);
+            args.putString(MESSAGE, "");
+            setArguments(args);
+        }
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+    {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        Window window = dialog.getWindow();
+        if (window != null)
+        {
+            window.requestFeature(Window.FEATURE_NO_TITLE);
+            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            window.setGravity(Gravity.BOTTOM);
+            //window.setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        return dialog;
     }
 
     protected AddRatingDialogFragment(@NonNull Parcel in)

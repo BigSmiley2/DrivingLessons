@@ -33,9 +33,11 @@
         android:id="@+id/imageViewDialogFragmentAddRating"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/textViewDialogFragmentAddRatingFullName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ratingBarDialogFragmentAddRating"
         app:layout_constraintTop_toTopOf="@+id/textViewDialogFragmentAddRatingFullName"
         app:srcCompat="@drawable/user_icon" />
 
@@ -45,8 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:numStars="5"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
+        app:layout_constraintStart_toStartOf="@+id/textViewDialogFragmentAddRatingTitle"
         app:layout_constraintTop_toBottomOf="@+id/imageViewDialogFragmentAddRating" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -56,16 +57,15 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textViewDialogFragmentAddRatingTitle"
         app:layout_constraintTop_toBottomOf="@+id/ratingBarDialogFragmentAddRating">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextDialogFragmentAddRatingMessage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="add message"
-            android:inputType="text" />
+            android:hint="Add message"
+            android:inputType="textMultiLine" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
@@ -73,7 +73,9 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
         app:layout_constraintTop_toTopOf="@+id/textInputLayoutDialogFragmentAddRatingMessage"
         app:srcCompat="@drawable/send" />

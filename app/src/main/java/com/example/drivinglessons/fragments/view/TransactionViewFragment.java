@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.adapters.TransactionAdapter;
 import com.example.drivinglessons.firebase.entities.Transaction;
+import com.example.drivinglessons.util.WrapContentLinearLayoutManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -71,7 +72,7 @@ public class TransactionViewFragment extends Fragment implements Parcelable
 
         recyclerView = view.findViewById(R.id.recyclerViewFragmentTransactionView);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(requireContext()));
         adapter = new TransactionAdapter(new FirebaseRecyclerOptions.Builder<Transaction>().setQuery(fm.getTransactionsQuery(), this::getTransaction).build(), id);
         recyclerView.setAdapter(adapter);
     }

@@ -28,6 +28,7 @@ import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
 import com.example.drivinglessons.dialogs.LessonInfoDialogFragment;
 import com.example.drivinglessons.firebase.entities.Lesson;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.util.WrapContentLinearLayoutManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.validation.TextListener;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -121,7 +122,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
         searchInputLayout = view.findViewById(R.id.textInputLayoutFragmentLessonViewSearch);
         searchInput = view.findViewById(R.id.editTextFragmentLessonViewSearch);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(requireContext()));
         recyclerView.setItemAnimator(null);
 
         if (!isOwner && isStudent) add.setVisibility(View.VISIBLE);

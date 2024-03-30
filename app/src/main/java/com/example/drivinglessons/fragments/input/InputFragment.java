@@ -338,6 +338,8 @@ public class InputFragment extends Fragment implements Parcelable
         });
         birthdateInput.addTextChangedListener((TextListener) s -> birthdateInputLayout.setError(null));
         birthdateInput.setOnClickListener(v -> createBirthdateDialog());
+        birthdateInput.setTextIsSelectable(false);
+        birthdateInput.setOnLongClickListener(v -> true);
 
         roleInput.setOnCheckedChangeListener((radioGroup, i) ->
         {

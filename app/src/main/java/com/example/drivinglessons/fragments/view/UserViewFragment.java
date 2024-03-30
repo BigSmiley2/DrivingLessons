@@ -32,6 +32,7 @@ import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.dialogs.StudentFiltersDialogFragment;
 import com.example.drivinglessons.dialogs.TeacherFiltersDialogFragment;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.util.WrapContentLinearLayoutManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.validation.TextListener;
@@ -138,7 +139,7 @@ public class UserViewFragment extends Fragment implements Parcelable
         searchInput = view.findViewById(R.id.editTextFragmentUserViewSearch);
         roleInput = view.findViewById(R.id.radioGroupFragmentUserViewRole);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(requireContext()));
         recyclerView.setItemAnimator(null);
 
         Query query = isOwner || !isStudent ? fm.getUsersQuery(isStudent) : fm.getUserStudentsQuery();

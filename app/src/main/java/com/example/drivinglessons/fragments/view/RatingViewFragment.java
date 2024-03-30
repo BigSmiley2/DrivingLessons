@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.adapters.RatingAdapter;
 import com.example.drivinglessons.firebase.entities.Rating;
+import com.example.drivinglessons.util.WrapContentLinearLayoutManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -72,7 +73,7 @@ public class RatingViewFragment extends Fragment implements Parcelable
 
         recyclerView = view.findViewById(R.id.recyclerViewFragmentRatingView);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(requireContext()));
         adapter = new RatingAdapter(new FirebaseRecyclerOptions.Builder<Rating>().setQuery(fm.getRatingQuery(id), this::getRating).build());
         recyclerView.setAdapter(adapter);
     }
