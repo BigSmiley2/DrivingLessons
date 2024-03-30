@@ -45,10 +45,10 @@ import java.util.regex.Pattern;
 
 public class UserViewFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "users", ID = "id", SEARCH = "search", IS_OWNER = "is owner", IS_SELECTOR = "is selector", IS_STUDENT = "is student", STUDENT_FILTERS = "student filters", TEACHER_FILTERS = "teacher filters";
+    private static final String FRAGMENT_TITLE = "users", SEARCH = "search", IS_OWNER = "is owner", IS_SELECTOR = "is selector", IS_STUDENT = "is student", STUDENT_FILTERS = "student filters", TEACHER_FILTERS = "teacher filters";
 
     private boolean isOwner, isSelector, isStudent;
-    private String search, id;
+    private String search;
     private StudentFiltersDialogFragment studentFilters;
     private TeacherFiltersDialogFragment teacherFilters;
 
@@ -65,30 +65,29 @@ public class UserViewFragment extends Fragment implements Parcelable
     public UserViewFragment() {}
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, String id)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector)
     {
-        return newInstance(isOwner, isSelector, true, id);
+        return newInstance(isOwner, isSelector, true);
     }
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent)
     {
-        return newInstance(isOwner, isSelector, isStudent, id, StudentFiltersDialogFragment.newInstance(), TeacherFiltersDialogFragment.newInstance(false));
+        return newInstance(isOwner, isSelector, isStudent, StudentFiltersDialogFragment.newInstance(), TeacherFiltersDialogFragment.newInstance(false));
     }
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
     {
-        return newInstance(isOwner, isSelector, isStudent, id, "", studentFilters, teacherFilters);
+        return newInstance(isOwner, isSelector, isStudent, "", studentFilters, teacherFilters);
     }
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String id, String search, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String search, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
     {
         UserViewFragment fragment = new UserViewFragment();
 
         /* saving data state */
         Bundle args = new Bundle();
-        args.putString(ID, id);
         args.putString(SEARCH, search);
         args.putBoolean(IS_OWNER, isOwner);
         args.putBoolean(IS_SELECTOR, isSelector);
@@ -110,7 +109,6 @@ public class UserViewFragment extends Fragment implements Parcelable
         Bundle args = getArguments();
         if (args != null)
         {
-            id = args.getString(ID);
             search = args.getString(SEARCH);
             isOwner = args.getBoolean(IS_OWNER);
             isSelector = args.getBoolean(IS_SELECTOR);
@@ -270,7 +268,7 @@ public class UserViewFragment extends Fragment implements Parcelable
         assign = m.findItem(R.id.menuItemUserOptionsMenuAssign);
         delete = m.findItem(R.id.menuItemUserOptionsMenuDelete);
 
-        assign.setVisible(isSelector || (!isStudent && !isOwner));
+        assign.setVisible(fm.isSigned() && (isSelector || (!isStudent && !isOwner)));
         delete.setVisible(isOwner);
 
         menu.setOnMenuItemClickListener(menuItem ->
@@ -317,7 +315,6 @@ public class UserViewFragment extends Fragment implements Parcelable
 
     protected UserViewFragment(@NonNull Parcel in)
     {
-        id = in.readString();
         search = in.readString();
         isOwner = in.readByte() == 1;
         isSelector = in.readByte() == 1;
@@ -329,7 +326,6 @@ public class UserViewFragment extends Fragment implements Parcelable
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags)
     {
-        dest.writeString(id);
         dest.writeString(search);
         dest.writeByte((byte) (isOwner ? 1 : 0));
         dest.writeByte((byte) (isSelector ? 1 : 0));

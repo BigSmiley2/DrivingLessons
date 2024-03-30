@@ -52,6 +52,35 @@ public class FirebaseManager
         return fm == null ? fm = new FirebaseManager(context) : fm;
     }
 
+    public void addMoney(String id, double amount, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        getUserFromDatabase(id, new FirebaseRunnable()
+        {
+            @Override
+            public void run(User user)
+            {
+                String id1 = db.getReference("transaction").push().getKey();
+
+                saveTransactionInDatabase(new Transaction(id1, null, id, null, user.name, Calendar.getInstance().getTime(), amount, true), new FirebaseRunnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        getBalanceFromDatabase(id, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run(Balance balance)
+                            {
+                                balance.amount += amount;
+                                saveBalanceInDatabase(id, balance, success, failure);
+                            }
+                        }, failure);
+                    }
+                }, failure);
+            }
+        }, failure);
+    }
+
     public void saveRating(@NonNull Rating rating, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         rating.id = db.getReference("rating").child(rating.toId).push().getKey();

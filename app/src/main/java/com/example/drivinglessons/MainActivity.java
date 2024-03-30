@@ -83,8 +83,8 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         overflow.setVisible(isSigned); 
         logout.setVisible(isSigned);
-        edit.setVisible(isSigned);
-        balance.setVisible(isSigned);
+        edit.setVisible(isSigned && !isOwnerMode);
+        balance.setVisible(isSigned && !isOwnerMode);
         owner.setVisible(isOwner && isOwnerMode);
         notOwner.setVisible(isOwner && !isOwnerMode);
 
@@ -187,6 +187,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     @SuppressWarnings("unchecked")
     private void createSignedOut(@NonNull ArrayList<T> fragments)
     {
+        fragments.add((T) UserViewFragment.newInstance(false, false, false));
         fragments.add((T) MainOfflineFragment.newInstance(LoginFragment.newInstance()));
     }
 
@@ -196,7 +197,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         String id = fm.getCurrentUid();
         boolean isStudent = spm.getIsStudent();
 
-        fragments.add((T) UserViewFragment.newInstance(false, false, !isStudent, id));
+        fragments.add((T) UserViewFragment.newInstance(false, false, !isStudent));
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         if (spm.getHasTeacher() || !isStudent) fragments.add((T) LessonViewFragment.newInstance(id, isStudent));
     }
@@ -207,7 +208,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         String id = fm.getCurrentUid();
         boolean isStudent = spm.getIsStudent();
 
-        fragments.add((T) UserViewFragment.newInstance(true, false, true, id));
+        fragments.add((T) UserViewFragment.newInstance(true, false));
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         fragments.add((T) LessonViewFragment.newInstance());
     }

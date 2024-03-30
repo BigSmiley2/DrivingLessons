@@ -107,7 +107,7 @@ public class LessonDialog extends Dialog
         super.onCreate(savedInstances);
         setContentView(R.layout.dialog_lesson);
 
-        //this.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        //getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
 
         add = findViewById(R.id.textViewDialogLessonAdd);
         cancel = findViewById(R.id.textViewDialogLessonCancel);

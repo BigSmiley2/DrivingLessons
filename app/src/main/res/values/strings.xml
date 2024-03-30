@@ -63,4 +63,5 @@
     <string name="add_student_rating"><b>Add student rating</b></string>
     <string name="add_rating">Add rating</string>
     <string name="rating_added">Rating has been added</string>
+    <string name="money_added">The money was transferred successfully</string>
 </resources>

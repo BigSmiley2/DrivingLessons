@@ -9,10 +9,11 @@
         android:id="@+id/textViewAdapterTransactionToTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:text="@string/to"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/textViewAdapterTransactionFromTitle"
-        app:layout_constraintStart_toStartOf="@+id/linearLayoutAdapterTransactionTo"
+        app:layout_constraintStart_toEndOf="@+id/textViewAdapterTransactionFromTitle"
         app:layout_constraintTop_toTopOf="@+id/textViewAdapterTransactionFromTitle" />
 
     <TextView
@@ -113,9 +114,10 @@
         android:id="@+id/textViewAdapterTransactionAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="amount"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/linearLayoutAdapterTransactionTo"
+        app:layout_constraintStart_toEndOf="@+id/textViewAdapterTransactionDate"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutAdapterTransactionTo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

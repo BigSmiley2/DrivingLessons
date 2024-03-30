@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.dialogs.AddMoneyDialog;
 import com.example.drivinglessons.firebase.entities.Balance;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
@@ -95,6 +96,8 @@ public class BalanceViewFragment extends Fragment implements Parcelable
                 amount.setText(String.format(Locale.ROOT, "%.2f₪", balance.amount));
             }
         });
+
+        add.setOnClickListener(v -> new AddMoneyDialog(requireContext(), id).show());
     }
 
     private void replaceFragment(Fragment fragment)
