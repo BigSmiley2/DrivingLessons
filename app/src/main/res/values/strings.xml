@@ -71,4 +71,5 @@
     <string name="amount">Amount(₪)</string>
     <string name="enter_the_amount_you_re_adding_to_your_account">Enter the amount you\'re adding to your account</string>
     <string name="enter_the_cost_per_hour_of_your_lesson">Enter the cost per hour of your lesson</string>
+    <string name="test"><b>test</b></string>
 </resources>

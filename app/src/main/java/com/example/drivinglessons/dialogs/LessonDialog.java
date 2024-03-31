@@ -40,6 +40,8 @@ public class LessonDialog extends Dialog
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        calendar.set(Calendar.MINUTE, 0);
         start = calendar.getTime();
         calendar.add(Calendar.HOUR_OF_DAY, 1);
         end = calendar.getTime();
@@ -246,6 +248,7 @@ public class LessonDialog extends Dialog
                 }
             }
             if (fixDate(start, end)) Toast.makeText(getContext(), String.format(Locale.ROOT, "Lesson must be between\n0%d:00 - %d:00", MIN_HOUR, MAX_HOUR), Toast.LENGTH_SHORT).show();
+            else if (!(start.getTime() < end.getTime())) Toast.makeText(getContext(), "End must be after start", Toast.LENGTH_SHORT).show();
             else
             {
                 this.start.setTime(start.getTime());
