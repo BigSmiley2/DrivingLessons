@@ -3,13 +3,15 @@ package com.example.drivinglessons.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 public class SharedPreferencesManager
 {
     private static final String SHARED_PREFERENCES_TITLE = "user", IS_STUDENT = "isStudent", HAS_TEACHER = "hasTeacher", CAN_TEST = "canTest", IS_OWNER = "isOwner";
     private static SharedPreferencesManager spm;
     private final SharedPreferences sp;
     private final SharedPreferences.Editor edit;
-    private SharedPreferencesManager(Context context)
+    private SharedPreferencesManager(@NonNull Context context)
     {
         sp = context.getSharedPreferences(SHARED_PREFERENCES_TITLE, Context.MODE_PRIVATE);
         edit = sp.edit();

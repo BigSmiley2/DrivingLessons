@@ -144,7 +144,7 @@ public class LoginFragment extends Fragment implements Parcelable
                     @Override
                     public void run()
                     {
-                        ((MainActivity<?>) requireActivity()).refresh();
+                        ((MainActivity<?>) requireActivity()).signIn();
                     }
                 }, new FirebaseRunnable() {
                     @Override

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Add money"
+        android:text="@string/add_money"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,13 +24,13 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textViewDialogAddMoneyTitle"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDialogAddMoneyTitle">
+        app:layout_constraintTop_toBottomOf="@+id/textView">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextDialogAddMoneyAmount"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Amount(₪)"
+            android:hint="@string/amount"
             android:inputType="numberSigned" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -45,4 +45,16 @@
         app:layout_constraintStart_toEndOf="@+id/textInputLayoutDialogAddMoneyAmount"
         app:layout_constraintTop_toTopOf="@+id/textInputLayoutDialogAddMoneyAmount"
         app:srcCompat="@drawable/add" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/enter_the_amount_you_re_adding_to_your_account"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textViewDialogAddMoneyTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDialogAddMoneyTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,17 +15,18 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.drivinglessons.InfoActivity;
 import com.example.drivinglessons.MainActivity;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.adapters.UserAdapter;
+import com.example.drivinglessons.firebase.entities.Lesson;
 import com.example.drivinglessons.firebase.entities.Student;
 import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.User;
@@ -45,8 +46,9 @@ import java.util.regex.Pattern;
 
 public class UserViewFragment extends Fragment implements Parcelable
 {
-    private static final String FRAGMENT_TITLE = "users", SEARCH = "search", IS_OWNER = "is owner", IS_SELECTOR = "is selector", IS_STUDENT = "is student", STUDENT_FILTERS = "student filters", TEACHER_FILTERS = "teacher filters";
+    private static final String FRAGMENT_TITLE = "users", SEARCH = "search", IS_OWNER = "is owner", IS_SELECTOR = "is selector", IS_STUDENT = "is student", STUDENT_FILTERS = "student filters", TEACHER_FILTERS = "teacher filters", LESSON = "lesson";
 
+    private Lesson lesson;
     private boolean isOwner, isSelector, isStudent;
     private String search;
     private StudentFiltersDialogFragment studentFilters;
@@ -65,24 +67,24 @@ public class UserViewFragment extends Fragment implements Parcelable
     public UserViewFragment() {}
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, Lesson lesson)
     {
-        return newInstance(isOwner, isSelector, true);
+        return newInstance(isOwner, isSelector, true, lesson);
     }
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, Lesson lesson)
     {
-        return newInstance(isOwner, isSelector, isStudent, StudentFiltersDialogFragment.newInstance(), TeacherFiltersDialogFragment.newInstance(false));
+        return newInstance(isOwner, isSelector, isStudent, lesson, StudentFiltersDialogFragment.newInstance(), TeacherFiltersDialogFragment.newInstance(isOwner, false, isSelector));
     }
 
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, Lesson lesson, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
     {
-        return newInstance(isOwner, isSelector, isStudent, "", studentFilters, teacherFilters);
+        return newInstance(isOwner, isSelector, isStudent, "", lesson, studentFilters, teacherFilters);
     }
     @NonNull
-    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String search, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
+    public static UserViewFragment newInstance(boolean isOwner, boolean isSelector, boolean isStudent, String search, Lesson lesson, StudentFiltersDialogFragment studentFilters, TeacherFiltersDialogFragment teacherFilters)
     {
         UserViewFragment fragment = new UserViewFragment();
 
@@ -92,6 +94,7 @@ public class UserViewFragment extends Fragment implements Parcelable
         args.putBoolean(IS_OWNER, isOwner);
         args.putBoolean(IS_SELECTOR, isSelector);
         args.putBoolean(IS_STUDENT, isStudent);
+        args.putParcelable(LESSON, lesson);
         args.putParcelable(STUDENT_FILTERS, studentFilters);
         args.putParcelable(TEACHER_FILTERS, teacherFilters);
         fragment.setArguments(args);
@@ -113,6 +116,7 @@ public class UserViewFragment extends Fragment implements Parcelable
             isOwner = args.getBoolean(IS_OWNER);
             isSelector = args.getBoolean(IS_SELECTOR);
             isStudent = args.getBoolean(IS_STUDENT);
+            lesson = args.getParcelable(LESSON);
             studentFilters = args.getParcelable(STUDENT_FILTERS);
             teacherFilters = args.getParcelable(TEACHER_FILTERS);
         }
@@ -142,7 +146,7 @@ public class UserViewFragment extends Fragment implements Parcelable
 
         Query query = isOwner || !isStudent ? fm.getUsersQuery(isStudent) : fm.getUserStudentsQuery();
 
-        adapter = new UserAdapter(new FirebaseRecyclerOptions.Builder<User>().setQuery(query, this::getUser).build(), this::createOptions);
+        adapter = new UserAdapter(new FirebaseRecyclerOptions.Builder<User>().setQuery(query, this::getUser).build(), this::createOptions, isSelector);
         recyclerView.setAdapter(adapter);
 
         if (isOwner) roleInput.setVisibility(View.VISIBLE);
@@ -300,9 +304,16 @@ public class UserViewFragment extends Fragment implements Parcelable
     {
         if (isSelector)
         {
-            Intent intent = requireActivity().getIntent();
-            intent.putExtra("user", user);
-            requireActivity().finish();
+            lesson.teacherId = user.id;
+            lesson.teacherName = user.name;
+            fm.updateLesson(requireContext(), lesson, new FirebaseRunnable()
+            {
+                @Override
+                public void run()
+                {
+                    Toast.makeText(requireContext(), R.string.assigned_teacher, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         else if (!isStudent) fm.setUserTeacher(requireContext(), user.id, new FirebaseRunnable() {
             @Override
@@ -319,6 +330,7 @@ public class UserViewFragment extends Fragment implements Parcelable
         isOwner = in.readByte() == 1;
         isSelector = in.readByte() == 1;
         isStudent = in.readByte() == 1;
+        lesson = in.readParcelable(Lesson.class.getClassLoader());
         studentFilters = in.readParcelable(StudentFiltersDialogFragment.class.getClassLoader());
         teacherFilters = in.readParcelable(TeacherFiltersDialogFragment.class.getClassLoader());
     }
@@ -330,6 +342,7 @@ public class UserViewFragment extends Fragment implements Parcelable
         dest.writeByte((byte) (isOwner ? 1 : 0));
         dest.writeByte((byte) (isSelector ? 1 : 0));
         dest.writeByte((byte) (isStudent ? 1 : 0));
+        dest.writeParcelable(lesson, flags);
         dest.writeParcelable(studentFilters, flags);
         dest.writeParcelable(teacherFilters, flags);
     }

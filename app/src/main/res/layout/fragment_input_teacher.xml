@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Are you driving on a manual car?"
+        android:text="@string/are_you_driving_on_a_manual_car"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/textViewFragmentInputTeacherTitle"
         app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTeacherTitle" />
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Are you a driver tester?"
+        android:text="@string/are_you_a_tester"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/textViewFragmentInputTeacherManual"
         app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTeacherManual" />
@@ -64,22 +64,31 @@
         app:showText="false"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
+    <TextView
+        android:id="@+id/textViewFragmentInputTeacherCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/enter_the_cost_per_hour_of_your_lesson"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewFragmentInputTeacherTester"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTeacherTester" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayoutFragmentInputTeacherCost"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTeacherTester">
+        app:layout_constraintStart_toStartOf="@+id/textViewFragmentInputTeacherCost"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentInputTeacherCost">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextFragmentInputTeacherCost"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Cost"
+            android:hint="@string/cost"
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
 

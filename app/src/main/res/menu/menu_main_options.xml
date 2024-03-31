@@ -30,7 +30,10 @@
                 android:id="@+id/menuItemMainOptionsMenuBalance"
                 android:icon="@drawable/balance"
                 android:title="@string/balance" />
-
+            <item
+                android:id="@+id/menuItemMainOptionsMenuTest"
+                android:icon="@drawable/test"
+                android:title="test" />
             <item
                 android:id="@+id/menuItemMainOptionsMenuLogout"
                 android:icon="@drawable/logout"

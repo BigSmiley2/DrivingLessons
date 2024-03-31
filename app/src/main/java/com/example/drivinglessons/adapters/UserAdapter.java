@@ -60,9 +60,9 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
         this.onOptionsClick = onOptionsClick;
     }
 
-    public UserAdapter(FirebaseRecyclerOptions<User> options, Runnable onOptionsClick)
+    public UserAdapter(FirebaseRecyclerOptions<User> options, Runnable onOptionsClick, boolean isTester)
     {
-        this(options, false, false, false, "", onOptionsClick);
+        this(options, false, isTester, false, "", onOptionsClick);
     }
     public UserAdapter(FirebaseRecyclerOptions<User> options, @NonNull UserAdapter other)
     {
@@ -94,13 +94,13 @@ public class UserAdapter extends FirebaseRecyclerAdapter<User, UserAdapter.ViewH
         {
             Teacher teacher = (Teacher) user;
 
-            setVisibility(holder, !(teacher.hasManual != isManual || teacher.isTester != isTester || !user.name.contains(name)));
+            setVisibility(holder, teacher.hasManual == isManual && teacher.isTester == isTester && user.name.contains(name));
         }
         else if (user instanceof Student)
         {
             Student student = (Student) user;
 
-            setVisibility(holder, !(student.hasTheoryTest != isTheory || !user.name.contains(name)));
+            setVisibility(holder, student.hasTheoryTest == isTheory && user.name.contains(name));
         }
     }
 

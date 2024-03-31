@@ -64,4 +64,11 @@
     <string name="add_rating">Add rating</string>
     <string name="rating_added">Rating has been added</string>
     <string name="money_added">The money was transferred successfully</string>
+    <string name="are_you_driving_on_a_manual_car">Are you driving on a manual car?</string>
+    <string name="are_you_a_tester">Are you a tester?</string>
+    <string name="cost">Cost(₪)</string>
+    <string name="add_money"><b>Add money</b></string>
+    <string name="amount">Amount(₪)</string>
+    <string name="enter_the_amount_you_re_adding_to_your_account">Enter the amount you\'re adding to your account</string>
+    <string name="enter_the_cost_per_hour_of_your_lesson">Enter the cost per hour of your lesson</string>
 </resources>

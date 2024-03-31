@@ -23,6 +23,9 @@
         android:theme="@style/Theme.DrivingLessons"
         tools:targetApi="34">
         <activity
+            android:name=".SelectActivity"
+            android:exported="false" />
+        <activity
             android:name=".BalanceActivity"
             android:exported="false" />
         <activity

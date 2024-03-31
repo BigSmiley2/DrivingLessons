@@ -15,6 +15,7 @@ import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.drivinglessons.dialogs.LessonDialog;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.fragments.view.LessonViewFragment;
 import com.example.drivinglessons.fragments.LoginFragment;
@@ -56,11 +57,18 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
             if (r.getResultCode() == Activity.RESULT_OK) refresh();
         });
 
-        // after login position is wrong
-
         container = findViewById(R.id.fragmentContainerViewActivityMain);
 
         setSupportActionBar(findViewById(R.id.toolbarActivityMain));
+
+        if (fm.isSigned() && spm.getIsStudent()) fm.getStudentCanTest(fm.getCurrentUid(), new FirebaseRunnable()
+        {
+            @Override
+            public void run()
+            {
+                refresh();
+            }
+        });
 
         if (savedInstanceState == null) createAndLinkFragments();
     }
@@ -70,7 +78,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     {
         getMenuInflater().inflate(R.menu.menu_main_options, menu);
 
-        MenuItem logout, edit, balance, owner, notOwner, overflow;
+        MenuItem logout, edit, balance, owner, notOwner, overflow, test;
 
         overflow = menu.findItem(R.id.menuItemMainOptionsMenuOverflowMenu);
         logout = menu.findItem(R.id.menuItemMainOptionsMenuLogout);
@@ -78,8 +86,9 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         balance = menu.findItem(R.id.menuItemMainOptionsMenuBalance);
         owner = menu.findItem(R.id.menuItemMainOptionsMenuOwner);
         notOwner = menu.findItem(R.id.menuItemMainOptionsMenuNotOwner);
+        test = menu.findItem(R.id.menuItemMainOptionsMenuTest);
 
-        final boolean isSigned = fm.isSigned(), isOwner = spm.getIsOwner();
+        final boolean isSigned = fm.isSigned(), isOwner = spm.getIsOwner(), canTest = spm.getCanTest();
 
         overflow.setVisible(isSigned); 
         logout.setVisible(isSigned);
@@ -87,6 +96,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         balance.setVisible(isSigned && !isOwnerMode);
         owner.setVisible(isOwner && isOwnerMode);
         notOwner.setVisible(isOwner && !isOwnerMode);
+        test.setVisible(canTest && !isOwnerMode);
 
         return true;
     }
@@ -99,6 +109,8 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         if (id == R.id.menuItemMainOptionsMenuLogout) signOut();
 
         else if (id == R.id.menuItemMainOptionsMenuEdit) startInputActivity();
+
+        else if (id == R.id.menuItemMainOptionsMenuTest) new LessonDialog(this, fm.getCurrentUid(), true).show();
 
         else if (id == R.id.menuItemMainOptionsMenuBalance)
         {
@@ -156,6 +168,12 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         });
     }
 
+    public void signIn()
+    {
+        isOwnerMode = false;
+        refresh();
+    }
+
     public void refresh()
     {
         createAndLinkFragments();
@@ -187,7 +205,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     @SuppressWarnings("unchecked")
     private void createSignedOut(@NonNull ArrayList<T> fragments)
     {
-        fragments.add((T) UserViewFragment.newInstance(false, false, false));
+        fragments.add((T) UserViewFragment.newInstance(false, false, false, null));
         fragments.add((T) MainOfflineFragment.newInstance(LoginFragment.newInstance()));
     }
 
@@ -197,7 +215,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         String id = fm.getCurrentUid();
         boolean isStudent = spm.getIsStudent();
 
-        fragments.add((T) UserViewFragment.newInstance(false, false, !isStudent));
+        fragments.add((T) UserViewFragment.newInstance(false, false, !isStudent, null));
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         if (spm.getHasTeacher() || !isStudent) fragments.add((T) LessonViewFragment.newInstance(id, isStudent));
     }
@@ -208,7 +226,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         String id = fm.getCurrentUid();
         boolean isStudent = spm.getIsStudent();
 
-        fragments.add((T) UserViewFragment.newInstance(true, false));
+        fragments.add((T) UserViewFragment.newInstance(true, false, null));
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         fragments.add((T) LessonViewFragment.newInstance());
     }

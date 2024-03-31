@@ -52,6 +52,54 @@ public class FirebaseManager
         return fm == null ? fm = new FirebaseManager(context) : fm;
     }
 
+    public void updateLesson(Context c, @NonNull Lesson lesson, FirebaseRunnable success)
+    {
+        FirebaseRunnable failure = new FirebaseRunnable()
+        {
+            @Override
+            public void run(Exception e)
+            {
+                super.run(e);
+                toastS(c, R.string.went_wrong_error);
+            }
+        };
+
+        Transaction transaction = new Transaction();
+        transaction.id = lesson.id;
+        transaction.toId = lesson.teacherId;
+        transaction.toName = lesson.teacherName;
+
+        getTeacherLessons(lesson.teacherId, new FirebaseRunnable()
+        {
+            @Override
+            public void run(List<Lesson> lessons)
+            {
+                boolean isIntercepting = false;
+                int i;
+
+                for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting(lessons.get(i))); i++);
+
+                if (isIntercepting)
+                {
+                    Lesson intercepted = lessons.get(i);
+                    toastS(c, String.format(Locale.ROOT, "Lesson is intercepting another who is between %s - %s",
+                            Constants.TIME_FORMAT.format(intercepted.start), Constants.TIME_FORMAT.format(intercepted.end)));
+                    failure.runAll();
+                }
+                else saveTransactionInDatabase(transaction, new FirebaseRunnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        saveLessonInDatabase(lesson, success, failure);
+                    }
+                }, failure);
+            }
+        }, failure);
+
+
+    }
+
     public void addMoney(String id, double amount, FirebaseRunnable success, FirebaseRunnable failure)
     {
         getUserFromDatabase(id, new FirebaseRunnable()
@@ -737,6 +785,32 @@ public class FirebaseManager
         }, failure);
     }
 
+    public void getStudentCanTest(String id, @NonNull FirebaseRunnable success)
+    {
+        getStudentCanTest(id, success, new FirebaseRunnable() {});
+    }
+
+    public void getStudentCanTest(String id, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        getStudentLessons(id, new FirebaseRunnable()
+        {
+            @Override
+            public void run(List<Lesson> lessons)
+            {
+                Calendar calendar = Calendar.getInstance();
+                double time = 0;
+
+                for (Lesson lesson : lessons)
+                    if (lesson.isConfirmed && lesson.end.getTime() < calendar.getTime().getTime())
+                        time += lesson.getDuration();
+
+                spm.putCanTest(Constants.TEST_TIME < time);
+
+                success.runAll();
+            }
+        }, failure);
+    }
+
     public void getStudentLessons(@NonNull User user, @NonNull FirebaseRunnable success, @NonNull FirebaseRunnable failure)
     {
         getStudentLessons(user.id, success, failure);
@@ -913,7 +987,27 @@ public class FirebaseManager
                 if (lesson.isTest)
                 {
                     lesson.cost = lesson.getDuration() * Constants.TEST_COST;
-                    onward.runAll();
+                    getStudentLessons(lesson.studentId, new FirebaseRunnable()
+                    {
+                        @Override
+                        public void run(List<Lesson> lessons)
+                        {
+                            boolean isIntercepting = false;
+                            int i;
+
+                            for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting(lessons.get(i))); i++);
+
+                            if (isIntercepting)
+                            {
+                                Lesson intercepted = lessons.get(i);
+                                toastS(c, String.format(Locale.ROOT, "Lesson is intercepting another who is between %s - %s",
+                                        Constants.TIME_FORMAT.format(intercepted.start), Constants.TIME_FORMAT.format(intercepted.end)));
+                                failure.runAll();
+                            }
+
+                            else onward.runAll();
+                        }
+                    }, failure1);
                 }
 
                 else
@@ -926,30 +1020,39 @@ public class FirebaseManager
                         {
                             Teacher teacher = (Teacher) user;
 
-                            lesson.teacherName = user.name;
-                            lesson.cost = lesson.getDuration() * teacher.costPerHour;
-
-                            getTeacherLessons(lesson.teacherId, new FirebaseRunnable()
+                            if (teacher.isTester)
                             {
-                                @Override
-                                public void run(List<Lesson> lessons)
+                                toastS(c, "Assign a new teacher your teacher switched to a different role");
+                                failure.runAll();
+                            }
+
+                            else
+                            {
+                                lesson.teacherName = user.name;
+                                lesson.cost = lesson.getDuration() * teacher.costPerHour;
+
+                                getTeacherLessons(lesson.teacherId, new FirebaseRunnable()
                                 {
-                                    boolean isIntercepting = false;
-                                    int i;
-
-                                    for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting(lessons.get(i))); i++);
-
-                                    if (isIntercepting)
+                                    @Override
+                                    public void run(List<Lesson> lessons)
                                     {
-                                        Lesson intercepted = lessons.get(i);
-                                        toastS(c, String.format(Locale.ROOT, "Lesson is intercepting another who is between %s - %s",
-                                                Constants.TIME_FORMAT.format(intercepted.start), Constants.TIME_FORMAT.format(intercepted.end)));
-                                        failure.runAll();
-                                    }
+                                        boolean isIntercepting = false;
+                                        int i;
 
-                                    else onward.runAll();
-                                }
-                            }, failure1);
+                                        for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting(lessons.get(i))); i++);
+
+                                        if (isIntercepting)
+                                        {
+                                            Lesson intercepted = lessons.get(i);
+                                            toastS(c, String.format(Locale.ROOT, "Lesson is intercepting another who is between %s - %s",
+                                                    Constants.TIME_FORMAT.format(intercepted.start), Constants.TIME_FORMAT.format(intercepted.end)));
+                                            failure.runAll();
+                                        }
+
+                                        else onward.runAll();
+                                    }
+                                }, failure1);
+                            }
                         }
                     }, failure1);
                 }
@@ -971,8 +1074,7 @@ public class FirebaseManager
     @NonNull
     private String getPath(String id)
     {
-        Date now = Calendar.getInstance().getTime();
-        return "image/" + id + "/" + Constants.FILE_FORMAT.format(now) + ".png";
+        return "image/" + id + "/profile.png";
     }
 
     private void toastS(Context c, int message)

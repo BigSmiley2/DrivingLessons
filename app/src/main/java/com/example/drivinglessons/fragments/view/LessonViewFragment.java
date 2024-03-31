@@ -2,6 +2,7 @@ package com.example.drivinglessons.fragments.view;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.SelectActivity;
 import com.example.drivinglessons.adapters.LessonAdapter;
 import com.example.drivinglessons.dialogs.LessonDialog;
 import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
@@ -245,7 +247,12 @@ public class LessonViewFragment extends Fragment implements Parcelable
 
             else if (id == confirm.getItemId()) confirmLesson(lesson);
 
-            else if (id == assign.getItemId());
+            else if (id == assign.getItemId())
+            {
+                Intent intent = new Intent(requireActivity(), SelectActivity.class);
+                intent.putExtra(SelectActivity.LESSON, lesson);
+                startActivity(intent);
+            }
 
             else return false;
 

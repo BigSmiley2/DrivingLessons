@@ -17,7 +17,7 @@ import java.util.Locale;
 public class Constants
 {
     public static final String OWNER_EMAIL = "liamizsak@gmail.com";
-    public static final double TEST_TIME = 18.66, TEST_COST = 250;
+    public static final double TEST_TIME = -1, TEST_COST = 250;
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.ROOT);
 
