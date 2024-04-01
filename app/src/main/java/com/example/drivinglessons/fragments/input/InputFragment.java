@@ -397,59 +397,63 @@ public class InputFragment extends Fragment implements Parcelable
                 if (image == null) Toast.makeText(requireContext(), R.string.enter_image_first, Toast.LENGTH_SHORT).show();
 
                 if (fullNameInputLayout.getError() != null || emailInputLayout.getError() != null || passwordInputLayout.getError() != null || confirmPasswordInputLayout.getError() != null || birthdateInputLayout.getError() != null || (!isStudent && teacherData != null && teacherData.cost == null) || image == null)
-                {
                     buttonInput.setOnClickListener(listener);
-                    return;
-                }
-
-                Date now = Calendar.getInstance().getTime();
-
-                Balance balance = isRegister ? new Balance(0.0, now) : new Balance();
-
-                byte[] bytes = bitmapToBytes(image);
-
-                if (isStudent && studentData != null)
+                else if (!Constants.isNetworkAvailable(requireContext()))
                 {
-                    Student student = new Student(user, studentData.theory);
-                    fm.saveStudent(requireContext(), student, balance, bytes, new FirebaseRunnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            requireActivity().finish();
-                        }
-                    }, new FirebaseRunnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            buttonInput.setOnClickListener(listener);
-                        }
-                    });
-                }
-                else if (!isStudent && teacherData != null)
-                {
-                    Teacher teacher = new Teacher(user, teacherData.manual, teacherData.tester, teacherData.cost, isRegister ? now : null);
-                    fm.saveTeacher(requireContext(), teacher, balance, bytes, new FirebaseRunnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            requireActivity().finish();
-                        }
-                    }, new FirebaseRunnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            buttonInput.setOnClickListener(listener);
-                        }
-                    });
+                    Toast.makeText(requireContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
+                    buttonInput.setOnClickListener(listener);
                 }
                 else
                 {
-                    buttonInput.setOnClickListener(listener);
-                    Toast.makeText(requireContext(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show();
+                    Date now = Calendar.getInstance().getTime();
+
+                    Balance balance = isRegister ? new Balance(0.0, now) : new Balance();
+
+                    byte[] bytes = bitmapToBytes(image);
+
+                    if (isStudent && studentData != null)
+                    {
+                        Student student = new Student(user, studentData.theory);
+                        fm.saveStudent(requireContext(), student, balance, bytes, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                requireActivity().finish();
+                            }
+                        }, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                buttonInput.setOnClickListener(listener);
+                            }
+                        });
+                    }
+                    else if (!isStudent && teacherData != null)
+                    {
+                        Teacher teacher = new Teacher(user, teacherData.manual, teacherData.tester, teacherData.cost, isRegister ? now : null);
+                        fm.saveTeacher(requireContext(), teacher, balance, bytes, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                requireActivity().finish();
+                            }
+                        }, new FirebaseRunnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                buttonInput.setOnClickListener(listener);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        buttonInput.setOnClickListener(listener);
+                        Toast.makeText(requireContext(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.example.drivinglessons.InputActivity;
 import com.example.drivinglessons.MainActivity;
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.validation.TextListener;
@@ -129,17 +130,22 @@ public class LoginFragment extends Fragment implements Parcelable
             @Override
             public void onClick(View view)
             {
+                login.setOnClickListener(null);
+                View.OnClickListener listener = this;
+
                 if (email.isEmpty())
                     emailInputLayout.setError("email mustn't be empty");
                 if (password.isEmpty())
                     passwordInputLayout.setError("password mustn't be empty");
 
-                if (passwordInputLayout.getError() != null || emailInputLayout.getError() != null) return;
-
-                login.setOnClickListener(null);
-                View.OnClickListener listener = this;
-
-                fm.signIn(requireContext(), email, password, new FirebaseRunnable()
+                if (passwordInputLayout.getError() != null || emailInputLayout.getError() != null)
+                    login.setOnClickListener(listener);
+                else if (!Constants.isNetworkAvailable(requireContext()))
+                {
+                    Toast.makeText(requireContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
+                    login.setOnClickListener(listener);
+                }
+                else fm.signIn(requireContext(), email, password, new FirebaseRunnable()
                 {
                     @Override
                     public void run()

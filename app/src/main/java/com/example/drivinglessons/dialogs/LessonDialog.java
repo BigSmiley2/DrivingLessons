@@ -137,6 +137,11 @@ public class LessonDialog extends Dialog
                     Toast.makeText(getContext(), R.string.lesson_past_error, Toast.LENGTH_SHORT).show();
                     add.setOnClickListener(listener);
                 }
+                else if (!Constants.isNetworkAvailable(getContext()))
+                {
+                    Toast.makeText(getContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
+                    add.setOnClickListener(this);
+                }
                 else fm.saveLesson(getContext(), new Lesson(id, start, end, false, isTest), new FirebaseRunnable() {
                     @Override
                     public void run()

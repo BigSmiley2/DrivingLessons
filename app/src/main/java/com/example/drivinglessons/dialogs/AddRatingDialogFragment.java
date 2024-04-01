@@ -27,6 +27,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Rating;
 import com.example.drivinglessons.firebase.entities.User;
+import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
@@ -157,6 +158,11 @@ public class AddRatingDialogFragment extends DialogFragment implements Parcelabl
 
                 if (messageInputLayout.getError() != null)
                 {
+                    send.setOnClickListener(this);
+                }
+                else if (!Constants.isNetworkAvailable(requireContext()))
+                {
+                    Toast.makeText(requireContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
                     send.setOnClickListener(this);
                 }
                 else fm.saveRating(new Rating(null, fromId, toId, name, imagePath, message, Calendar.getInstance().getTime(), rate), new FirebaseRunnable()

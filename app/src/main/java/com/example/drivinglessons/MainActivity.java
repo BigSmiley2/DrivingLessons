@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentContainerView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Menu;
@@ -23,6 +25,7 @@ import com.example.drivinglessons.fragments.MainOfflineFragment;
 import com.example.drivinglessons.fragments.info.UserInfoFragment;
 import com.example.drivinglessons.fragments.view.UserViewFragment;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.util.NetworkChangedReceiver;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
@@ -32,6 +35,8 @@ import java.util.ArrayList;
 
 public class MainActivity <T extends Fragment & Parcelable> extends AppCompatActivity
 {
+    private NetworkChangedReceiver receiver;
+
     private boolean isOwnerMode;
 
     private FirebaseManager fm;
@@ -46,6 +51,10 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        receiver = new NetworkChangedReceiver();
+
+        registerReceiver(receiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         isOwnerMode = false;
 
@@ -229,5 +238,13 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         fragments.add((T) UserViewFragment.newInstance(true, false, null));
         fragments.add((T) UserInfoFragment.newInstance(id, isStudent));
         fragments.add((T) LessonViewFragment.newInstance());
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+
+        unregisterReceiver(receiver);
     }
 }

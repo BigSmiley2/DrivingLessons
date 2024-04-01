@@ -1,16 +1,17 @@
 package com.example.drivinglessons.fragments.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.drivinglessons.R;
@@ -66,6 +67,7 @@ public class RatingViewFragment extends Fragment implements Parcelable
         return inflater.inflate(R.layout.fragment_rating_view, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
@@ -76,6 +78,15 @@ public class RatingViewFragment extends Fragment implements Parcelable
         recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(requireContext()));
         adapter = new RatingAdapter(new FirebaseRecyclerOptions.Builder<Rating>().setQuery(fm.getRatingQuery(id), this::getRating).build());
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnTouchListener((v, event) ->
+        {
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+            else if (event.getAction() == MotionEvent.ACTION_UP)
+                v.getParent().requestDisallowInterceptTouchEvent(false);
+            return false;
+        });
+
     }
 
     @Override

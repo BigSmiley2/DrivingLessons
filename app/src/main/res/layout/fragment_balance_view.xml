@@ -1,68 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".fragments.view.BalanceViewFragment">
 
-    <TextView
-        android:id="@+id/textViewFragmentBalanceViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/balance"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imageViewFragmentBalanceView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/textViewFragmentBalanceViewTitle"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentBalanceViewTitle"
-        app:srcCompat="@drawable/balance" />
+       <TextView
+           android:id="@+id/textViewFragmentBalanceViewTitle"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginStart="16dp"
+           android:layout_marginTop="16dp"
+           android:text="@string/balance"
+           android:textSize="24sp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewFragmentBalanceViewDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="date"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textViewFragmentBalanceViewAmount"
-        app:layout_constraintStart_toEndOf="@+id/imageViewFragmentBalanceView"
-        app:layout_constraintTop_toTopOf="@+id/imageViewFragmentBalanceView" />
+       <ImageView
+           android:id="@+id/imageViewFragmentBalanceView"
+           android:layout_width="100dp"
+           android:layout_height="100dp"
+           android:layout_marginTop="8dp"
+           app:layout_constraintStart_toStartOf="@+id/textViewFragmentBalanceViewTitle"
+           app:layout_constraintTop_toBottomOf="@+id/textViewFragmentBalanceViewTitle"
+           app:srcCompat="@drawable/balance" />
 
-    <TextView
-        android:id="@+id/textViewFragmentBalanceViewAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="amount"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageViewFragmentBalanceView"
-        app:layout_constraintStart_toStartOf="@+id/textViewFragmentBalanceViewDate"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentBalanceViewDate" />
+       <TextView
+           android:id="@+id/textViewFragmentBalanceViewDate"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginStart="16dp"
+           android:text="date"
+           android:textStyle="bold"
+           app:layout_constraintBottom_toTopOf="@+id/textViewFragmentBalanceViewAmount"
+           app:layout_constraintStart_toEndOf="@+id/imageViewFragmentBalanceView"
+           app:layout_constraintTop_toTopOf="@+id/imageViewFragmentBalanceView" />
 
-    <ImageView
-        android:id="@+id/imageViewFragmentBalanceViewAdd"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageViewFragmentBalanceView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageViewFragmentBalanceView"
-        app:srcCompat="@drawable/add" />
+       <TextView
+           android:id="@+id/textViewFragmentBalanceViewAmount"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="amount"
+           android:textStyle="bold"
+           app:layout_constraintBottom_toBottomOf="@+id/imageViewFragmentBalanceView"
+           app:layout_constraintStart_toStartOf="@+id/textViewFragmentBalanceViewDate"
+           app:layout_constraintTop_toBottomOf="@+id/textViewFragmentBalanceViewDate" />
 
-    <FrameLayout
-        android:id="@+id/FrameLayoutFragmentBalanceView"
-        android:layout_width="370dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewFragmentBalanceView" />
+       <ImageView
+           android:id="@+id/imageViewFragmentBalanceViewAdd"
+           android:layout_width="50dp"
+           android:layout_height="50dp"
+           android:layout_marginEnd="16dp"
+           app:layout_constraintBottom_toBottomOf="@+id/imageViewFragmentBalanceView"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintTop_toTopOf="@+id/imageViewFragmentBalanceView"
+           app:srcCompat="@drawable/add" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+       <FrameLayout
+           android:id="@+id/FrameLayoutFragmentBalanceView"
+           android:layout_width="370dp"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="16dp"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/imageViewFragmentBalanceView" />
+
+   </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

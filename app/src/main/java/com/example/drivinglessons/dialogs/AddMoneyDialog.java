@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.validation.TextListener;
@@ -79,6 +80,11 @@ public class AddMoneyDialog extends Dialog
 
                 if (cost == null)
                     add.setOnClickListener(this);
+                else if (!Constants.isNetworkAvailable(getContext()))
+                {
+                    Toast.makeText(getContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
+                    add.setOnClickListener(this);
+                }
                 else fm.addMoney(id, cost, new FirebaseRunnable()
                 {
                     @Override
@@ -93,6 +99,7 @@ public class AddMoneyDialog extends Dialog
                     public void runAll(Exception e)
                     {
                         super.runAll(e);
+                        add.setOnClickListener(listener);
                         Toast.makeText(getContext(), R.string.went_wrong_error, Toast.LENGTH_SHORT).show();
                     }
                 });

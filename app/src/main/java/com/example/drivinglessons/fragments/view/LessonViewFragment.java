@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -113,7 +114,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
     }
 
     @Override
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint({"NotifyDataSetChanged", "ClickableViewAccessibility"})
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -131,6 +132,14 @@ public class LessonViewFragment extends Fragment implements Parcelable
 
         adapter = new LessonAdapter(new FirebaseRecyclerOptions.Builder<Lesson>().setQuery(isOwner ? fm.getTestLessonsQuery() : fm.getUserLessonsQuery(isStudent, id), this::getLesson).build(), this::createOptions);
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnTouchListener((v, event) ->
+        {
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+            else if (event.getAction() == MotionEvent.ACTION_UP)
+                v.getParent().requestDisallowInterceptTouchEvent(false);
+            return false;
+        });
 
         add.setOnClickListener(new View.OnClickListener()
         {

@@ -14,8 +14,13 @@ public class WrapContentLinearLayoutManager extends LinearLayoutManager
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state)
     {
-        try {
-            super.onLayoutChildren(recycler, state);
-        } catch (IndexOutOfBoundsException e) { e.printStackTrace(); }
+        try { super.onLayoutChildren(recycler, state); }
+        catch (IndexOutOfBoundsException e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public boolean supportsPredictiveItemAnimations()
+    {
+        return false;
     }
 }
