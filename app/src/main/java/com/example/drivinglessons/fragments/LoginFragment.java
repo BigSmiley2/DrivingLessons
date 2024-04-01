@@ -1,7 +1,8 @@
 package com.example.drivinglessons.fragments;
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -22,8 +23,11 @@ import com.example.drivinglessons.InputActivity;
 import com.example.drivinglessons.MainActivity;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.util.NotificationService;
+import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
+import com.example.drivinglessons.util.validation.Permission;
 import com.example.drivinglessons.util.validation.TextListener;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -35,9 +39,12 @@ public class LoginFragment extends Fragment implements Parcelable
     private TextInputLayout emailInputLayout, passwordInputLayout;
     private EditText emailInput, passwordInput;
     private View login, signup, forgot;
+
     private FirebaseManager fm;
+    private SharedPreferencesManager spm;
 
     private ActivityResultLauncher<Intent> startActivity;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
 
     public LoginFragment() {}
 
@@ -85,9 +92,22 @@ public class LoginFragment extends Fragment implements Parcelable
         super.onViewCreated(view, savedInstanceState);
 
         startActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r ->
-            ((MainActivity<?>) requireActivity()).refresh());
+        {
+            if (!Permission.checkNotify(requireContext()) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            else startService();
+            ((MainActivity<?>) requireActivity()).refresh();
+        });
+        requestPermissionLauncher = registerForActivityResult( new ActivityResultContracts.RequestPermission(), isGranted ->
+        {
+            if (isGranted)
+            {
+                startService();
+            }
+        });
 
         fm = FirebaseManager.getInstance(requireContext());
+        spm = SharedPreferencesManager.getInstance(requireContext());
 
         emailInputLayout = view.findViewById(R.id.textInputLayoutFragmentLoginEmail);
         emailInput = view.findViewById(R.id.editTextFragmentLoginEmail);
@@ -150,6 +170,9 @@ public class LoginFragment extends Fragment implements Parcelable
                     @Override
                     public void run()
                     {
+                        if (!Permission.checkNotify(requireContext()) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                        else startService();
                         ((MainActivity<?>) requireActivity()).signIn();
                     }
                 }, new FirebaseRunnable() {
@@ -198,6 +221,16 @@ public class LoginFragment extends Fragment implements Parcelable
         });
 
     }
+
+    private void startService()
+    {
+        Intent intent = new Intent(requireActivity(), NotificationService.class);
+        intent.putExtra(NotificationService.ID, fm.getCurrentUid());
+        intent.putExtra(NotificationService.IS_STUDENT, spm.getIsStudent());
+
+        requireActivity().startService(intent);
+    }
+
     protected LoginFragment(@NonNull Parcel in)
     {
         email = in.readString();

@@ -2,6 +2,7 @@ package com.example.drivinglessons.util.firebase;
 
 import com.example.drivinglessons.firebase.entities.Balance;
 import com.example.drivinglessons.firebase.entities.Lesson;
+import com.example.drivinglessons.firebase.entities.Rating;
 import com.example.drivinglessons.firebase.entities.User;
 
 import java.util.List;
@@ -23,9 +24,9 @@ public abstract class FirebaseRunnable
 
     public void run(Lesson lesson) {}
 
-    public void run(List<Lesson> lessons) {}
+    public void run(List<?> list) {}
 
-    public void runAll(Exception e, Void unused, User user, Balance balance, Lesson lesson, List<Lesson> lessons)
+    public void runAll(Exception e, Void unused, User user, Balance balance, Lesson lesson, List<?> list)
     {
         run();
         run(e);
@@ -33,7 +34,7 @@ public abstract class FirebaseRunnable
         run(user);
         run(balance);
         run(lesson);
-        run(lessons);
+        run(list);
     }
 
     public void runAll() { runAll(null, null, null, null, null, null); }
@@ -48,5 +49,5 @@ public abstract class FirebaseRunnable
 
     public void runAll(Lesson lesson) { runAll(null, null, null, null, lesson, null); }
 
-    public void runAll(List<Lesson> lessons) { runAll(null, null, null, null, null, lessons); }
+    public void runAll(List<?> list) { runAll(null, null, null, null, null, list); }
 }

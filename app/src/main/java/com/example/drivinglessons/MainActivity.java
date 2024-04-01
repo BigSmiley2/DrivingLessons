@@ -26,6 +26,7 @@ import com.example.drivinglessons.fragments.info.UserInfoFragment;
 import com.example.drivinglessons.fragments.view.UserViewFragment;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.NetworkChangedReceiver;
+import com.example.drivinglessons.util.NotificationService;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
@@ -70,6 +71,16 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         setSupportActionBar(findViewById(R.id.toolbarActivityMain));
 
+        if (fm.isSigned()) startService();
+
+        if (savedInstanceState == null) createAndLinkFragments();
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+
         if (fm.isSigned() && spm.getIsStudent()) fm.getStudentCanTest(fm.getCurrentUid(), new FirebaseRunnable()
         {
             @Override
@@ -78,8 +89,6 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
                 refresh();
             }
         });
-
-        if (savedInstanceState == null) createAndLinkFragments();
     }
 
     @Override
@@ -171,6 +180,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
                 @Override
                 public void run()
                 {
+                    stopService();
                     refresh();
                 }
             });
@@ -246,5 +256,21 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         super.onDestroy();
 
         unregisterReceiver(receiver);
+        stopService();
+    }
+
+    private void stopService()
+    {
+        Intent intent = new Intent(this, NotificationService.class);
+        stopService(intent);
+    }
+
+    private void startService()
+    {
+        Intent intent = new Intent(this, NotificationService.class);
+        intent.putExtra(NotificationService.ID, fm.getCurrentUid());
+        intent.putExtra(NotificationService.IS_STUDENT, spm.getIsStudent());
+
+        startService(intent);
     }
 }

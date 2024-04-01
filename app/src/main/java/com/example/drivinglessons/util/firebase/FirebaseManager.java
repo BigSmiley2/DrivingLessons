@@ -72,16 +72,16 @@ public class FirebaseManager
         getTeacherLessons(lesson.teacherId, new FirebaseRunnable()
         {
             @Override
-            public void run(List<Lesson> lessons)
+            public void run(List<?> lessons)
             {
                 boolean isIntercepting = false;
                 int i;
 
-                for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting(lessons.get(i))); i++);
+                for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting((Lesson) lessons.get(i))); i++);
 
                 if (isIntercepting)
                 {
-                    Lesson intercepted = lessons.get(i);
+                    Lesson intercepted = (Lesson) lessons.get(i);
                     toastS(c, String.format(Locale.ROOT, "Lesson is intercepting another who is between %s - %s",
                             Constants.TIME_FORMAT.format(intercepted.start), Constants.TIME_FORMAT.format(intercepted.end)));
                     failure.runAll();
@@ -254,6 +254,33 @@ public class FirebaseManager
         db.getReference("lesson").child(id).updateChildren(l.toMap())
                 .addOnSuccessListener(success::runAll)
                 .addOnFailureListener(failure::runAll);
+    }
+
+    public void getRatingChanged(String id, FirebaseRunnable success)
+    {
+        getRatingChanged(id, success, new FirebaseRunnable() {});
+    }
+
+    public void getRatingChanged(String id, FirebaseRunnable success, FirebaseRunnable failure)
+    {
+        getRatingQuery(id).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                List<Rating> ratings = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                    ratings.add(dataSnapshot.getValue(Rating.class));
+
+                success.runAll(ratings);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                failure.runAll();
+            }
+        });
     }
 
     public Query getRatingQuery(String id)
@@ -769,14 +796,17 @@ public class FirebaseManager
         getStudentLessons(user, new FirebaseRunnable()
         {
             @Override
-            public void run(List<Lesson> lessons)
+            public void run(List<?> lessons)
             {
                 Calendar calendar = Calendar.getInstance();
                 double time = 0;
 
-                for (Lesson lesson : lessons)
+                for (Object object : lessons)
+                {
+                    Lesson lesson = (Lesson) object;
                     if (lesson.isConfirmed && lesson.end.getTime() < calendar.getTime().getTime())
                         time += lesson.getDuration();
+                }
 
                 spm.putCanTest(Constants.TEST_TIME < time);
 
@@ -795,14 +825,17 @@ public class FirebaseManager
         getStudentLessons(id, new FirebaseRunnable()
         {
             @Override
-            public void run(List<Lesson> lessons)
+            public void run(List<?> lessons)
             {
                 Calendar calendar = Calendar.getInstance();
                 double time = 0;
 
-                for (Lesson lesson : lessons)
+                for (Object object : lessons)
+                {
+                    Lesson lesson = (Lesson) object;
                     if (lesson.isConfirmed && lesson.end.getTime() < calendar.getTime().getTime())
                         time += lesson.getDuration();
+                }
 
                 spm.putCanTest(Constants.TEST_TIME < time);
 
@@ -990,16 +1023,16 @@ public class FirebaseManager
                     getStudentLessons(lesson.studentId, new FirebaseRunnable()
                     {
                         @Override
-                        public void run(List<Lesson> lessons)
+                        public void run(List<?> lessons)
                         {
                             boolean isIntercepting = false;
                             int i;
 
-                            for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting(lessons.get(i))); i++);
+                            for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting((Lesson) lessons.get(i))); i++);
 
                             if (isIntercepting)
                             {
-                                Lesson intercepted = lessons.get(i);
+                                Lesson intercepted = (Lesson) lessons.get(i);
                                 toastS(c, String.format(Locale.ROOT, "Lesson is intercepting another who is between %s - %s",
                                         Constants.TIME_FORMAT.format(intercepted.start), Constants.TIME_FORMAT.format(intercepted.end)));
                                 failure.runAll();
@@ -1034,16 +1067,16 @@ public class FirebaseManager
                                 getTeacherLessons(lesson.teacherId, new FirebaseRunnable()
                                 {
                                     @Override
-                                    public void run(List<Lesson> lessons)
+                                    public void run(List<?> lessons)
                                     {
                                         boolean isIntercepting = false;
                                         int i;
 
-                                        for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting(lessons.get(i))); i++);
+                                        for (i = 0; i < lessons.size() && !(isIntercepting = lesson.isIntercepting((Lesson) lessons.get(i))); i++);
 
                                         if (isIntercepting)
                                         {
-                                            Lesson intercepted = lessons.get(i);
+                                            Lesson intercepted = (Lesson) lessons.get(i);
                                             toastS(c, String.format(Locale.ROOT, "Lesson is intercepting another who is between %s - %s",
                                                     Constants.TIME_FORMAT.format(intercepted.start), Constants.TIME_FORMAT.format(intercepted.end)));
                                             failure.runAll();
