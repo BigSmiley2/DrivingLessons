@@ -23,7 +23,7 @@
         android:layout_marginTop="8dp"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoSeniority"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoRating"
         tools:text="tester" />
 
     <TextView
@@ -54,4 +54,24 @@
         app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentTeacherInfoSeniority"
         app:layout_constraintStart_toEndOf="@+id/textViewFragmentTeacherInfoSeniority"
         app:layout_constraintTop_toTopOf="@+id/textViewFragmentTeacherInfoSeniority" />
+
+    <TextView
+        android:id="@+id/textViewFragmentTeacherInfoRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/rating"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoSeniority" />
+
+    <TextView
+        android:id="@+id/textViewFragmentTeacherInfoRatingData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentTeacherInfoRating"
+        app:layout_constraintStart_toEndOf="@+id/textViewFragmentTeacherInfoRating"
+        app:layout_constraintTop_toTopOf="@+id/textViewFragmentTeacherInfoRating" />
 </androidx.constraintlayout.widget.ConstraintLayout>

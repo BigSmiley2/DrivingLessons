@@ -13,18 +13,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
+import com.example.drivinglessons.firebase.entities.Rating;
 import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.util.firebase.FirebaseManager;
+import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class TeacherInfoFragment extends Fragment implements Parcelable
 {
     private static final String FRAGMENT_TITLE = "teacher info";
 
-    private TextView manual, tester, cost, seniority;
+    private FirebaseManager fm;
+
+    private TextView manual, tester, cost, seniority, rating;
 
     public TeacherInfoFragment() {}
 
@@ -51,10 +59,13 @@ public class TeacherInfoFragment extends Fragment implements Parcelable
     {
         super.onViewCreated(view, savedInstanceState);
 
+        fm = FirebaseManager.getInstance(requireContext());
+
         manual = view.findViewById(R.id.textViewFragmentTeacherInfoManual);
         tester = view.findViewById(R.id.textViewFragmentTeacherInfoTester);
         cost = view.findViewById(R.id.textViewFragmentTeacherInfoCost);
         seniority = view.findViewById(R.id.textViewFragmentTeacherInfoSeniorityData);
+        rating = view.findViewById(R.id.textViewFragmentTeacherInfoRatingData);
     }
 
     public void update(@NonNull Teacher teacher)
@@ -65,6 +76,30 @@ public class TeacherInfoFragment extends Fragment implements Parcelable
         tester.setText(String.format(Locale.ROOT, "%s is a %s", teacher.name, teacher.isTester ? "tester" : "teacher"));
         cost.setText(String.format(Locale.ROOT, "%s takes %.2f₪ per hour", teacher.name, teacher.costPerHour));
         seniority.setText(String.format(Locale.ROOT, "%d.%d.%d", period.getYears(), period.getMonths(), period.getDays()));
+
+        fm.getUserRatings(teacher.id, new FirebaseRunnable()
+        {
+            @Override
+            public void run(List<?> list)
+            {
+                List<Rating> ratings = new ArrayList<>();
+                for (Object obj : list)
+                    ratings.add((Rating) obj);
+
+                int count = ratings.size();
+
+                if (count == 0) rating.setText("?");
+                else
+                {
+                    double sum = 0;
+
+                    for (Rating rating : ratings)
+                        sum += rating.rate;
+
+                    rating.setText(String.format(Locale.ROOT, "%.2f", sum / count));
+                }
+            }
+        }, new FirebaseRunnable() {});
     }
 
     protected TeacherInfoFragment(Parcel in) {}

@@ -137,6 +137,21 @@ public class FirebaseManager
                 .addOnFailureListener(failure::runAll);
     }
 
+    public void getUserRatings(String id, FirebaseRunnable success, @NonNull FirebaseRunnable failure)
+    {
+        getRatingQuery(id).get()
+                .addOnSuccessListener(snapshot ->
+                {
+                    List<Rating> ratings = new ArrayList<>();
+
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                        ratings.add(dataSnapshot.getValue(Rating.class));
+
+                    success.runAll(ratings);
+                })
+                .addOnFailureListener(failure::runAll);
+    }
+
     public void confirmLesson(Context c, @NonNull Lesson lesson)
     {
         FirebaseRunnable failure = new FirebaseRunnable()
