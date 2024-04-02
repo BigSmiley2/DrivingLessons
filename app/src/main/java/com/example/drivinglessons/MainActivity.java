@@ -71,8 +71,6 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         setSupportActionBar(findViewById(R.id.toolbarActivityMain));
 
-        if (fm.isSigned()) startService();
-
         if (savedInstanceState == null) createAndLinkFragments();
     }
 
@@ -256,21 +254,11 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         super.onDestroy();
 
         unregisterReceiver(receiver);
-        stopService();
     }
 
     private void stopService()
     {
         Intent intent = new Intent(this, NotificationService.class);
         stopService(intent);
-    }
-
-    private void startService()
-    {
-        Intent intent = new Intent(this, NotificationService.class);
-        intent.putExtra(NotificationService.ID, fm.getCurrentUid());
-        intent.putExtra(NotificationService.IS_STUDENT, spm.getIsStudent());
-
-        startService(intent);
     }
 }

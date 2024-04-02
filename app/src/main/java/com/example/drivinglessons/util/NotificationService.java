@@ -116,7 +116,7 @@ public class NotificationService extends Service
         fm.getRatingQuery(id).addValueEventListener(listenerRatings);
         fm.getUserLessonsQuery(isStudent, id).addValueEventListener(listenerLessons);
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
@@ -126,5 +126,6 @@ public class NotificationService extends Service
 
         fm.getRatingQuery(id).removeEventListener(listenerRatings);
         fm.getUserLessonsQuery(isStudent, id).removeEventListener(listenerLessons);
+        fm = null;
     }
 }
