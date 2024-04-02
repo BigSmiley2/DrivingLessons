@@ -17,10 +17,4 @@ public class WrapContentLinearLayoutManager extends LinearLayoutManager
         try { super.onLayoutChildren(recycler, state); }
         catch (IndexOutOfBoundsException e) { e.printStackTrace(); }
     }
-
-    @Override
-    public boolean supportsPredictiveItemAnimations()
-    {
-        return false;
-    }
 }

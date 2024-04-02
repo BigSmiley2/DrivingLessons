@@ -71,14 +71,6 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         setSupportActionBar(findViewById(R.id.toolbarActivityMain));
 
-        if (savedInstanceState == null) createAndLinkFragments();
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-
         if (fm.isSigned() && spm.getIsStudent()) fm.getStudentCanTest(fm.getCurrentUid(), new FirebaseRunnable()
         {
             @Override
@@ -87,6 +79,10 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
                 refresh();
             }
         });
+
+        if (fm.isSigned()) startService();
+
+        if (savedInstanceState == null) createAndLinkFragments();
     }
 
     @Override
@@ -254,11 +250,21 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
         super.onDestroy();
 
         unregisterReceiver(receiver);
+        stopService();
     }
 
     private void stopService()
     {
         Intent intent = new Intent(this, NotificationService.class);
         stopService(intent);
+    }
+
+    private void startService()
+    {
+        Intent intent = new Intent(this, NotificationService.class);
+        intent.putExtra(NotificationService.ID, fm.getCurrentUid());
+        intent.putExtra(NotificationService.IS_STUDENT, spm.getIsStudent());
+
+        startService(intent);
     }
 }

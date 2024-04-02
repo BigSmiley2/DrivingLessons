@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".dialogs.AddMoneyDialog">
 
     <TextView
         android:id="@+id/textViewDialogAddMoneyTitle"
@@ -51,10 +52,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
         android:text="@string/enter_the_amount_you_re_adding_to_your_account"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textViewDialogAddMoneyTitle"
         app:layout_constraintTop_toBottomOf="@+id/textViewDialogAddMoneyTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>

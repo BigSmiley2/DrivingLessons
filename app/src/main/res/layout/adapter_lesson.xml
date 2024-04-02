@@ -1,156 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayoutAdapterLesson"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:fillViewport="true"
     tools:context=".adapters.LessonAdapter">
 
-    <TextView
-        android:id="@+id/textViewAdapterLessonOptions"
-        android:layout_width="32dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:text="@string/options"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/viewAdapterLessonLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewAdapterLessonTitle"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/driving_lesson"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewAdapterLesson"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text=","
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutAdapterLessonStudent"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayoutAdapterLessonTeacher"
-        app:layout_constraintStart_toEndOf="@+id/linearLayoutAdapterLessonStudent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayoutAdapterLessonStudent" />
-
-    <LinearLayout
-        android:id="@+id/linearLayoutAdapterLessonStudent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/textViewAdapterLessonTitle"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonTitle">
-
-        <ImageView
-            android:id="@+id/imageViewAdapterLessonStudent"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/user_icon" />
+        android:layout_height="match_parent" >
 
         <TextView
-            android:id="@+id/textViewAdapterLessonStudent"
-            android:layout_width="wrap_content"
+            android:id="@+id/textViewAdapterLessonOptions"
+            android:layout_width="32dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="2dp"
-            android:text="@string/student"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutAdapterLessonTeacher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutAdapterLessonStudent"
-        app:layout_constraintStart_toEndOf="@+id/textViewAdapterLesson"
-        app:layout_constraintTop_toTopOf="@+id/linearLayoutAdapterLessonStudent">
-
-        <ImageView
-            android:id="@+id/imageViewAdapterLessonTeacher"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/user_icon" />
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="@string/options"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/viewAdapterLessonLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textViewAdapterLessonTeacher"
+            android:id="@+id/textViewAdapterLessonTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="2dp"
-            android:text="@string/teacher"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/driving_lesson"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewAdapterLessonStartDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="start date"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/textViewAdapterLessonTitle"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutAdapterLessonStudent" />
+        <TextView
+            android:id="@+id/textViewAdapterLesson"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text=","
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayoutAdapterLessonStudent"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayoutAdapterLessonTeacher"
+            app:layout_constraintStart_toEndOf="@+id/linearLayoutAdapterLessonStudent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayoutAdapterLessonStudent" />
 
-    <ImageView
-        android:id="@+id/imageViewAdapterLesson"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/arrow_down"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/textViewAdapterLessonStartDate"
-        app:layout_constraintStart_toStartOf="@+id/textViewAdapterLessonStartDate"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonStartDate"
-        tools:visibility="gone" />
+        <LinearLayout
+            android:id="@+id/linearLayoutAdapterLessonStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/textViewAdapterLessonTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonTitle">
 
-    <TextView
-        android:id="@+id/textViewAdapterLessonEndDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="end date"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/textViewAdapterLessonStartDate"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewAdapterLesson" />
+            <ImageView
+                android:id="@+id/imageViewAdapterLessonStudent"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/user_icon" />
 
-    <TextView
-        android:id="@+id/textViewAdapterLessonConfirmed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/confirmed"
-        app:layout_constraintBottom_toBottomOf="@+id/imageViewAdapterLessonConfirmed"
-        app:layout_constraintEnd_toStartOf="@+id/imageViewAdapterLessonConfirmed"
-        app:layout_constraintTop_toTopOf="@+id/imageViewAdapterLessonConfirmed" />
+            <TextView
+                android:id="@+id/textViewAdapterLessonStudent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="2dp"
+                android:text="@string/student"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageViewAdapterLessonConfirmed"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:src="@drawable/uncheck_colored"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewAdapterLessonTitle"
-        app:layout_constraintEnd_toEndOf="@+id/textViewAdapterLessonOptions"
-        app:layout_constraintTop_toTopOf="@+id/textViewAdapterLessonTitle" />
+        <LinearLayout
+            android:id="@+id/linearLayoutAdapterLessonTeacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayoutAdapterLessonStudent"
+            app:layout_constraintStart_toEndOf="@+id/textViewAdapterLesson"
+            app:layout_constraintTop_toTopOf="@+id/linearLayoutAdapterLessonStudent">
 
-    <View
-        android:id="@+id/viewAdapterLessonLine"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonEndDate" />
+            <ImageView
+                android:id="@+id/imageViewAdapterLessonTeacher"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/user_icon" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/textViewAdapterLessonTeacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="2dp"
+                android:text="@string/teacher"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewAdapterLessonStartDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="start date"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewAdapterLessonTitle"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutAdapterLessonStudent" />
+
+        <ImageView
+            android:id="@+id/imageViewAdapterLesson"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/arrow_down"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/textViewAdapterLessonStartDate"
+            app:layout_constraintStart_toStartOf="@+id/textViewAdapterLessonStartDate"
+            app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonStartDate"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textViewAdapterLessonEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="end date"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewAdapterLessonStartDate"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewAdapterLesson" />
+
+        <TextView
+            android:id="@+id/textViewAdapterLessonConfirmed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/confirmed"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewAdapterLessonConfirmed"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewAdapterLessonConfirmed"
+            app:layout_constraintTop_toTopOf="@+id/imageViewAdapterLessonConfirmed" />
+
+        <ImageView
+            android:id="@+id/imageViewAdapterLessonConfirmed"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/uncheck_colored"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewAdapterLessonTitle"
+            app:layout_constraintEnd_toEndOf="@+id/textViewAdapterLessonOptions"
+            app:layout_constraintTop_toTopOf="@+id/textViewAdapterLessonTitle" />
+
+        <View
+            android:id="@+id/viewAdapterLessonLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewAdapterLessonEndDate" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</HorizontalScrollView>

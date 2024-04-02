@@ -271,6 +271,11 @@ public class LessonViewFragment extends Fragment implements Parcelable
         menu.show();
     }
 
+    private void addToCalendar(Lesson lesson)
+    {
+
+    }
+
     private void confirmLesson(Lesson lesson)
     {
         Constants.createAlertDialog(requireContext(), "Will you attend this lesson?", "yes", "no", (dialog, which) ->
