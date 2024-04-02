@@ -92,6 +92,9 @@ public class BalanceViewFragment extends Fragment implements Parcelable
             @Override
             public void run(Balance balance)
             {
+
+                if (balance == null) return;
+
                 date.setText(Constants.DATE_FORMAT.format(balance.date));
                 amount.setText(String.format(Locale.ROOT, "%.2f₪", balance.amount));
             }

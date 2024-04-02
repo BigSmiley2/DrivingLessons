@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +21,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.drivinglessons.R;
@@ -30,14 +30,18 @@ import com.example.drivinglessons.dialogs.LessonDialog;
 import com.example.drivinglessons.dialogs.LessonFiltersDialogFragment;
 import com.example.drivinglessons.dialogs.LessonInfoDialogFragment;
 import com.example.drivinglessons.firebase.entities.Lesson;
+import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.services.EmailService;
 import com.example.drivinglessons.util.WrapContentLinearLayoutManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
+import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.example.drivinglessons.util.validation.TextListener;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class LessonViewFragment extends Fragment implements Parcelable
@@ -130,7 +134,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
 
         if (!isOwner && isStudent) add.setVisibility(View.VISIBLE);
 
-        adapter = new LessonAdapter(new FirebaseRecyclerOptions.Builder<Lesson>().setQuery(isOwner ? fm.getTestLessonsQuery() : fm.getUserLessonsQuery(isStudent, id), this::getLesson).build(), this::createOptions);
+        adapter = new LessonAdapter(requireContext(), new FirebaseRecyclerOptions.Builder<Lesson>().setQuery(isOwner ? fm.getTestLessonsQuery() : fm.getUserLessonsQuery(isStudent, id), this::getLesson).build(), this::createOptions);
         recyclerView.setAdapter(adapter);
         recyclerView.setOnTouchListener((v, event) ->
         {
@@ -233,7 +237,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
     {
         PopupMenu menu = new PopupMenu(requireContext(), viewHolder.options);
 
-        MenuItem info, confirm, assign;
+        MenuItem info, confirm, assign, calendar;
 
         Menu m = menu.getMenu();
 
@@ -242,6 +246,7 @@ public class LessonViewFragment extends Fragment implements Parcelable
         info = m.findItem(R.id.menuItemLessonOptionsMenuInfo);
         confirm = m.findItem(R.id.menuItemLessonOptionsMenuConfirm);
         assign = m.findItem(R.id.menuItemLessonOptionsMenuAssign);
+        calendar = m.findItem(R.id.menuItemLessonOptionsMenuCalendar);
 
         confirm.setVisible(!isStudent && !isOwner);
         assign.setVisible(isOwner);
@@ -255,6 +260,8 @@ public class LessonViewFragment extends Fragment implements Parcelable
             else if (id == confirm.getItemId() && lesson.isConfirmed) Toast.makeText(requireContext(), "The lesson is already confirmed", Toast.LENGTH_SHORT).show();
 
             else if (id == confirm.getItemId()) confirmLesson(lesson);
+
+            else if (id == calendar.getItemId()) addToCalendar(lesson);
 
             else if (id == assign.getItemId())
             {
@@ -271,9 +278,23 @@ public class LessonViewFragment extends Fragment implements Parcelable
         menu.show();
     }
 
-    private void addToCalendar(Lesson lesson)
+    private void addToCalendar(@NonNull Lesson lesson)
     {
+        String title = "driving " + (lesson.isTest ? "test" : "lesson") ,
+                description = String.format(Locale.ROOT,"%s have a driving %s with %s that'll cost %.2f₪",
+                        lesson.studentName, (lesson.isTest ? "test" : "lesson"), lesson.teacherName == null ? "?" : lesson.teacherName, lesson.cost);
 
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.Events.TITLE, title)
+                .putExtra(CalendarContract.Events.ALL_DAY, false)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, lesson.start)
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, lesson.end)
+                .putExtra(CalendarContract.Events.DESCRIPTION, description)
+                .putExtra(CalendarContract.Events.ACCESS_LEVEL, CalendarContract.Events.ACCESS_PRIVATE)
+                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_FREE);
+
+        startActivity(intent);
     }
 
     private void confirmLesson(Lesson lesson)
@@ -282,7 +303,30 @@ public class LessonViewFragment extends Fragment implements Parcelable
         {
             if (which == DialogInterface.BUTTON_POSITIVE) fm.confirmLesson(requireContext(), lesson);
             else if (which == DialogInterface.BUTTON_NEGATIVE) fm.cancelLesson(requireContext(), lesson);
+
+            final boolean isConfirmed = which == DialogInterface.BUTTON_POSITIVE;
+
+            fm.getStudentFromDatabase(lesson.studentId, new FirebaseRunnable()
+            {
+                @Override
+                public void run(User user)
+                {
+                    sendEmail(user.email, "Driving Lessons", String.format(Locale.ROOT, "Your %s which is between %s %s - %s %s has been %s.",
+                            lesson.isTest ? "test" : "lesson", Constants.DATE_FORMAT.format(lesson.start), Constants.TIME_FORMAT.format(lesson.start),
+                            Constants.DATE_FORMAT.format(lesson.end), Constants.TIME_FORMAT.format(lesson.end), isConfirmed ? "confirmed" : "canceled"));
+                }
+            }, new FirebaseRunnable() {});
         });
+    }
+
+    private void sendEmail(String email, String subject, String message)
+    {
+        Intent intent = new Intent(requireActivity(), EmailService.class);
+        intent.putExtra(EmailService.EMAIL, email);
+        intent.putExtra(EmailService.SUBJECT, subject);
+        intent.putExtra(EmailService.MESSAGE, message);
+
+        requireActivity().startService(intent);
     }
 
     private void lessonInfo(@NonNull Lesson lesson)

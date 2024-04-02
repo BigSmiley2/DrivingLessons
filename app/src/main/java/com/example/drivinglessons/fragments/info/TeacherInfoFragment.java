@@ -14,7 +14,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Teacher;
+import com.example.drivinglessons.util.Constants;
 
+import java.time.Period;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class TeacherInfoFragment extends Fragment implements Parcelable
@@ -51,14 +54,17 @@ public class TeacherInfoFragment extends Fragment implements Parcelable
         manual = view.findViewById(R.id.textViewFragmentTeacherInfoManual);
         tester = view.findViewById(R.id.textViewFragmentTeacherInfoTester);
         cost = view.findViewById(R.id.textViewFragmentTeacherInfoCost);
-        seniority = view.findViewById(R.id.textViewFragmentTeacherInfoSeniority);
+        seniority = view.findViewById(R.id.textViewFragmentTeacherInfoSeniorityData);
     }
 
     public void update(@NonNull Teacher teacher)
     {
+        Period period = Constants.periodBetween(teacher.seniority, Calendar.getInstance().getTime());
+
         manual.setText(String.format(Locale.ROOT, "%s has %s car", teacher.name, teacher.hasManual ? "a manual" : "an automatic"));
         tester.setText(String.format(Locale.ROOT, "%s is a %s", teacher.name, teacher.isTester ? "tester" : "teacher"));
         cost.setText(String.format(Locale.ROOT, "%s takes %.2f₪ per hour", teacher.name, teacher.costPerHour));
+        seniority.setText(String.format(Locale.ROOT, "%d.%d.%d", period.getYears(), period.getMonths(), period.getDays()));
     }
 
     protected TeacherInfoFragment(Parcel in) {}

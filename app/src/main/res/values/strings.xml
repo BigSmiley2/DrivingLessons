@@ -75,4 +75,7 @@
     <string name="network_error">Please connect to a network before trying again</string>
     <string name="online">Back online</string>
     <string name="offline">Offline, try reconnecting</string>
+    <string name="add_to_calendar"><b>Add to calendar</b></string>
+    <string name="about_message">Driving Lessons \n by Liam Izsak \n this application allows a student to setup a lesson with a driving teacher of his choice \n and allows a teacher or a tester to get student request and confirm them if they choose to \n the owner selects the tester for the test requests \n the students choose their teacher and time of lessons \n test request is allowed only after 18.66 hours of completed lessons \n which is 28 lessons of 40 min each</string>
+    <string name="seniority">Seniority</string>
 </resources>

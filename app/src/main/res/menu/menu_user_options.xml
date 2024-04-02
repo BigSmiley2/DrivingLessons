@@ -10,8 +10,4 @@
         android:id="@+id/menuItemUserOptionsMenuAssign"
         android:icon="@drawable/assign"
         android:title="@string/assign" />
-    <item
-        android:id="@+id/menuItemUserOptionsMenuDelete"
-        android:icon="@drawable/delete"
-        android:title="@string/delete" />
 </menu>

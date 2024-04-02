@@ -50,6 +50,6 @@ public class InfoActivity extends AppCompatActivity
     private void createAndLinkFragment()
     {
         replaceFragment(containerInfo, UserInfoFragment.newInstance(user.id, user instanceof Student));
-        if (fm.isSigned()) replaceFragment(containerAddRating, AddRatingFragment.newInstance(user.id, fm.getCurrentUid(), user instanceof Student));
+        if (fm.isSigned() && !user.id.equals(fm.getCurrentUid())) replaceFragment(containerAddRating, AddRatingFragment.newInstance(user.id, fm.getCurrentUid(), user instanceof Student));
     }
 }

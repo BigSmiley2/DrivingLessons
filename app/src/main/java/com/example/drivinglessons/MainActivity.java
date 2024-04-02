@@ -17,6 +17,7 @@ import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.drivinglessons.dialogs.AboutDialog;
 import com.example.drivinglessons.dialogs.LessonDialog;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.fragments.view.LessonViewFragment;
@@ -26,7 +27,7 @@ import com.example.drivinglessons.fragments.info.UserInfoFragment;
 import com.example.drivinglessons.fragments.view.UserViewFragment;
 import com.example.drivinglessons.util.Constants;
 import com.example.drivinglessons.util.NetworkChangedReceiver;
-import com.example.drivinglessons.util.NotificationService;
+import com.example.drivinglessons.services.NotificationService;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
@@ -71,6 +72,16 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
 
         setSupportActionBar(findViewById(R.id.toolbarActivityMain));
 
+        if (fm.isSigned()) startService();
+
+        if (savedInstanceState == null) createAndLinkFragments();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
         if (fm.isSigned() && spm.getIsStudent()) fm.getStudentCanTest(fm.getCurrentUid(), new FirebaseRunnable()
         {
             @Override
@@ -79,10 +90,6 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
                 refresh();
             }
         });
-
-        if (fm.isSigned()) startService();
-
-        if (savedInstanceState == null) createAndLinkFragments();
     }
 
     @Override
@@ -143,7 +150,7 @@ public class MainActivity <T extends Fragment & Parcelable> extends AppCompatAct
             refresh();
         }
 
-        else if (id == R.id.menuItemMainOptionsMenuAbout);
+        else if (id == R.id.menuItemMainOptionsMenuAbout) new AboutDialog(this).show();
 
         else return false;
 

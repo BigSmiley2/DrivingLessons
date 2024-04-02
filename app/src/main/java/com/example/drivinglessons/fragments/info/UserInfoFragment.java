@@ -22,9 +22,12 @@ import com.example.drivinglessons.firebase.entities.Teacher;
 import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.fragments.view.RatingViewFragment;
 import com.example.drivinglessons.util.Constants;
-import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;
+
+import java.time.Period;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class UserInfoFragment extends Fragment implements Parcelable
 {
@@ -40,7 +43,7 @@ public class UserInfoFragment extends Fragment implements Parcelable
 
     private ConstraintLayout layout;
     private ImageView image;
-    private TextView name, owner, email, birthdate;
+    private TextView name, owner, email, birthdate, age;
 
     public UserInfoFragment() {}
 
@@ -101,12 +104,15 @@ public class UserInfoFragment extends Fragment implements Parcelable
         owner = view.findViewById(R.id.textViewFragmentUserInfoOwner);
         email = view.findViewById(R.id.textViewFragmentUserInfoEmailData);
         birthdate = view.findViewById(R.id.textViewFragmentUserInfoBirthdateData);
+        age = view.findViewById(R.id.textViewFragmentUserInfoAgeData);
 
         FirebaseRunnable success = new FirebaseRunnable()
         {
             @Override
             public void run(User user)
             {
+                Period period = Constants.periodBetween(user.birthdate, Calendar.getInstance().getTime());
+
                 Glide.with(requireContext()).load(fm.getStorageReference(user.imagePath))
                         .thumbnail(Glide.with(requireContext()).load(R.drawable.loading).circleCrop())
                         .circleCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(image);
@@ -114,8 +120,8 @@ public class UserInfoFragment extends Fragment implements Parcelable
                 name.setText(user.name);
                 email.setText(user.email);
                 birthdate.setText(Constants.DATE_FORMAT.format(user.birthdate));
+                age.setText(String.format(Locale.ROOT, "%d.%d", period.getYears(), period.getMonths()));
                 setVisible();
-
             }
         };
 
@@ -127,6 +133,9 @@ public class UserInfoFragment extends Fragment implements Parcelable
                 @Override
                 public void run(User user)
                 {
+
+                    if (user == null) return;
+
                     success.run(user);
                     studentFragment.update((Student) user);
                 }
@@ -140,6 +149,9 @@ public class UserInfoFragment extends Fragment implements Parcelable
                 @Override
                 public void run(User user)
                 {
+
+                    if (user == null) return;
+
                     success.run(user);
                     teacherFragment.update((Teacher) user);
                 }

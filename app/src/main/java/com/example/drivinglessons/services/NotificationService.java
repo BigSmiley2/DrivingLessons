@@ -1,4 +1,4 @@
-package com.example.drivinglessons.util;
+package com.example.drivinglessons.services;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,21 +9,14 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.example.drivinglessons.MainActivity;
 import com.example.drivinglessons.R;
-import com.example.drivinglessons.firebase.entities.Rating;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.validation.Permission;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 
 public class NotificationService extends Service
@@ -58,7 +51,7 @@ public class NotificationService extends Service
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                if (ratingState) makeNotifications("You have new ratings", idRatings);
+                if (ratingState) makeNotifications("You have new ratings", idRatings, CHANNEL_ID_RATINGS);
 
                 ratingState = true;
             }
@@ -71,7 +64,7 @@ public class NotificationService extends Service
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                if (lessonState) makeNotifications("Your lessons state has changed", idLessons);
+                if (lessonState) makeNotifications("Your lessons state has changed", idLessons, CHANNEL_ID_LESSONS);
 
                 lessonState = true;
             }
@@ -81,27 +74,27 @@ public class NotificationService extends Service
         };
     }
 
-    public void makeNotifications(String message, int id)
+    public void makeNotifications(String message, int id, String channelId)
     {
         if (!Permission.checkNotify(getApplicationContext())) return;
 
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), PendingIntent.FLAG_IMMUTABLE);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID_RATINGS)
-                .setSmallIcon(R.drawable.car_icon)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
+                .setSmallIcon(R.drawable.app_icon)
                 .setContentTitle("Driving Lessons")
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent);
 
-        createNotificationChannel(builder, id);
+        createNotificationChannel(builder, id, channelId);
 
     }
 
-    private void createNotificationChannel(@NonNull NotificationCompat.Builder builder, int id)
+    private void createNotificationChannel(@NonNull NotificationCompat.Builder builder, int id, String channelId)
     {
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID_RATINGS, "ratings notification", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel channel = new NotificationChannel(channelId, "ratings notification", NotificationManager.IMPORTANCE_DEFAULT);
 
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.cancel(id);

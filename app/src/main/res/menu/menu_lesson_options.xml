@@ -6,6 +6,9 @@
         android:id="@+id/menuItemLessonOptionsMenuInfo"
         android:title="@string/info" />
     <item
+        android:id="@+id/menuItemLessonOptionsMenuCalendar"
+        android:title="@string/add_to_calendar" />
+    <item
         android:id="@+id/menuItemLessonOptionsMenuConfirm"
         android:title="@string/confirm" />
     <item

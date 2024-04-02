@@ -1,18 +1,25 @@
 package com.example.drivinglessons.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.drivinglessons.InfoActivity;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.firebase.entities.Lesson;
+import com.example.drivinglessons.firebase.entities.User;
 import com.example.drivinglessons.util.Constants;
+import com.example.drivinglessons.util.firebase.FirebaseManager;
+import com.example.drivinglessons.util.firebase.FirebaseRunnable;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
@@ -50,30 +57,36 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
         }
     }
 
+    private final FirebaseManager fm;
+
     private final Runnable onOptionsClick;
     private final boolean isAdmin;
+    private final Context context;
     private boolean isConfirmed, isPast, isAssigned;
     private String name;
 
-    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, boolean isConfirmed, boolean isPast, boolean isAssigned, boolean isAdmin, String name, Runnable onOptionsClick)
+    public LessonAdapter(Context context, FirebaseRecyclerOptions<Lesson> options, boolean isConfirmed, boolean isPast, boolean isAssigned, boolean isAdmin, String name, Runnable onOptionsClick)
     {
         super(options);
+        this.context = context;
         this.isConfirmed = isConfirmed;
         this.isPast = isPast;
         this.isAssigned = isAssigned;
         this.isAdmin = isAdmin;
         this.name = name;
         this.onOptionsClick = onOptionsClick;
+
+        fm = FirebaseManager.getInstance(context);
     }
 
-    public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, Runnable onOptionsClick)
+    public LessonAdapter(Context context, FirebaseRecyclerOptions<Lesson> options, Runnable onOptionsClick)
     {
-        this(options, false, false, false, false, "", onOptionsClick);
+        this(context, options, false, false, false, false, "", onOptionsClick);
     }
 
     public LessonAdapter(FirebaseRecyclerOptions<Lesson> options, @NonNull LessonAdapter other)
     {
-        this(options, other.isConfirmed, other.isPast, other.isAssigned, other.isAdmin, other.name, other.onOptionsClick);
+        this(other.context, options, other.isConfirmed, other.isPast, other.isAssigned, other.isAdmin, other.name, other.onOptionsClick);
     }
 
     @NonNull
@@ -93,6 +106,45 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
         holder.teacher.setText(lesson.teacherName == null ? "?" : lesson.teacherName);
         holder.confirmed.setImageResource(lesson.isConfirmed ? R.drawable.check_colored : R.drawable.uncheck_colored);
         holder.options.setOnClickListener(v -> onOptionsClick.run(holder, holder.getAbsoluteAdapterPosition(), lesson));
+
+        holder.studentLayout.setOnClickListener(v ->
+        {
+            fm.getStudentFromDatabase(lesson.studentId, new FirebaseRunnable() {
+                @Override
+                public void run(User user) {
+                    startInfoActivity(user);
+                }
+            }, new FirebaseRunnable()
+            {
+                @Override
+                public void run(Exception e)
+                {
+                    super.run(e);
+                    Toast.makeText(context, R.string.went_wrong_error, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+        holder.teacherLayout.setOnClickListener(v ->
+        {
+            if (lesson.teacherId == null) return;
+
+            fm.getTeacherFromDatabase(lesson.teacherId, new FirebaseRunnable()
+            {
+                @Override
+                public void run(User user)
+                {
+                    startInfoActivity(user);
+                }
+            }, new FirebaseRunnable()
+            {
+                @Override
+                public void run(Exception e)
+                {
+                    super.run(e);
+                    Toast.makeText(context, R.string.went_wrong_error, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
 
         setVisibility(holder, isFiltered(lesson));
     }
@@ -116,6 +168,13 @@ public class LessonAdapter extends FirebaseRecyclerAdapter<Lesson, LessonAdapter
                 lesson.isConfirmed == isConfirmed &&
                 (isPast || lesson.start.getTime() > Calendar.getInstance().getTime().getTime()) &&
                 (lesson.studentName.contains(name) || lesson.teacherName != null && lesson.teacherName.contains(name));
+    }
+
+    private void startInfoActivity(User user)
+    {
+        Intent intent = new Intent(context, InfoActivity.class);
+        intent.putExtra(InfoActivity.USER, user);
+        context.startActivity(intent);
     }
 
     @NonNull

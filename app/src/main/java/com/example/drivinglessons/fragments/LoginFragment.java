@@ -23,7 +23,7 @@ import com.example.drivinglessons.InputActivity;
 import com.example.drivinglessons.MainActivity;
 import com.example.drivinglessons.R;
 import com.example.drivinglessons.util.Constants;
-import com.example.drivinglessons.util.NotificationService;
+import com.example.drivinglessons.services.NotificationService;
 import com.example.drivinglessons.util.SharedPreferencesManager;
 import com.example.drivinglessons.util.firebase.FirebaseManager;
 import com.example.drivinglessons.util.firebase.FirebaseRunnable;

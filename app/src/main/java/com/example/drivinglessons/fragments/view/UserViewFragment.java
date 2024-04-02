@@ -262,7 +262,7 @@ public class UserViewFragment extends Fragment implements Parcelable
     {
         PopupMenu menu = new PopupMenu(requireContext(), viewHolder.options);
 
-        MenuItem info, assign, delete;
+        MenuItem info, assign;
 
         Menu m = menu.getMenu();
 
@@ -270,10 +270,8 @@ public class UserViewFragment extends Fragment implements Parcelable
 
         info = m.findItem(R.id.menuItemUserOptionsMenuInfo);
         assign = m.findItem(R.id.menuItemUserOptionsMenuAssign);
-        delete = m.findItem(R.id.menuItemUserOptionsMenuDelete);
 
         assign.setVisible(fm.isSigned() && (isSelector || (!isStudent && !isOwner)));
-        delete.setVisible(isOwner);
 
         menu.setOnMenuItemClickListener(menuItem ->
         {
@@ -282,8 +280,6 @@ public class UserViewFragment extends Fragment implements Parcelable
             if (id == info.getItemId()) startInfoActivity(user);
 
             else if (id == assign.getItemId()) assign(user);
-
-            else if (id == delete.getItemId());
 
             else return false;
 

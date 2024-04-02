@@ -88,6 +88,9 @@ public class LessonInfoDialogFragment extends DialogFragment implements Parcelab
             @Override
             public void runAll(Lesson lesson)
             {
+
+                if (lesson == null) return;
+
                 title.setText(lesson.isTest ? R.string.driving_test : R.string.driving_lesson);
                 start.setText(LessonInfoDialogFragment.toString(lesson.start));
                 end.setText(LessonInfoDialogFragment.toString(lesson.end));

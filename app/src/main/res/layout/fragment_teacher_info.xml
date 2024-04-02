@@ -11,37 +11,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="manual"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoTester" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoTester"
+        tools:text="manual" />
 
     <TextView
         android:id="@+id/textViewFragmentTeacherInfoTester"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="tester"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoSeniority" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoSeniority"
+        tools:text="tester" />
 
     <TextView
         android:id="@+id/textViewFragmentTeacherInfoCost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="cost"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoManual" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFragmentTeacherInfoManual"
+        tools:text="cost" />
 
     <TextView
         android:id="@+id/textViewFragmentTeacherInfoSeniority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="seniority"
+        android:text="@string/seniority"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewFragmentTeacherInfoSeniorityData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewFragmentTeacherInfoSeniority"
+        app:layout_constraintStart_toEndOf="@+id/textViewFragmentTeacherInfoSeniority"
+        app:layout_constraintTop_toTopOf="@+id/textViewFragmentTeacherInfoSeniority" />
 </androidx.constraintlayout.widget.ConstraintLayout>
