@@ -224,11 +224,14 @@ public class LoginFragment extends Fragment implements Parcelable
 
     private void startService()
     {
-        Intent intent = new Intent(requireActivity(), NotificationService.class);
-        intent.putExtra(NotificationService.ID, fm.getCurrentUid());
-        intent.putExtra(NotificationService.IS_STUDENT, spm.getIsStudent());
+        if (fm.isSigned())
+        {
+            Intent intent = new Intent(requireActivity(), NotificationService.class);
+            intent.putExtra(NotificationService.ID, fm.getCurrentUid());
+            intent.putExtra(NotificationService.IS_STUDENT, spm.getIsStudent());
 
-        requireActivity().startService(intent);
+            requireActivity().startService(intent);
+        }
     }
 
     protected LoginFragment(@NonNull Parcel in)
