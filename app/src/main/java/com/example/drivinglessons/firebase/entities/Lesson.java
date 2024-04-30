@@ -53,6 +53,8 @@ public class Lesson implements Parcelable
         isConfirmed = tmpIsConfirmed == 0 ? null : tmpIsConfirmed == 1;
         byte tmpIsTest = in.readByte();
         isTest = tmpIsTest == 0 ? null : tmpIsTest == 1;
+        start = (Date) in.readSerializable();
+        end = (Date) in.readSerializable();
     }
 
     @Override
@@ -71,6 +73,8 @@ public class Lesson implements Parcelable
         }
         dest.writeByte((byte) (isConfirmed == null ? 0 : isConfirmed ? 1 : 2));
         dest.writeByte((byte) (isTest == null ? 0 : isTest ? 1 : 2));
+        dest.writeSerializable(start);
+        dest.writeSerializable(end);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class Teacher extends User implements Parcelable
         this.seniority = seniority;
     }
 
-    public Teacher(User user, Boolean hasManual, Boolean isTester, Double costPerHour, Date seniority)
+    public Teacher(@NonNull User user, Boolean hasManual, Boolean isTester, Double costPerHour, Date seniority)
     {
         this(user.id, user.name, user.email, user.password, user.imagePath, user.birthdate, hasManual, isTester, costPerHour, seniority);
     }

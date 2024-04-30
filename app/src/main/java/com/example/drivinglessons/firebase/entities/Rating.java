@@ -1,10 +1,15 @@
 package com.example.drivinglessons.firebase.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Rating
+public class Rating implements Parcelable
 {
     private static final String ID = "id", FROM_ID = "fromId", TO_ID = "toId", FROM_NAME = "fromName", FROM_IMAGE = "fromImage", MESSAGE = "message", DATE = "date", RATE = "rate";
 
@@ -25,6 +30,60 @@ public class Rating
         this.date = date;
         this.rate = rate;
     }
+
+    protected Rating(@NonNull Parcel in)
+    {
+        id = in.readString();
+        fromId = in.readString();
+        toId = in.readString();
+        fromName = in.readString();
+        fromImage = in.readString();
+        message = in.readString();
+        if (in.readByte() == 0)
+            rate = null;
+        else rate = in.readDouble();
+        date = (Date) in.readSerializable();
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags)
+    {
+        dest.writeString(id);
+        dest.writeString(fromId);
+        dest.writeString(toId);
+        dest.writeString(fromName);
+        dest.writeString(fromImage);
+        dest.writeString(message);
+        if (rate == null)
+            dest.writeByte((byte) 0);
+        else
+        {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(rate);
+        }
+        dest.writeSerializable(date);
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    public static final Creator<Rating> CREATOR = new Creator<Rating>()
+    {
+        @Override
+        public Rating createFromParcel(Parcel in)
+        {
+            return new Rating(in);
+        }
+
+        @Override
+        public Rating[] newArray(int size)
+        {
+            return new Rating[size];
+        }
+    };
 
     public Map<String, Object> toMap()
     {

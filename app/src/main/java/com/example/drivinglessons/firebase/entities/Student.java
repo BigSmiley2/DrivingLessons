@@ -1,13 +1,14 @@
 package com.example.drivinglessons.firebase.entities;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 import java.util.Date;
 import java.util.Map;
 
-public class Student extends User
+public class Student extends User implements Parcelable
 {
     private static final String HAS_THEORY_TEST = "hasTheoryTest", TEACHER_ID = "teacherId";
     public Boolean hasTheoryTest;
